@@ -1,6 +1,6 @@
 package ru.vsu.tripshare_mobile
 
-data class MyTripModel(
+data class MyTripAsPassengerModel(
     val cityFrom: String,
     val cityTo: String,
     val daysUntil: String,

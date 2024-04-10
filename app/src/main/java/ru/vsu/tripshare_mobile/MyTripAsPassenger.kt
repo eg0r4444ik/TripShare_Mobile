@@ -15,33 +15,34 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
 import ru.vsu.tripshare_mobile.ui.theme.black28
 import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray14
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
-import ru.vsu.tripshare_mobile.ui.theme.mint20
 import ru.vsu.tripshare_mobile.ui.theme.mint24
 import ru.vsu.tripshare_mobile.ui.theme.white14
 
 @Composable
-fun MyTrip(trip: MyTripModel) {
+fun MyTripAsPassenger(trip: MyTripAsPassengerModel) {
 
     Card(
         modifier = Modifier.fillMaxWidth().padding(10.dp),
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 5.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White,
         )
     ) {
         Row(
@@ -99,7 +100,7 @@ fun MyTrip(trip: MyTripModel) {
                 Text(text = "Прибытие:", style = blue18)
                 Text(text = trip.arrivalDate + " " + trip.arrivalTime, style = darkGray18)
                 Box(
-                    modifier = Modifier.fillMaxWidth(0.9f).fillMaxHeight(),
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Text(text = trip.cost.toString() + "₽", style = black28)
