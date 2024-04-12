@@ -1,29 +1,32 @@
-package ru.vsu.tripshare_mobile.bottom_navigation
+package ru.vsu.tripshare_mobile
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import ru.vsu.tripshare_mobile.MainActivity
-import ru.vsu.tripshare_mobile.Trips
+import ru.vsu.tripshare_mobile.trips_information.MyTrips
+import ru.vsu.tripshare_mobile.trips_information.TripDetails
 
 @Composable
 fun NavGraph(navHostController: NavHostController){
     NavHost(navController = navHostController, startDestination = "trips_screen"){
         composable("find_trip_screen"){
-            Trips()
+            MyTrips(navHostController)
         }
         composable("add_trip_screen"){
-            Trips()
+            MyTrips(navHostController)
         }
         composable("trips_screen"){
-            Trips()
+            MyTrips(navHostController)
         }
         composable("chats_screen"){
-            Trips()
+            MyTrips(navHostController)
         }
         composable("profile_screen"){
-            Trips()
+            MyTrips(navHostController)
+        }
+        composable("trip_details"){
+            TripDetails()
         }
     }
 }

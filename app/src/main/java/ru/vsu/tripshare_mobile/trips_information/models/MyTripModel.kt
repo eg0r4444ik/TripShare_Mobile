@@ -1,6 +1,7 @@
-package ru.vsu.tripshare_mobile
+package ru.vsu.tripshare_mobile.trips_information.models
 
-data class MyTripAsPassengerModel(
+data class MyTripModel(
+    val status: TripStatus,
     val cityFrom: String,
     val cityTo: String,
     val daysUntil: String,
@@ -8,8 +9,6 @@ data class MyTripAsPassengerModel(
     val departureTime: String,
     val arrivalDate: String,
     val arrivalTime: String,
-    val driverName: String,
-    val driverSurname: String,
-    val imageId: Int,
+    val participants: List<TripParticipant>,
     val cost: Int
 )

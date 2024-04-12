@@ -1,21 +1,11 @@
 package ru.vsu.tripshare_mobile.bottom_navigation
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,14 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
 import ru.vsu.tripshare_mobile.ui.theme.montserrat
@@ -39,11 +27,11 @@ import ru.vsu.tripshare_mobile.ui.theme.montserrat
 fun BottomNavigation(navController: NavController){
 
     val listItems = listOf(
-        BottomItem.Screen1,
-        BottomItem.Screen2,
-        BottomItem.Screen3,
-        BottomItem.Screen4,
-        BottomItem.Screen5
+        BottomItem.FindTripScreen,
+        BottomItem.AddTripScreen,
+        BottomItem.TripsScreen,
+        BottomItem.ChatsScreen,
+        BottomItem.ProfileScreen
     )
 
     androidx.compose.material.BottomNavigation(

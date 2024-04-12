@@ -1,7 +1,8 @@
-package ru.vsu.tripshare_mobile
+package ru.vsu.tripshare_mobile.trips_information
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,10 +23,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import ru.vsu.tripshare_mobile.R
+import ru.vsu.tripshare_mobile.trips_information.models.MyTripModel
+import ru.vsu.tripshare_mobile.trips_information.models.TripStatus
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
+import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
+import ru.vsu.tripshare_mobile.ui.theme.MyRed
 import ru.vsu.tripshare_mobile.ui.theme.black28
+import ru.vsu.tripshare_mobile.ui.theme.black36
 import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray14
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
@@ -33,10 +40,10 @@ import ru.vsu.tripshare_mobile.ui.theme.mint24
 import ru.vsu.tripshare_mobile.ui.theme.white14
 
 @Composable
-fun MyTripAsPassenger(trip: MyTripAsPassengerModel) {
+fun MyTripAsPassenger(trip: MyTripModel, navController: NavController) {
 
     Card(
-        modifier = Modifier.fillMaxWidth().padding(10.dp),
+        modifier = Modifier.fillMaxWidth().padding(10.dp).clickable { navController.navigate("trip_details") },
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 5.dp
@@ -50,27 +57,49 @@ fun MyTripAsPassenger(trip: MyTripAsPassengerModel) {
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.height(300.dp).fillMaxWidth(0.5f).padding(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Card(shape = RoundedCornerShape(15.dp), modifier = Modifier.padding(10.dp)){
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.background(MyBlue).fillMaxWidth(0.4f).height(34.dp)
-                    ) {
-                        Text(text = "Пассажир", style = white14)
+                    if(trip.status == TripStatus.PASSENGER) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.background(MyBlue).fillMaxWidth().height(34.dp)
+                        ) {
+                            Text(text = "Пассажир", style = white14)
+                        }
+                    }else if(trip.status == TripStatus.PENDING){
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.background(MyDarkGray).fillMaxWidth().height(34.dp)
+                        ) {
+                            Text(text = "В ожидании", style = white14)
+                        }
+                    }else if(trip.status == TripStatus.REJECTED){
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.background(MyRed).fillMaxWidth().height(34.dp)
+                        ) {
+                            Text(text = "Отклонено", style = white14)
+                        }
                     }
                 }
 
                 Text(text = "Водитель:", style = darkGray18)
                 Image(
-                    painter = painterResource(id = trip.imageId),
+                    painter = painterResource(id = trip.participants.get(0).imageId),
                     contentDescription = "image",
                     modifier = Modifier
                         .size(70.dp)
                         .clip(CircleShape)
                 )
-                Text(text = trip.driverSurname, style = darkGray14)
-                Text(text = trip.driverName, style = darkGray14)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = trip.participants.get(0).surname, style = darkGray14)
+                    Text(text = trip.participants.get(0).name, style = darkGray14)
+                }
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
@@ -84,17 +113,19 @@ fun MyTripAsPassenger(trip: MyTripAsPassengerModel) {
                     Text(text = " " + trip.daysUntil, style = darkGray14)
                 }
             }
-            Column {
-                Text(text = trip.cityFrom + "-" + trip.cityTo, style = mint24)
+            Column (
+                modifier = Modifier.height(300.dp).padding(10.dp),
+            ){
+//                Text(text = trip.cityFrom + "-" + trip.cityTo, style = mint24)
 
-//                Column(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
-//                    Text(text = trip.cityFrom, style = mint24)
-//                    Text(text = "-", style = mint24)
-//                    Text(text = trip.cityTo, style = mint24)
-//                }
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = trip.cityFrom, style = mint24)
+                    Text(text = "-", style = mint24)
+                    Text(text = trip.cityTo, style = mint24)
+                }
                 Text(text = "Отправление:", style = blue18)
                 Text(text = trip.departureDate + " " + trip.departureTime, style = darkGray18)
                 Text(text = "Прибытие:", style = blue18)
@@ -103,7 +134,7 @@ fun MyTripAsPassenger(trip: MyTripAsPassengerModel) {
                     modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    Text(text = trip.cost.toString() + "₽", style = black28)
+                    Text(text = trip.cost.toString() + "₽", style = black36)
                 }
             }
         }
