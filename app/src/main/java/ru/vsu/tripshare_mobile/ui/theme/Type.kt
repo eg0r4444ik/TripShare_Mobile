@@ -55,6 +55,20 @@ val black36 = TextStyle(
     fontFamily = montserrat
 )
 
+val darkGray48 = TextStyle(
+    color = MyDarkGray,
+    fontWeight = FontWeight.Bold,
+    fontSize = 48.sp,
+    fontFamily = montserrat
+)
+
+val darkGray36 = TextStyle(
+    color = MyDarkGray,
+    fontWeight = FontWeight.Bold,
+    fontSize = 36.sp,
+    fontFamily = montserrat
+)
+
 val darkGray18 = TextStyle(
     color = MyDarkGray,
     fontWeight = FontWeight.Bold,
@@ -90,10 +104,24 @@ val white14 = TextStyle(
     fontFamily = montserrat
 )
 
+val white18 = TextStyle(
+    color = Color.White,
+    fontWeight = FontWeight.Bold,
+    fontSize = 18.sp,
+    fontFamily = montserrat
+)
+
 val mint7 = TextStyle(
     color = MyMint,
     fontWeight = FontWeight.Bold,
     fontSize = 7.sp,
+    fontFamily = montserrat
+)
+
+val mint18 = TextStyle(
+    color = MyMint,
+    fontWeight = FontWeight.Bold,
+    fontSize = 18.sp,
     fontFamily = montserrat
 )
 

@@ -1,4 +1,4 @@
-package ru.vsu.tripshare_mobile.trips_information
+package ru.vsu.tripshare_mobile.trips_screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.R
-import ru.vsu.tripshare_mobile.trips_information.models.MyTripModel
-import ru.vsu.tripshare_mobile.trips_information.models.TripParticipant
-import ru.vsu.tripshare_mobile.trips_information.models.TripStatus
+import ru.vsu.tripshare_mobile.trips_screens.models.MyTripModel
+import ru.vsu.tripshare_mobile.trips_screens.models.TripParticipant
+import ru.vsu.tripshare_mobile.trips_screens.models.TripStatus
 import ru.vsu.tripshare_mobile.ui.theme.mint36
 
 @Composable
