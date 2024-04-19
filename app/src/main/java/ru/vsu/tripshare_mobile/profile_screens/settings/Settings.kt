@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import ru.vsu.tripshare_mobile.profile_screens.models.User
+import ru.vsu.tripshare_mobile.models.User
 
 @Composable
 fun Settings(user: User, navController: NavController){

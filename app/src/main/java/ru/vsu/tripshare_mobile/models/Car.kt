@@ -1,4 +1,4 @@
-package ru.vsu.tripshare_mobile.profile_screens.models
+package ru.vsu.tripshare_mobile.models
 
 data class Car(
     val brand: String,

@@ -1,6 +1,4 @@
-package ru.vsu.tripshare_mobile.profile_screens.models
-
-import java.util.Date
+package ru.vsu.tripshare_mobile.models
 
 data class User(
     val name: String,

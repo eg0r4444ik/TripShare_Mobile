@@ -26,8 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.R
-import ru.vsu.tripshare_mobile.trips_screens.models.MyTripModel
-import ru.vsu.tripshare_mobile.trips_screens.models.TripStatus
+import ru.vsu.tripshare_mobile.models.MyTripModel
+import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyRed

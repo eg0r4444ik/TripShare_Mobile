@@ -1,4 +1,4 @@
-package ru.vsu.tripshare_mobile.trips_screens.models
+package ru.vsu.tripshare_mobile.models
 
 enum class TripStatus {
     DRIVER,

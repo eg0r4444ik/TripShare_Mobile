@@ -1,4 +1,4 @@
-package ru.vsu.tripshare_mobile.trips_screens.models
+package ru.vsu.tripshare_mobile.models
 
 data class TripParticipant(
     val imageId: Int,

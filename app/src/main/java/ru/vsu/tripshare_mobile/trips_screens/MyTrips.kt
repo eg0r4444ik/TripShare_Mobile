@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.R
-import ru.vsu.tripshare_mobile.trips_screens.models.MyTripModel
-import ru.vsu.tripshare_mobile.trips_screens.models.TripParticipant
-import ru.vsu.tripshare_mobile.trips_screens.models.TripStatus
+import ru.vsu.tripshare_mobile.models.MyTripModel
+import ru.vsu.tripshare_mobile.models.TripParticipant
+import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.ui.theme.mint36
 
 @Composable
@@ -53,7 +53,8 @@ fun MyTrips(navController: NavController) {
                     MyTripModel(
                         TripStatus.DRIVER, "Воронеж", "Москва", "Через 3 дня", "15.03.2024",
                         "15:30", "16.03.2024", "2:30",
-                        listOf(TripParticipant(R.drawable.egor, "Егор", "Рогачев"),
+                        listOf(
+                            TripParticipant(R.drawable.egor, "Егор", "Рогачев"),
                             TripParticipant(R.drawable.andrew, "Андрей", "Москаленко"),
                             TripParticipant(R.drawable.vasya, "Василий", "Платон")
                         ), 1030
@@ -61,7 +62,8 @@ fun MyTrips(navController: NavController) {
                     MyTripModel(
                         TripStatus.DRIVER, "Воронеж", "Москва", "Через 3 дня", "15.03.2024",
                         "15:30", "16.03.2024", "2:30",
-                        listOf(TripParticipant(R.drawable.egor, "Егор", "Рогачев"),
+                        listOf(
+                            TripParticipant(R.drawable.egor, "Егор", "Рогачев"),
                             TripParticipant(R.drawable.andrew, "Андрей", "Москаленко"),
                             TripParticipant(R.drawable.vasya, "Василий", "Платон"),
                             TripParticipant(R.drawable.egor, "Тимофей", "Улезько")
