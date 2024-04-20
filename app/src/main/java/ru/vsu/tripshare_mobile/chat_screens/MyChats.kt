@@ -1,4 +1,4 @@
-package ru.vsu.tripshare_mobile.char_screens
+package ru.vsu.tripshare_mobile.chat_screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

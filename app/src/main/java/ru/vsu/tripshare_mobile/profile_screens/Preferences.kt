@@ -11,6 +11,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,8 +42,8 @@ fun Preferences(user: User, navController: NavController){
         Column(
             modifier = Modifier.padding(5.dp, 5.dp),
         ){
-            Text(text = "Мои", style = darkGray36)
-            Text(text = "предпочтения", style = darkGray36)
+            Text(text = "Мои", style = darkGray36, modifier = Modifier.padding(10.dp))
+            Text(text = "предпочтения", style = darkGray36, modifier = Modifier.padding(10.dp))
 
             Column(
                 modifier = Modifier.padding(10.dp),
@@ -57,7 +58,10 @@ fun Preferences(user: User, navController: NavController){
 
             Button(onClick = { navController.navigate("edit_preferences") },
                 colors = ButtonDefaults.buttonColors(containerColor = MyMint),
-                modifier = Modifier.fillMaxWidth().height(65.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(65.dp)
+                    .padding(20.dp, 0.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,

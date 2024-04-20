@@ -77,7 +77,7 @@ fun BottomNavigation(navController: NavController){
                         Text(
                             text = item.title,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 8.sp,
+                            fontSize = 10.sp,
                             fontFamily = montserrat,
                             color = if (currentRoute == item.route) MyMint else MyDarkGray,
                         )

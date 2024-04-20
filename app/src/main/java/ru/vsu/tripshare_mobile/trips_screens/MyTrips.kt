@@ -19,7 +19,7 @@ import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.ui.theme.mint36
 
 @Composable
-fun MyTrips(navController: NavController) {
+fun MyTrips(trips: List<MyTripModel>, navController: NavController) {
 
     Column(
         modifier = Modifier
@@ -38,49 +38,7 @@ fun MyTrips(navController: NavController) {
                 .fillMaxWidth()
                 .background(Color.White),
         ) {
-            itemsIndexed(
-                listOf(
-                    MyTripModel(
-                        TripStatus.PASSENGER, "Воронеж", "Москва", "Через 3 дня", "15.03.2024",
-                        "15:30", "16.03.2024", "2:30",
-                        listOf(TripParticipant(R.drawable.vasya, "Василий", "Платон")), 1030
-                    ),
-                    MyTripModel(
-                        TripStatus.DRIVER, "Воронеж", "Москва", "Через 3 дня", "15.03.2024",
-                        "15:30", "16.03.2024", "2:30",
-                        listOf(TripParticipant(R.drawable.vasya, "Василий", "Платон")), 1030
-                    ),
-                    MyTripModel(
-                        TripStatus.DRIVER, "Воронеж", "Москва", "Через 3 дня", "15.03.2024",
-                        "15:30", "16.03.2024", "2:30",
-                        listOf(
-                            TripParticipant(R.drawable.egor, "Егор", "Рогачев"),
-                            TripParticipant(R.drawable.andrew, "Андрей", "Москаленко"),
-                            TripParticipant(R.drawable.vasya, "Василий", "Платон")
-                        ), 1030
-                    ),
-                    MyTripModel(
-                        TripStatus.DRIVER, "Воронеж", "Москва", "Через 3 дня", "15.03.2024",
-                        "15:30", "16.03.2024", "2:30",
-                        listOf(
-                            TripParticipant(R.drawable.egor, "Егор", "Рогачев"),
-                            TripParticipant(R.drawable.andrew, "Андрей", "Москаленко"),
-                            TripParticipant(R.drawable.vasya, "Василий", "Платон"),
-                            TripParticipant(R.drawable.egor, "Тимофей", "Улезько")
-                        ), 1030
-                    ),
-                    MyTripModel(
-                        TripStatus.REJECTED, "Воронеж", "Москва", "Через 3 дня", "15.03.2024",
-                        "15:30", "16.03.2024", "2:30",
-                        listOf(TripParticipant(R.drawable.egor, "Егор", "Рогачев")), 1030
-                    ),
-                    MyTripModel(
-                        TripStatus.PENDING, "Воронеж", "Москва", "Через 3 дня", "15.03.2024",
-                        "15:30", "16.03.2024", "2:30",
-                        listOf(TripParticipant(R.drawable.vasya, "Василий", "Платон")), 1030
-                    ),
-                )
-            ) { _, item ->
+            itemsIndexed(trips) { _, item ->
                 if(item.status == TripStatus.DRIVER){
                     MyTripAsDriver(item, navController)
                 }else {

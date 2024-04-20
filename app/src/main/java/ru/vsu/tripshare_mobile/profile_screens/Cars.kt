@@ -35,7 +35,7 @@ fun Cars(user: User, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .height(330.dp)
             .padding(10.dp),
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(
@@ -49,7 +49,7 @@ fun Cars(user: User, navController: NavController){
         Column(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "Ваши авто", style = darkGray36)
+            Text(text = "Ваши авто", style = darkGray36, modifier = Modifier.padding(10.dp))
 
             if(user.cars != null) {
                 LazyRow(
@@ -78,7 +78,7 @@ fun Cars(user: User, navController: NavController){
             Button(
                 onClick = { navController.navigate("add_car") },
                 colors = ButtonDefaults.buttonColors(containerColor = MyMint),
-                modifier = Modifier.fillMaxWidth().height(50.dp)
+                modifier = Modifier.fillMaxWidth().height(50.dp).padding(20.dp, 0.dp)
             ) {
                 Box(
                     contentAlignment = Alignment.Center

@@ -90,6 +90,13 @@ val darkGray14 = TextStyle(
     fontFamily = montserrat
 )
 
+val darkGray12 = TextStyle(
+    color = MyDarkGray,
+    fontWeight = FontWeight.Bold,
+    fontSize = 12.sp,
+    fontFamily = montserrat
+)
+
 val darkGray7 = TextStyle(
     color = MyDarkGray,
     fontWeight = FontWeight.Bold,
@@ -101,6 +108,13 @@ val blue18 = TextStyle(
     color = MyBlue,
     fontWeight = FontWeight.Bold,
     fontSize = 18.sp,
+    fontFamily = montserrat
+)
+
+val white12 = TextStyle(
+    color = Color.White,
+    fontWeight = FontWeight.Bold,
+    fontSize = 12.sp,
     fontFamily = montserrat
 )
 

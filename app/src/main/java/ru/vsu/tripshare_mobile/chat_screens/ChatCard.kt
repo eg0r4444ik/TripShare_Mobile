@@ -1,7 +1,8 @@
-package ru.vsu.tripshare_mobile.char_screens
+package ru.vsu.tripshare_mobile.chat_screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +28,7 @@ import ru.vsu.tripshare_mobile.models.User
 import ru.vsu.tripshare_mobile.ui.theme.black18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
 
+const val BIG_MESSAGE_LEN = 40
 @Composable
 fun ChatCard(chat: ChatModel, user: User, navController: NavController){
     Card(
@@ -55,8 +57,26 @@ fun ChatCard(chat: ChatModel, user: User, navController: NavController){
             Column(modifier = Modifier.padding(10.dp, 0.dp)){
                 Text(text = chat.companion.surname + " " + chat.companion.name, style = black18)
                 val last = chat.messages.get(chat.messages.size-1)
-                Text(text = if(last.sender.email == user.email) "Вы: " + last.text else chat.companion.name + ": " + last.text, style = darkGray18)
+                // поменять сравнение юзеров
+                Text(text = if(last.sender.email == user.email) "Вы: " + last.text else chat.companion.name
+                        + ": " + (if(last.text.length + last.sender.name.length >= BIG_MESSAGE_LEN)
+                                (last.text.subSequence(0, BIG_MESSAGE_LEN-last.sender.name.length).toString() + "...") else last.text),
+                    style = darkGray18)
+            }
+
+            if(hasUnreadMessages(chat)){
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.TopEnd
+                ){
+                    //todo нарисовать кружок
+                }
             }
         }
     }
+}
+
+private fun hasUnreadMessages(chat: ChatModel): Boolean {
+    chat.messages.forEach { if(!it.isRead) return true }
+    return false
 }
