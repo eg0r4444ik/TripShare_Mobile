@@ -12,9 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.models.MyTripModel
-import ru.vsu.tripshare_mobile.models.TripParticipant
 import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.ui.theme.mint36
 

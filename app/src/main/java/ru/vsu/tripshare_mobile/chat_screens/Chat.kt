@@ -29,7 +29,10 @@ import ru.vsu.tripshare_mobile.trips_screens.MyTripAsDriver
 import ru.vsu.tripshare_mobile.trips_screens.MyTripAsPassenger
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.black18
+import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
+import ru.vsu.tripshare_mobile.utils.DataUtils
+import java.util.Date
 
 @Composable
 fun Chat(chat: ChatModel, user: User, navController: NavController){
@@ -71,8 +74,21 @@ fun Chat(chat: ChatModel, user: User, navController: NavController){
             modifier = Modifier.fillMaxSize()
             // todo Поставить начальное положение вниз
         ) {
+            var curr = Date()
             itemsIndexed(chat.messages) { _, item ->
+                if(!curr.equals(item.time)){
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(10.dp, 10.dp),
+                        contentAlignment = Alignment.Center
+                    ){
+                        //заменить на статическую функцию
+                        val du = DataUtils()
+                        Text(text = du.dateToString(item.time),
+                            style = blue18)
+                    }
+                }
                 Message(item, user)
+                curr = item.time
             }
         }
 

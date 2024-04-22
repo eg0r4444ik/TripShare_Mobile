@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -87,7 +88,8 @@ fun MyTripAsPassenger(trip: MyTripModel, navController: NavController) {
 
                 Text(text = "Водитель:", style = darkGray18)
                 Image(
-                    painter = painterResource(id = trip.participants.get(0).imageId),
+                    //добавить проверку на null с пустой иконкой
+                    painter = painterResource(id = trip.participants.get(0).imageId!!),
                     contentDescription = "image",
                     modifier = Modifier
                         .size(70.dp)
@@ -130,7 +132,7 @@ fun MyTripAsPassenger(trip: MyTripModel, navController: NavController) {
                 Text(text = "Прибытие:", style = blue18)
                 Text(text = trip.arrivalDate + " " + trip.arrivalTime, style = darkGray18)
                 Box(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),
+                    modifier = Modifier.fillMaxSize().padding(20.dp, 0.dp),
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Text(text = trip.cost.toString() + "₽", style = black36)

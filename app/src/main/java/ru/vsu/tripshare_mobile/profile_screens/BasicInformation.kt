@@ -34,7 +34,6 @@ fun BasicInformation(user: User, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(240.dp)
             .padding(10.dp),
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(

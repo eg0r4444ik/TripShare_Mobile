@@ -40,10 +40,10 @@ fun Preferences(user: User, navController: NavController){
         )
     ){
         Column(
-            modifier = Modifier.padding(5.dp, 5.dp),
+            modifier = Modifier.padding(10.dp, 5.dp),
         ){
-            Text(text = "Мои", style = darkGray36, modifier = Modifier.padding(10.dp))
-            Text(text = "предпочтения", style = darkGray36, modifier = Modifier.padding(10.dp))
+            Text(text = "Мои", style = darkGray36)
+            Text(text = "предпочтения", style = darkGray36)
 
             Column(
                 modifier = Modifier.padding(10.dp),

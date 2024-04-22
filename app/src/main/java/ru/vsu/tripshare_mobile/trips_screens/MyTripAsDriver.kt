@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -78,7 +79,8 @@ fun MyTripAsDriver(trip: MyTripModel, navController: NavController) {
                 ){
                     trip.participants.forEach{participant ->
                         Image(
-                            painter = painterResource(id = participant.imageId),
+                            //добавить проверку на null с пустой иконкой
+                            painter = painterResource(id = participant.imageId!!),
                             contentDescription = "image",
                             modifier = Modifier
                                 .size(if(trip.participants.size <= 2) 70.dp else if(trip.participants.size == 3) 50.dp else 40.dp)
@@ -125,7 +127,7 @@ fun MyTripAsDriver(trip: MyTripModel, navController: NavController) {
                 Text(text = trip.arrivalDate + " " + trip.arrivalTime, style = darkGray18)
 
                 Box(
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight().padding(20.dp),
+                    modifier = Modifier.fillMaxSize().padding(20.dp, 0.dp),
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Text(text = trip.cost.toString() + "₽", style = black36)
