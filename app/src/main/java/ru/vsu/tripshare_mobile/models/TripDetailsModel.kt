@@ -8,7 +8,7 @@ data class TripDetailsModel(
     val arrivalDate: String,
     val arrivalTime: String,
     val travelTime: String,
-    val participants: List<User>,
+    val participants: List<UserModel>,
     val cost: Int,
-    val car: Car
+    val car: CarModel
 )

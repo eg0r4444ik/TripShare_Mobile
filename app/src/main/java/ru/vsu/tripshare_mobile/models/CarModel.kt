@@ -1,9 +1,9 @@
 package ru.vsu.tripshare_mobile.models
 
-data class Car(
+data class CarModel(
     val brand: String,
     val model: String,
     val color: String,
     val manufactureYear: Int,
-    val imageIds: List<Int>
+    var imageIds: MutableList<Int>?
 )

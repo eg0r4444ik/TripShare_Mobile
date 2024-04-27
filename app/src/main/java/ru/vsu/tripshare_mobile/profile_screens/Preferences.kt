@@ -11,14 +11,13 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ru.vsu.tripshare_mobile.models.User
+import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
 import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
@@ -26,7 +25,7 @@ import ru.vsu.tripshare_mobile.ui.theme.darkGray36
 import ru.vsu.tripshare_mobile.ui.theme.white18
 
 @Composable
-fun Preferences(user: User, navController: NavController){
+fun Preferences(user: UserModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()

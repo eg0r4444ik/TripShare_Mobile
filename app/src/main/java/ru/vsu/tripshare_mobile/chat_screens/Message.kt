@@ -1,9 +1,7 @@
 package ru.vsu.tripshare_mobile.chat_screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -15,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ru.vsu.tripshare_mobile.models.MessageModel
-import ru.vsu.tripshare_mobile.models.User
+import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
 import ru.vsu.tripshare_mobile.ui.theme.darkGray12
 import ru.vsu.tripshare_mobile.ui.theme.darkGray14
@@ -25,7 +23,7 @@ import ru.vsu.tripshare_mobile.ui.theme.white14
 const val BIG_TEXT_LEN = 30
 
 @Composable
-fun Message(message: MessageModel, user: User){
+fun Message(message: MessageModel, user: UserModel){
 
     val messageSize = if(message.text.length >= BIG_TEXT_LEN) 0.6f else 0.4f
 

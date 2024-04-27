@@ -12,13 +12,14 @@ import ru.vsu.tripshare_mobile.bottom_navigation.BottomNavigation
 import ru.vsu.tripshare_mobile.chat_screens.Chat
 import ru.vsu.tripshare_mobile.chat_screens.MyChats
 import ru.vsu.tripshare_mobile.profile_screens.Profile
-import ru.vsu.tripshare_mobile.models.Car
+import ru.vsu.tripshare_mobile.models.CarModel
 import ru.vsu.tripshare_mobile.models.ChatModel
 import ru.vsu.tripshare_mobile.models.MessageModel
 import ru.vsu.tripshare_mobile.models.MyTripModel
-import ru.vsu.tripshare_mobile.models.Review
+import ru.vsu.tripshare_mobile.models.ReviewModel
 import ru.vsu.tripshare_mobile.models.TripStatus
-import ru.vsu.tripshare_mobile.models.User
+import ru.vsu.tripshare_mobile.models.UserModel
+import ru.vsu.tripshare_mobile.profile_screens.UserProfile
 import ru.vsu.tripshare_mobile.profile_screens.settings.AddCar
 import ru.vsu.tripshare_mobile.profile_screens.settings.EditInfo
 import ru.vsu.tripshare_mobile.profile_screens.settings.EditPreferences
@@ -32,71 +33,71 @@ import java.util.Date
 @Composable
 fun NavGraph(navHostController: NavHostController){
 
-    val user = User(
+    val egor = UserModel(1,
+        "Егор", "Рогачев", "89514960549", "egor_rogachev@yandex.ru",
+        "01.01.2001", 4.8, R.drawable.egor, mutableListOf(
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+        ), mutableListOf(), "Рок, джаз", "Очень общительный",
+        "Нейтральное", null, null
+    )
+
+    val user = UserModel(2,
             "Антон", "Тарарыков", "89514960549", "anthonytararykov@yandex.ru",
-    "01.01.2001", 5.0, R.drawable.anton, listOf(
-    Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-    Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-    Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-    Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi))
-    ), listOf(Review(5, "Хороший водитель"), Review(5, "Любит котов")), "Рок, джаз", "Очень общительный",
+    "01.01.2001", 5.0, R.drawable.anton, mutableListOf(
+    CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+    CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+    CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+    CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
+    ), mutableListOf(ReviewModel(egor, 4, "Хороший водитель")), "Рок, джаз", "Очень общительный",
     "Нейтральное", null, null
     )
 
-    val vasya = User(
+    val vasya = UserModel(3,
         "Василий", "Платон", "89514960549", "vasya_platon@yandex.ru",
-        "01.01.2001", 4.6, R.drawable.vasya, listOf(
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-        ), listOf(Review(5, "Хороший водитель"), Review(5, "Любит котов")), "Рок, джаз", "Очень общительный",
+        "01.01.2001", 4.6, R.drawable.vasya, mutableListOf(
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+        ), mutableListOf(ReviewModel(user, 5, "Хороший водитель"), ReviewModel(egor, 5, "Любит котов")), "Рок, джаз", "Очень общительный",
         "Нейтральное", null, null
     )
 
-    val egor = User(
-        "Егор", "Рогачев", "89514960549", "egor_rogachev@yandex.ru",
-        "01.01.2001", 4.8, R.drawable.egor, listOf(
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-        ), listOf(Review(5, "Хороший водитель")), "Рок, джаз", "Очень общительный",
-        "Нейтральное", null, null
-    )
-
-    val andrew = User(
+    val andrew = UserModel(4,
         "Андрей", "Москаленко", "89514960549", "andrew@yandex.ru",
-        "01.01.2001", 5.0, R.drawable.andrew, listOf(
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi))
-        ), listOf(Review(5, "Хороший водитель"), Review(5, "Любит котов")), "Рок, джаз", "Очень общительный",
+        "01.01.2001", 5.0, R.drawable.andrew, mutableListOf(
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
+        ), mutableListOf(ReviewModel(user, 5, "Хороший водитель"), ReviewModel(egor, 5, "Любит котов")), "Рок, джаз", "Очень общительный",
         "Нейтральное", null, null
     )
 
-    val tima = User(
+    val tima = UserModel(5,
         "Тимофей", "Улезько", "89514960549", "t.lezko@yandex.ru",
-        "01.01.2001", 5.0, R.drawable.egor, listOf(
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi))
-        ), listOf(Review(5, "Хороший водитель"), Review(5, "Любит котов")), "Рок, джаз", "Очень общительный",
+        "01.01.2001", 5.0, R.drawable.egor, mutableListOf(
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
+        ), mutableListOf(ReviewModel(egor, 5, "Хороший водитель"), ReviewModel(andrew, 5, "Любит котов")), "Рок, джаз", "Очень общительный",
         "Нейтральное", null, null
     )
 
 
-    val companion1 = User("Василий", "Платон", "89514960549", "vasya@yandex.ru",
-        "01.01.2001", 5.0, R.drawable.vasya, listOf(
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi))
-        ), listOf(Review(5, "Хороший водитель"), Review(5, "Любит котов")), "Рок, джаз", "Очень общительный",
+    val companion1 = UserModel(6, "Василий", "Платон", "89514960549", "vasya@yandex.ru",
+        "01.01.2001", 5.0, R.drawable.vasya, mutableListOf(
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
+        ), mutableListOf(ReviewModel(user, 5, "Хороший водитель"), ReviewModel(vasya, 5, "Любит котов")), "Рок, джаз", "Очень общительный",
         "Нейтральное", null, null)
-    val companion2 = User("Егор", "Рогачев", "89514960549", "egor@yandex.ru",
-        "01.01.2001", 5.0, R.drawable.egor, listOf(
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi)),
-            Car("Audi", "TT 2-nd series", "Gray", 2010, listOf(R.drawable.audi))
-        ), listOf(Review(5, "Хороший водитель"), Review(5, "Любит котов")), "Рок, джаз", "Очень общительный",
+    val companion2 = UserModel(7, "Егор", "Рогачев", "89514960549", "egor@yandex.ru",
+        "01.01.2001", 5.0, R.drawable.egor, mutableListOf(
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
+        ), mutableListOf(ReviewModel(vasya, 5, "Хороший водитель"), ReviewModel(tima, 5, "Любит котов")), "Рок, джаз", "Очень общительный",
         "Нейтральное", null, null)
 
     val message1 = MessageModel(companion1, "Здравствуйте, можете меня довезти до Москвы к 18:00 14 марта?", true, Date())
@@ -194,6 +195,34 @@ fun NavGraph(navHostController: NavHostController){
                 }
             ) {
                 Profile(user, navHostController)
+            }
+        }
+        composable(route = "user_profile/{userId}",
+                arguments = listOf(navArgument("userId") { type = NavType.IntType })
+        ){ navBackStack ->
+
+            val userId = navBackStack.arguments?.getInt("userId")
+
+            if(userId == 1) {
+                UserProfile(egor, navHostController)
+            }
+            else if(userId == 2){
+                UserProfile(user, navHostController)
+            }
+            else if(userId == 3){
+                UserProfile(vasya, navHostController)
+            }
+            else if(userId == 4){
+                UserProfile(andrew, navHostController)
+            }
+            else if(userId == 5){
+                UserProfile(tima, navHostController)
+            }
+            else if(userId == 6){
+                UserProfile(companion1, navHostController)
+            }
+            else if(userId == 7){
+                UserProfile(companion2, navHostController)
             }
         }
         composable("trip_details"){

@@ -24,13 +24,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.models.ChatModel
-import ru.vsu.tripshare_mobile.models.User
+import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.black18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
 
 const val BIG_MESSAGE_LEN = 40
 @Composable
-fun ChatCard(chat: ChatModel, user: User, navController: NavController){
+fun ChatCard(chat: ChatModel, user: UserModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()

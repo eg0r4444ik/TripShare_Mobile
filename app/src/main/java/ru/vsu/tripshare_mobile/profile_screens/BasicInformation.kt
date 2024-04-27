@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -23,14 +22,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ru.vsu.tripshare_mobile.models.User
+import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
+import ru.vsu.tripshare_mobile.ui.theme.darkGray36
 import ru.vsu.tripshare_mobile.ui.theme.darkGray48
 import ru.vsu.tripshare_mobile.ui.theme.mint18
 
 @Composable
-fun BasicInformation(user: User, navController: NavController){
+fun BasicInformation(user: UserModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,7 +49,11 @@ fun BasicInformation(user: User, navController: NavController){
             Column(
                 modifier = Modifier.padding(10.dp)
             ) {
-                Text(text = user.name, style = darkGray48)
+                if(user.name.length <= 6) {
+                    Text(text = user.name, style = darkGray48)
+                }else{
+                    Text(text = user.name, style = darkGray36)
+                }
                 Text(text = user.phone, style = darkGray18)
             }
 

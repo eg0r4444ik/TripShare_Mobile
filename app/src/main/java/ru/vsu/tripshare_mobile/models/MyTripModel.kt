@@ -9,6 +9,6 @@ data class MyTripModel(
     val departureTime: String,
     val arrivalDate: String,
     val arrivalTime: String,
-    val participants: List<User>,
+    val participants: List<UserModel>,
     val cost: Int
 )

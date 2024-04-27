@@ -26,12 +26,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.R
-import ru.vsu.tripshare_mobile.models.User
+import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.darkGray48
 import ru.vsu.tripshare_mobile.ui.theme.mint18
 
 @Composable
-fun Profile(user: User, navController: NavController) {
+fun Profile(user: UserModel, navController: NavController) {
 
     Column(
         modifier = Modifier

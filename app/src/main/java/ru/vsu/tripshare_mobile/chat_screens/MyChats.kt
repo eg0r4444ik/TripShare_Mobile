@@ -13,12 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.models.ChatModel
-import ru.vsu.tripshare_mobile.models.User
+import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.mint36
 
 @Composable
-fun MyChats(chats: List<ChatModel>, user: User, navController: NavController){
+fun MyChats(chats: List<ChatModel>, user: UserModel, navController: NavController){
     Column(
         modifier = Modifier.fillMaxWidth().padding(10.dp, 5.dp)
     ){

@@ -24,14 +24,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ru.vsu.tripshare_mobile.models.User
+import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
 import ru.vsu.tripshare_mobile.ui.theme.darkGray14
 import ru.vsu.tripshare_mobile.ui.theme.darkGray36
 import ru.vsu.tripshare_mobile.ui.theme.white18
 
 @Composable
-fun Cars(user: User, navController: NavController){
+fun Cars(user: UserModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,14 +56,15 @@ fun Cars(user: User, navController: NavController){
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(10.dp)
                 ) {
-                    itemsIndexed(user.cars) { _, item ->
+                    itemsIndexed(user.cars!!) { _, item ->
                         Column(
                             modifier = Modifier.padding(10.dp, 10.dp).clickable { navController.navigate("add_car") },
                             verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            //todo добавить проверну на null
                             Image(
-                                painterResource(id = item.imageIds.get(0)),
+                                painterResource(id = item.imageIds!!.get(0)),
                                 contentDescription = "car",
                                 modifier = Modifier.size(160.dp, 120.dp)
                             )
