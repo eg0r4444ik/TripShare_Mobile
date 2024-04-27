@@ -1,9 +1,14 @@
 package ru.vsu.tripshare_mobile
 
+import android.annotation.SuppressLint
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import ru.vsu.tripshare_mobile.bottom_navigation.BottomNavigation
 import ru.vsu.tripshare_mobile.chat_screens.Chat
 import ru.vsu.tripshare_mobile.chat_screens.MyChats
 import ru.vsu.tripshare_mobile.profile_screens.Profile
@@ -23,6 +28,7 @@ import ru.vsu.tripshare_mobile.trips_screens.MyTrips
 import ru.vsu.tripshare_mobile.trips_screens.TripDetails
 import java.util.Date
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NavGraph(navHostController: NavHostController){
 
@@ -104,10 +110,10 @@ fun NavGraph(navHostController: NavHostController){
     val message9 = MessageModel(user, "Где-то к 11:20", true, Date())
     val message10 = MessageModel(companion1, "Ок", true, Date())
 
-    val messages = listOf(message1, message2, message3, message4, message5, message6, message7, message8, message9, message10)
+    val messages = mutableListOf(message1, message2, message3, message4, message5, message6, message7, message8, message9, message10)
 
-    val chat1 = ChatModel(user, companion1, messages)
-    val chat2 = ChatModel(user, companion2, listOf(MessageModel(companion2, "До встречи", false, Date())))
+    val chat1 = ChatModel(1, user, companion1, messages)
+    val chat2 = ChatModel(2, user, companion2, mutableListOf(MessageModel(companion2, "До встречи", false, Date())))
 
     val chats = listOf(chat1, chat2)
 
@@ -146,19 +152,49 @@ fun NavGraph(navHostController: NavHostController){
 
     NavHost(navController = navHostController, startDestination = "trips_screen"){
         composable("find_trip_screen"){
-            MyTrips(myTrips, navHostController)
+            Scaffold (
+                bottomBar = {
+                    BottomNavigation(navController = navHostController)
+                }
+            ) {
+                MyTrips(myTrips, navHostController)
+            }
         }
         composable("add_trip_screen"){
-            MyTrips(myTrips, navHostController)
+            Scaffold (
+                bottomBar = {
+                    BottomNavigation(navController = navHostController)
+                }
+            ) {
+                MyTrips(myTrips, navHostController)
+            }
         }
         composable("trips_screen"){
-            MyTrips(myTrips, navHostController)
+            Scaffold (
+                bottomBar = {
+                    BottomNavigation(navController = navHostController)
+                }
+            ) {
+                MyTrips(myTrips, navHostController)
+            }
         }
         composable("chats_screen"){
-            MyChats(chats, user, navHostController)
+            Scaffold (
+                bottomBar = {
+                    BottomNavigation(navController = navHostController)
+                }
+            ) {
+                MyChats(chats, user, navHostController)
+            }
         }
         composable("profile_screen"){
-            Profile(user, navHostController)
+            Scaffold (
+                bottomBar = {
+                    BottomNavigation(navController = navHostController)
+                }
+            ) {
+                Profile(user, navHostController)
+            }
         }
         composable("trip_details"){
             TripDetails()
@@ -178,8 +214,18 @@ fun NavGraph(navHostController: NavHostController){
         composable("add_car"){
             AddCar(user, navHostController)
         }
-        composable("chat"){
-            Chat(chat1, user, navHostController)
+        composable(
+            route ="chat/{chatId}",
+            arguments = listOf(navArgument("chatId") { type = NavType.IntType })
+        ){ navBackStack ->
+
+            val chatId = navBackStack.arguments?.getInt("chatId")
+
+            if(chatId == 1) {
+                Chat(chat1, user, navHostController)
+            }else{
+                Chat(chat2, user, navHostController)
+            }
         }
     }
 }

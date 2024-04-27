@@ -55,7 +55,8 @@ fun Message(message: MessageModel, user: User){
                     modifier = Modifier.fillMaxWidth().padding(10.dp, 0.dp),
                     contentAlignment = Alignment.TopEnd
                 ) {
-                    Text(text = message.time.hours.toString() + ":" + message.time.minutes.toString(), style = white12)
+                    Text(text = message.time.hours.toString() + ":" +  if(message.time.minutes < 10) "0" + message.time.minutes.toString()
+                    else "" + message.time.minutes.toString(), style = white12)
                 }
             }
         }
@@ -84,7 +85,8 @@ fun Message(message: MessageModel, user: User){
                     modifier = Modifier.fillMaxWidth().padding(10.dp, 0.dp),
                     contentAlignment = Alignment.TopEnd
                 ) {
-                    Text(text = message.time.hours.toString() + ":" + message.time.minutes.toString(), style = darkGray12)
+                    Text(text = message.time.hours.toString() + ":" +  if(message.time.minutes < 10) "0" + message.time.minutes.toString()
+                    else "" + message.time.minutes.toString(), style = darkGray12)
                 }
             }
         }

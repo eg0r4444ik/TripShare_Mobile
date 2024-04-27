@@ -32,7 +32,11 @@ const val BIG_MESSAGE_LEN = 40
 @Composable
 fun ChatCard(chat: ChatModel, user: User, navController: NavController){
     Card(
-        modifier = Modifier.fillMaxWidth().height(100.dp).padding(0.dp, 10.dp).clickable { navController.navigate("chat") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+            .padding(0.dp, 10.dp)
+            .clickable { navController.navigate("chat" + "/${chat.id}" )},
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 5.dp

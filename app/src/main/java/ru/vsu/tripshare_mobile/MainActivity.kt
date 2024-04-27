@@ -22,11 +22,5 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(){
     val navController = rememberNavController()
-    Scaffold (
-        bottomBar = {
-            BottomNavigation(navController = navController)
-        }
-    ){
-        NavGraph(navHostController = navController)
-    }
+    NavGraph(navHostController = navController)
 }
