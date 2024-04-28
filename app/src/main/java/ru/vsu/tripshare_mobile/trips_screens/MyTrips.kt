@@ -12,12 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import ru.vsu.tripshare_mobile.models.MyTripModel
+import ru.vsu.tripshare_mobile.models.TripModel
 import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.ui.theme.mint36
 
 @Composable
-fun MyTrips(trips: List<MyTripModel>, navController: NavController) {
+fun MyTrips(trips: List<TripModel>, navController: NavController) {
 
     Column(
         modifier = Modifier

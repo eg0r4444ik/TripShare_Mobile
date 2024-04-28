@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,11 +32,10 @@ import ru.vsu.tripshare_mobile.ui.theme.darkGray36
 import ru.vsu.tripshare_mobile.ui.theme.white18
 
 @Composable
-fun Cars(user: UserModel, navController: NavController){
+fun Cars(user: UserModel, person: UserModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(330.dp)
             .padding(10.dp),
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(
@@ -43,13 +43,17 @@ fun Cars(user: UserModel, navController: NavController){
         ),
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
-        )
+        ),
     ) {
 
         Column(
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceAround
         ) {
-            Text(text = "Ваши авто", style = darkGray36, modifier = Modifier.padding(10.dp))
+            if(user.userId == person.userId) {
+                Text(text = "Ваши авто", style = darkGray36, modifier = Modifier.padding(10.dp))
+            }else{
+                Text(text = "Авто", style = darkGray36, modifier = Modifier.padding(10.dp))
+            }
 
             if(user.cars != null) {
                 LazyRow(
@@ -76,15 +80,21 @@ fun Cars(user: UserModel, navController: NavController){
                 Text(text = "У вас нет машин", style = darkGray36)
             }
 
-            Button(
-                onClick = { navController.navigate("add_car") },
-                colors = ButtonDefaults.buttonColors(containerColor = MyMint),
-                modifier = Modifier.fillMaxWidth().height(50.dp).padding(20.dp, 0.dp)
-            ) {
+            if(person.userId == user.userId) {
                 Box(
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier.fillMaxSize().padding(10.dp)
                 ) {
-                    Text(text = "Добавить автомобиль ", style = white18)
+                    Button(
+                        onClick = { navController.navigate("add_car") },
+                        colors = ButtonDefaults.buttonColors(containerColor = MyMint),
+                        modifier = Modifier.fillMaxWidth().height(50.dp).padding(20.dp, 0.dp)
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = "Добавить автомобиль ", style = white18)
+                        }
+                    }
                 }
             }
         }

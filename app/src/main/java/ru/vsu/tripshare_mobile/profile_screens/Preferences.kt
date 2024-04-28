@@ -25,7 +25,7 @@ import ru.vsu.tripshare_mobile.ui.theme.darkGray36
 import ru.vsu.tripshare_mobile.ui.theme.white18
 
 @Composable
-fun Preferences(user: UserModel, navController: NavController){
+fun Preferences(user: UserModel, person: UserModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,8 +41,14 @@ fun Preferences(user: UserModel, navController: NavController){
         Column(
             modifier = Modifier.padding(10.dp, 5.dp),
         ){
-            Text(text = "Мои", style = darkGray36)
-            Text(text = "предпочтения", style = darkGray36)
+
+            if(person.userId == user.userId) {
+                Text(text = "Мои", style = darkGray36)
+                Text(text = "предпочтения", style = darkGray36)
+            }else{
+                Text(text = "Предпочтения", style = darkGray36)
+                Text(text = "пользователя", style = darkGray36)
+            }
 
             Column(
                 modifier = Modifier.padding(10.dp),
@@ -55,19 +61,22 @@ fun Preferences(user: UserModel, navController: NavController){
                 Preference("Дополнительная информация", user.info)
             }
 
-            Button(onClick = { navController.navigate("edit_preferences") },
-                colors = ButtonDefaults.buttonColors(containerColor = MyMint),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(65.dp)
-                    .padding(20.dp, 0.dp)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween
-                ){
-                    Text(text = "Редактировать ", style = white18)
-                    Text(text = "мои предпочтения", style = white18)
+            if(person.userId == user.userId) {
+                Button(
+                    onClick = { navController.navigate("edit_preferences") },
+                    colors = ButtonDefaults.buttonColors(containerColor = MyMint),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(65.dp)
+                        .padding(20.dp, 0.dp)
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Редактировать ", style = white18)
+                        Text(text = "мои предпочтения", style = white18)
+                    }
                 }
             }
         }

@@ -41,7 +41,7 @@ fun Profile(user: UserModel, navController: NavController) {
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        BasicInformation(user, navController = navController)
+        BasicInformation(user, user, navController = navController)
 
         Card(
             modifier = Modifier
@@ -74,14 +74,14 @@ fun Profile(user: UserModel, navController: NavController) {
                     contentAlignment = Alignment.BottomEnd
                 ){
                     Text(text = "Посмотреть отзывы", style = mint18, modifier = Modifier.clickable {
-                        navController.navigate("reviews")
+                        navController.navigate("reviews/${user.userId}")
                     })
                 }
             }
         }
 
-        Preferences(user, navController = navController)
-        Cars(user, navController = navController)
+        Preferences(user, user, navController = navController)
+        Cars(user, user, navController = navController)
     }
 
 }

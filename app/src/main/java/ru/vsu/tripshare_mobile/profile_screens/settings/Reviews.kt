@@ -20,7 +20,7 @@ import ru.vsu.tripshare_mobile.ui.theme.darkGray24
 import ru.vsu.tripshare_mobile.ui.theme.mint24
 
 @Composable
-fun Reviews(user: UserModel, navController: NavController){
+fun Reviews(user: UserModel, person: UserModel, navController: NavController){
     Column(
         modifier = Modifier
             .fillMaxWidth()

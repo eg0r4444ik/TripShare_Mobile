@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,7 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.R
-import ru.vsu.tripshare_mobile.models.MyTripModel
+import ru.vsu.tripshare_mobile.models.TripModel
 import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
@@ -40,7 +39,7 @@ import ru.vsu.tripshare_mobile.ui.theme.mint24
 import ru.vsu.tripshare_mobile.ui.theme.white14
 
 @Composable
-fun MyTripAsPassenger(trip: MyTripModel, navController: NavController) {
+fun MyTripAsPassenger(trip: TripModel, navController: NavController) {
 
     Card(
         modifier = Modifier.fillMaxWidth().padding(10.dp).clickable { navController.navigate("trip_details") },

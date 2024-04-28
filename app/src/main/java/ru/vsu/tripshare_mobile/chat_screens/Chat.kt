@@ -2,6 +2,7 @@ package ru.vsu.tripshare_mobile.chat_screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,7 +56,8 @@ fun Chat(chat: ChatModel, user: UserModel, navController: NavController){
             modifier = Modifier
                 .fillMaxWidth()
                 .height(75.dp)
-                .padding(10.dp, 10.dp),
+                .padding(10.dp, 10.dp)
+                .clickable { navController.navigate("user_profile/${chat.companion.userId}") },
             verticalAlignment = Alignment.Top,
         ){
             Image(
