@@ -187,7 +187,10 @@ fun NavGraph(navHostController: NavHostController){
 
     )
 
-    NavHost(navController = navHostController, startDestination = "trips_screen"){
+    NavHost(navController = navHostController, startDestination = "welcome"){
+        composable("welcome"){
+            WelcomeScreen(navHostController)
+        }
         composable("find_trip_screen"){
             Scaffold (
                 bottomBar = {

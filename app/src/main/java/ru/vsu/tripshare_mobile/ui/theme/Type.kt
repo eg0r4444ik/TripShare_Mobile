@@ -153,6 +153,13 @@ val white24 = TextStyle(
     fontFamily = montserrat
 )
 
+val white36 = TextStyle(
+    color = Color.White,
+    fontWeight = FontWeight.Bold,
+    fontSize = 36.sp,
+    fontFamily = montserrat
+)
+
 val mint7 = TextStyle(
     color = MyMint,
     fontWeight = FontWeight.Bold,
