@@ -25,6 +25,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -92,13 +93,16 @@ fun FindTrip(person: UserModel, navController: NavController){
                 var time by remember { mutableStateOf("") }
                 var participantsCount by remember { mutableStateOf("") }
 
-
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxHeight().padding(10.dp),
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(10.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
@@ -127,11 +131,15 @@ fun FindTrip(person: UserModel, navController: NavController){
                 }
 
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxHeight().padding(10.dp),
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(10.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
@@ -160,11 +168,15 @@ fun FindTrip(person: UserModel, navController: NavController){
                 }
 
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxHeight().padding(10.dp),
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(10.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
@@ -193,11 +205,15 @@ fun FindTrip(person: UserModel, navController: NavController){
                 }
 
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxHeight().padding(10.dp),
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(10.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
@@ -226,11 +242,15 @@ fun FindTrip(person: UserModel, navController: NavController){
                 }
 
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxHeight().padding(10.dp),
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(10.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
@@ -264,86 +284,59 @@ fun FindTrip(person: UserModel, navController: NavController){
                 val animals = remember { mutableStateOf(false) }
 
                 Box(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    Row (
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Checkbox(
-                            checked = passengersCount.value,
-                            onCheckedChange = { passengersCount.value = it }
-                        )
-                        Text(
-                            "Максимум 2 пассажира на заднем сидении",
-                            style = darkGray14,
-                            modifier = Modifier.padding(4.dp)
-                        )
-                    }
+                    TripFacilities(
+                        text = "Максимум 2 пассажира на заднем сидении",
+                        state = passengersCount
+                    )
                 }
-
 
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(
-                            checked = smoking.value,
-                            onCheckedChange = { smoking.value = it }
-                        )
-                        Text(
-                            "Можно курить",
-                            style = darkGray14,
-                            modifier = Modifier.padding(4.dp)
-                        )
-                    }
+                    TripFacilities(
+                        text = "Можно курить",
+                        state = smoking
+                    )
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(
-                            checked = freeTrunk.value,
-                            onCheckedChange = { freeTrunk.value = it }
-                        )
-                        Text(
-                            "Свободный багажник",
-                            style = darkGray14,
-                            modifier = Modifier.padding(4.dp)
-                        )
-                    }
+                    TripFacilities(
+                        text = "Свободный багажник",
+                        state = freeTrunk
+                    )
                 }
 
                 Box(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    Row (
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Checkbox(
-                            checked = animals.value,
-                            onCheckedChange = { animals.value = it }
-                        )
-                        Text(
-                            "Можно перевозить животных",
-                            style = darkGray14,
-                            modifier = Modifier.padding(4.dp)
-                        )
-                    }
+                    TripFacilities(
+                        text = "Можно перевозить животных",
+                        state = animals
+                    )
                 }
 
                 Box(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Button(
                         //todo добавить отправку данных на бекенд
                         onClick = { navController.navigate("list_of_trips") },
                         colors = ButtonDefaults.buttonColors(containerColor = MyMint),
-                        modifier = Modifier.height(50.dp).width(250.dp)
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(250.dp)
                     ) {
                         Box(
                             contentAlignment = Alignment.Center
@@ -352,8 +345,26 @@ fun FindTrip(person: UserModel, navController: NavController){
                         }
                     }
                 }
+
             }
         }
     }
 
+}
+
+@Composable
+fun TripFacilities(text: String, state: MutableState<Boolean>){
+    Row (
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Checkbox(
+            checked = state.value,
+            onCheckedChange = { state.value = it }
+        )
+        Text(
+            text,
+            style = darkGray14,
+            modifier = Modifier.padding(4.dp)
+        )
+    }
 }

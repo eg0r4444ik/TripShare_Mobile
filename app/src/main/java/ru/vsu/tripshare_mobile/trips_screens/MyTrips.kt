@@ -14,10 +14,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.models.TripModel
 import ru.vsu.tripshare_mobile.models.TripStatus
+import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.mint36
 
 @Composable
-fun MyTrips(trips: List<TripModel>, navController: NavController) {
+fun MyTrips(trips: List<TripModel>, person: UserModel, navController: NavController) {
 
     Column(
         modifier = Modifier
@@ -37,11 +38,7 @@ fun MyTrips(trips: List<TripModel>, navController: NavController) {
                 .background(Color.White),
         ) {
             itemsIndexed(trips) { _, item ->
-                if(item.status == TripStatus.DRIVER){
-                    MyTripAsDriver(item, navController)
-                }else {
-                    MyTripAsPassenger(item, navController)
-                }
+                TripCard(trip = item, person = person, navController = navController)
             }
         }
     }

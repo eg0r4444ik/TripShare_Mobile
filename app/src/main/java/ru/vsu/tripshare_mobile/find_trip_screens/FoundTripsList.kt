@@ -1,4 +1,4 @@
-package ru.vsu.tripshare_mobile.trips_screens
+package ru.vsu.tripshare_mobile.find_trip_screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,13 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,62 +28,45 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.models.TripModel
+import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.models.UserModel
-import ru.vsu.tripshare_mobile.ui.theme.darkGray48
+import ru.vsu.tripshare_mobile.trips_screens.TripCard
+import ru.vsu.tripshare_mobile.ui.theme.MyBlue
+import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
+import ru.vsu.tripshare_mobile.ui.theme.MyPurple
+import ru.vsu.tripshare_mobile.ui.theme.MyRed
+import ru.vsu.tripshare_mobile.ui.theme.black36
+import ru.vsu.tripshare_mobile.ui.theme.blue18
+import ru.vsu.tripshare_mobile.ui.theme.darkGray14
+import ru.vsu.tripshare_mobile.ui.theme.darkGray18
+import ru.vsu.tripshare_mobile.ui.theme.mint24
 import ru.vsu.tripshare_mobile.ui.theme.mint36
+import ru.vsu.tripshare_mobile.ui.theme.white14
 
 @Composable
-fun TripDetails(trip: TripModel, person: UserModel, navController: NavController) {
-
-    val state = rememberScrollState()
-
+fun FoundTripsList(trips: List<TripModel>, person: UserModel, navController: NavController){
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .background(Color.White)
-            .verticalScroll(state),
+            .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Детали поездки",
+            text = "Найденные поездки",
             style = mint36
         )
 
-        Card(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(120.dp)
-                .padding(10.dp)
-                .clickable { navController.navigate("user_profile/${trip.driver.userId}") },
-            shape = RoundedCornerShape(15.dp),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 5.dp
-            ),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White,
-            )
+                .background(Color.White),
         ) {
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ){
-
-                Text(text = trip.driver.name, style = darkGray48)
-
-                Image(
-                    //todo заменить !! на проверку на null
-                    painter = painterResource(id = trip.driver.imageId!!),
-                    contentDescription = "driver",
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
-                )
+            itemsIndexed(trips) { _, item ->
+                FoundingTripCard(trip = item, person = person, navController = navController)
             }
         }
-
-
     }
 }

@@ -27,7 +27,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.models.TripModel
+import ru.vsu.tripshare_mobile.models.TripStatus
+import ru.vsu.tripshare_mobile.models.UserModel
+import ru.vsu.tripshare_mobile.ui.theme.MyBlue
+import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyPurple
+import ru.vsu.tripshare_mobile.ui.theme.MyRed
 import ru.vsu.tripshare_mobile.ui.theme.black36
 import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray14
@@ -36,8 +41,7 @@ import ru.vsu.tripshare_mobile.ui.theme.mint24
 import ru.vsu.tripshare_mobile.ui.theme.white14
 
 @Composable
-fun MyTripAsDriver(trip: TripModel, navController: NavController) {
-
+fun TripCard(trip: TripModel, person: UserModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -60,35 +64,81 @@ fun MyTripAsDriver(trip: TripModel, navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Card(shape = RoundedCornerShape(15.dp), modifier = Modifier.padding(10.dp)){
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .background(MyPurple)
-                            .fillMaxWidth()
-                            .height(34.dp)
-                    ) {
-                        Text(text = "Водитель", style = white14)
-                    }
-                }
 
-                Text(text = "Пассажиры:", style = darkGray18)
-                Row (
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    trip.participants.forEach{participant ->
-                        Image(
-                            //добавить проверку на null с пустой иконкой
-                            painter = painterResource(id = participant.imageId!!),
-                            contentDescription = "image",
+                if(person.userId == trip.driver.userId) {
+                    Card(shape = RoundedCornerShape(15.dp), modifier = Modifier.padding(10.dp)) {
+                        Box(
+                            contentAlignment = Alignment.Center,
                             modifier = Modifier
-                                .size(if(trip.participants.size <= 2) 70.dp else if(trip.participants.size == 3) 50.dp else 40.dp)
-                                .clip(CircleShape)
-                        )
+                                .background(MyPurple)
+                                .fillMaxWidth()
+                                .height(34.dp)
+                        ) {
+                            Text(text = "Водитель", style = white14)
+                        }
+                    }
+
+                    Text(text = "Пассажиры:", style = darkGray18)
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        trip.participants.forEach { participant ->
+                            Image(
+                                //добавить проверку на null с пустой иконкой
+                                painter = painterResource(id = participant.imageId!!),
+                                contentDescription = "image",
+                                modifier = Modifier
+                                    .size(if (trip.participants.size <= 2) 70.dp else if (trip.participants.size == 3) 50.dp else 40.dp)
+                                    .clip(CircleShape)
+                            )
+                        }
+                    }
+                    Text(
+                        text = if (trip.participants.size == 1) "1 пассажир" else (trip.participants.size.toString() + " пассажира"),
+                        style = darkGray14
+                    )
+                }else{
+                    Card(shape = RoundedCornerShape(15.dp), modifier = Modifier.padding(10.dp)){
+                        if(trip.status == TripStatus.PASSENGER) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.background(MyBlue).fillMaxWidth().height(34.dp)
+                            ) {
+                                Text(text = "Пассажир", style = white14)
+                            }
+                        }else if(trip.status == TripStatus.PENDING){
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.background(MyDarkGray).fillMaxWidth().height(34.dp)
+                            ) {
+                                Text(text = "В ожидании", style = white14)
+                            }
+                        }else if(trip.status == TripStatus.REJECTED){
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.background(MyRed).fillMaxWidth().height(34.dp)
+                            ) {
+                                Text(text = "Отклонено", style = white14)
+                            }
+                        }
+                    }
+
+                    Text(text = "Водитель:", style = darkGray18)
+                    Image(
+                        //добавить проверку на null с пустой иконкой
+                        painter = painterResource(id = trip.driver.imageId!!),
+                        contentDescription = "image",
+                        modifier = Modifier
+                            .size(70.dp)
+                            .clip(CircleShape)
+                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = trip.driver.surname, style = darkGray14)
+                        Text(text = trip.driver.name, style = darkGray14)
                     }
                 }
-                Text(text = if(trip.participants.size == 1) "1 пассажир" else (trip.participants.size.toString() + " пассажира"),
-                    style = darkGray14)
 
                 Box(
                     contentAlignment = Alignment.BottomStart
@@ -134,5 +184,4 @@ fun MyTripAsDriver(trip: TripModel, navController: NavController) {
             }
         }
     }
-
 }
