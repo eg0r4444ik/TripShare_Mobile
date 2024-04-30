@@ -1,7 +1,7 @@
 package ru.vsu.tripshare_mobile.models
 
 data class UserModel(
-    var userId: Int,
+    var id: Int,
     var name: String,
     var surname: String,
     var phone: String,

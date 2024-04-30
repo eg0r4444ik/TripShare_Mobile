@@ -42,7 +42,7 @@ fun Preferences(user: UserModel, person: UserModel, navController: NavController
             modifier = Modifier.padding(10.dp, 5.dp),
         ){
 
-            if(person.userId == user.userId) {
+            if(person.id == user.id) {
                 Text(text = "Мои", style = darkGray36)
                 Text(text = "предпочтения", style = darkGray36)
             }else{
@@ -61,7 +61,7 @@ fun Preferences(user: UserModel, person: UserModel, navController: NavController
                 Preference("Дополнительная информация", user.info)
             }
 
-            if(person.userId == user.userId) {
+            if(person.id == user.id) {
                 Button(
                     onClick = { navController.navigate("edit_preferences") },
                     colors = ButtonDefaults.buttonColors(containerColor = MyMint),

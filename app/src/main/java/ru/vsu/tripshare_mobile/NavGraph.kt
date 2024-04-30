@@ -8,6 +8,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ru.vsu.tripshare_mobile.add_trip_screens.AddTrip
 import ru.vsu.tripshare_mobile.bottom_navigation.BottomNavigation
 import ru.vsu.tripshare_mobile.chat_screens.Chat
 import ru.vsu.tripshare_mobile.chat_screens.MyChats
@@ -19,6 +20,7 @@ import ru.vsu.tripshare_mobile.models.ChatModel
 import ru.vsu.tripshare_mobile.models.MessageModel
 import ru.vsu.tripshare_mobile.models.TripModel
 import ru.vsu.tripshare_mobile.models.ReviewModel
+import ru.vsu.tripshare_mobile.models.TripParticipantModel
 import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.profile_screens.UserProfile
@@ -84,6 +86,8 @@ fun NavGraph(navHostController: NavHostController){
         "Нейтральное", null, null
     )
 
+    val users = listOf(egor, user, vasya, andrew, tima)
+
     val car = CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
 
 
@@ -124,36 +128,63 @@ fun NavGraph(navHostController: NavHostController){
 
     val myTrips = listOf(
         TripModel(1,
-            TripStatus.PASSENGER, "Воронеж", "Москва", "Улица Кирова 12А",
-            "Певческий пер. 4", 5,  "Через 3 дня", "15.03.2024",
-            "15:30", "16.03.2024", "2:30", "11 часов", vasya,
-            listOf(user), 1030, car
+            TripStatus.PASSENGER, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
+            "г. Москва Певческий пер. 4"),  "Через 3 дня", "15.03.2024",
+            "15:30", "16.03.2024", "2:30", vasya,
+            listOf(user), car
         ),
         TripModel(2,
-            TripStatus.DRIVER, "Воронеж", "Москва", "Улица Кирова 12А", "Певческий пер. 4", 5,"Через 3 дня", "15.03.2024",
-            "15:30", "16.03.2024", "2:30", "11 часов", user,
-            listOf(vasya), 1030, car
+            TripStatus.DRIVER, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
+                "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
+            "15:30", "16.03.2024", "2:30", user,
+            listOf(vasya), car
         ),
         TripModel(3,
-            TripStatus.DRIVER, "Воронеж", "Москва", "Улица Кирова 12А", "Певческий пер. 4", 5,"Через 3 дня", "15.03.2024",
-            "15:30", "16.03.2024", "2:30", "11 часов", user,
-            listOf(egor, andrew, vasya), 1030, car
+            TripStatus.DRIVER, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
+                "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
+            "15:30", "16.03.2024", "2:30", user,
+            listOf(egor, andrew, vasya), car
         ),
         TripModel(4,
-            TripStatus.DRIVER, "Воронеж", "Москва", "Улица Кирова 12А", "Певческий пер. 4", 5,"Через 3 дня", "15.03.2024",
-            "15:30", "16.03.2024", "2:30", "11 часов", user,
-            listOf(egor, andrew, vasya, tima), 1030, car
+            TripStatus.DRIVER, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
+                "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
+            "15:30", "16.03.2024", "2:30", user,
+            listOf(egor, andrew, vasya, tima), car
         ),
         TripModel(5,
-            TripStatus.REJECTED, "Воронеж", "Москва", "Улица Кирова 12А", "Певческий пер. 4", 5,"Через 3 дня", "15.03.2024",
-            "15:30", "16.03.2024", "2:30", "11 часов", vasya,
-            listOf(egor), 1030, car
+            TripStatus.REJECTED, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
+                "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
+            "15:30", "16.03.2024", "2:30", vasya,
+            listOf(egor), car
         ),
         TripModel(6,
-            TripStatus.PENDING, "Воронеж", "Москва", "Улица Кирова 12А", "Певческий пер. 4", 5,"Через 3 дня", "15.03.2024",
-            "15:30", "16.03.2024", "2:30", "11 часов", andrew,
-            listOf(vasya), 1030, car
+            TripStatus.PENDING, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
+                "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
+            "15:30", "16.03.2024", "2:30", andrew,
+            listOf(vasya), car
         ),
+    )
+
+    val tripsParticipants = listOf(
+        TripParticipantModel(user, myTrips[0], 10.0, "11 часов",
+            1300, "Улица Кирова 12А",
+            "Певческий пер. 4"),
+        TripParticipantModel(user, myTrips[1], 10.0, "11 часов",
+            1300, "Улица Кирова 12А",
+            "Певческий пер. 4"),
+        TripParticipantModel(user, myTrips[2], 10.0, "11 часов",
+            1300, "Улица Кирова 12А",
+            "Певческий пер. 4"),
+        TripParticipantModel(user, myTrips[3], 10.0, "11 часов",
+            1300, "Улица Кирова 12А",
+            "Певческий пер. 4"),
+        TripParticipantModel(user, myTrips[4], 10.0, "11 часов",
+            1300, "Улица Кирова 12А",
+            "Певческий пер. 4"),
+        TripParticipantModel(user, myTrips[5], 10.0, "11 часов",
+            1300, "Улица Кирова 12А",
+            "Певческий пер. 4")
+
     )
 
     NavHost(navController = navHostController, startDestination = "trips_screen"){
@@ -167,7 +198,7 @@ fun NavGraph(navHostController: NavHostController){
             }
         }
         composable(route = "list_of_trips") { navBackStack ->
-            FoundTripsList(myTrips, user, navHostController)
+            FoundTripsList(myTrips, 300.0, 1300, user, navHostController)
         }
         composable("add_trip_screen"){
             Scaffold (
@@ -175,7 +206,7 @@ fun NavGraph(navHostController: NavHostController){
                     BottomNavigation(navController = navHostController)
                 }
             ) {
-                MyTrips(myTrips, user, navHostController)
+                AddTrip(user, navHostController)
             }
         }
         composable("trips_screen"){
@@ -184,7 +215,7 @@ fun NavGraph(navHostController: NavHostController){
                     BottomNavigation(navController = navHostController)
                 }
             ) {
-                MyTrips(myTrips, user, navHostController)
+                MyTrips(tripsParticipants, user, navHostController)
             }
         }
         composable("chats_screen"){
@@ -211,30 +242,21 @@ fun NavGraph(navHostController: NavHostController){
 
             val userId = navBackStack.arguments?.getInt("userId")
 
-            if(userId == 1) {
-                UserProfile(egor, user, navHostController)
-            }
-            else if(userId == 2){
-                UserProfile(user, user, navHostController)
-            }
-            else if(userId == 3){
-                UserProfile(vasya, user, navHostController)
-            }
-            else if(userId == 4){
-                UserProfile(andrew, user, navHostController)
-            }
-            else if(userId == 5){
-                UserProfile(tima, user, navHostController)
-            }
-            else if(userId == 6){
-                UserProfile(companion1, user, navHostController)
-            }
-            else if(userId == 7){
-                UserProfile(companion2, user, navHostController)
-            }
+            UserProfile(users[userId?.minus(1)!!], user, navHostController)
         }
-        composable("trip_details"){
-            TripDetails(myTrips[0], user, navHostController)
+        composable(
+            route = "trip_details/{tripId}/{userId}",
+            arguments = listOf(
+                navArgument("tripId") { type = NavType.IntType },
+                navArgument("userId") { type = NavType.IntType })
+            ){ navBackStack ->
+            val tripId = navBackStack.arguments?.getInt("tripId")
+            val userId = navBackStack.arguments?.getInt("userId")
+
+            TripDetails(TripParticipantModel(users[userId?.minus(1)!!], myTrips[tripId?.minus(1)!!], 10.0, "11 часов",
+                1300, "Улица Кирова 12А",
+                "Певческий пер. 4"),
+                user, navHostController)
         }
         composable(
             route ="reviews/{userId}",
@@ -242,27 +264,7 @@ fun NavGraph(navHostController: NavHostController){
         ){navBackStack ->
             val userId = navBackStack.arguments?.getInt("userId")
 
-            if(userId == 1) {
-                Reviews(egor, user, navHostController)
-            }
-            else if(userId == 2){
-                Reviews(user, user, navHostController)
-            }
-            else if(userId == 3){
-                Reviews(vasya, user, navHostController)
-            }
-            else if(userId == 4){
-                Reviews(andrew, user, navHostController)
-            }
-            else if(userId == 5){
-                Reviews(tima, user, navHostController)
-            }
-            else if(userId == 6){
-                Reviews(companion1, user, navHostController)
-            }
-            else if(userId == 7){
-                Reviews(companion2, user, navHostController)
-            }
+            Reviews(users[userId?.minus(1)!!], user, navHostController)
         }
         composable("edit_info"){
             EditInfo(user, navHostController)

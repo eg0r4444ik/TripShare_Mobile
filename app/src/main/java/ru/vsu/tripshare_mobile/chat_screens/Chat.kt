@@ -57,7 +57,7 @@ fun Chat(chat: ChatModel, user: UserModel, navController: NavController){
                 .fillMaxWidth()
                 .height(75.dp)
                 .padding(10.dp, 10.dp)
-                .clickable { navController.navigate("user_profile/${chat.companion.userId}") },
+                .clickable { navController.navigate("user_profile/${chat.companion.id}") },
             verticalAlignment = Alignment.Top,
         ){
             Image(

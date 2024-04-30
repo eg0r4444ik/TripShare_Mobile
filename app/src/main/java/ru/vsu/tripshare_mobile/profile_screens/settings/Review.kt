@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -27,7 +26,6 @@ import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.models.ReviewModel
 import ru.vsu.tripshare_mobile.ui.theme.darkGray14
-import ru.vsu.tripshare_mobile.ui.theme.darkGray18
 import ru.vsu.tripshare_mobile.ui.theme.mint18
 
 @Composable
@@ -57,7 +55,7 @@ fun Review(review: ReviewModel, navController: NavController){
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable { navController.navigate("user_profile" + "/${review.author.userId}" ) }
+                    modifier = Modifier.clickable { navController.navigate("user_profile" + "/${review.author.id}" ) }
                 ) {
                     Image(
                         //todo заменить !! на проверку на null

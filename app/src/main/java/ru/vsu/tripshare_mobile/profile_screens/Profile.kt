@@ -74,7 +74,7 @@ fun Profile(user: UserModel, navController: NavController) {
                     contentAlignment = Alignment.BottomEnd
                 ){
                     Text(text = "Посмотреть отзывы", style = mint18, modifier = Modifier.clickable {
-                        navController.navigate("reviews/${user.userId}")
+                        navController.navigate("reviews/${user.id}")
                     })
                 }
             }

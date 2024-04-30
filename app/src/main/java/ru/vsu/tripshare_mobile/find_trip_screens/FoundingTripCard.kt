@@ -34,12 +34,12 @@ import ru.vsu.tripshare_mobile.ui.theme.darkGray18
 import ru.vsu.tripshare_mobile.ui.theme.mint24
 
 @Composable
-fun FoundingTripCard(trip: TripModel, person: UserModel, navController: NavController) {
+fun FoundingTripCard(trip: TripModel, distance: Double, cost: Int, person: UserModel, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
-            .clickable { navController.navigate("trip_details") },
+            .clickable { navController.navigate("trip_details/${trip.id}/${person.id}") },
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 5.dp
@@ -87,7 +87,7 @@ fun FoundingTripCard(trip: TripModel, person: UserModel, navController: NavContr
                             contentDescription = "location",
                             modifier = Modifier.size(30.dp)
                         )
-                        Text(text = " " + trip.distance + "км", style = darkGray14)
+                        Text(text = " " + distance + "км", style = darkGray14)
                     }
                 }
             }
@@ -113,7 +113,7 @@ fun FoundingTripCard(trip: TripModel, person: UserModel, navController: NavContr
                     modifier = Modifier.fillMaxSize().padding(20.dp, 0.dp),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    Text(text = trip.cost.toString() + "₽", style = black36)
+                    Text(text = cost.toString() + "₽", style = black36)
                 }
             }
         }

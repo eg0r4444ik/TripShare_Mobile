@@ -46,7 +46,7 @@ import ru.vsu.tripshare_mobile.ui.theme.mint36
 import ru.vsu.tripshare_mobile.ui.theme.white14
 
 @Composable
-fun FoundTripsList(trips: List<TripModel>, person: UserModel, navController: NavController){
+fun FoundTripsList(trips: List<TripModel>, distance: Double, cost: Int, person: UserModel, navController: NavController){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -65,7 +65,7 @@ fun FoundTripsList(trips: List<TripModel>, person: UserModel, navController: Nav
                 .background(Color.White),
         ) {
             itemsIndexed(trips) { _, item ->
-                FoundingTripCard(trip = item, person = person, navController = navController)
+                FoundingTripCard(item, distance, cost, person, navController)
             }
         }
     }

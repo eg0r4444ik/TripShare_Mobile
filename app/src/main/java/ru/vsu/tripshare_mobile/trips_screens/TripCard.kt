@@ -41,12 +41,12 @@ import ru.vsu.tripshare_mobile.ui.theme.mint24
 import ru.vsu.tripshare_mobile.ui.theme.white14
 
 @Composable
-fun TripCard(trip: TripModel, person: UserModel, navController: NavController){
+fun TripCard(trip: TripModel, cost: Int, person: UserModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
-            .clickable { navController.navigate("trip_details") },
+            .clickable { navController.navigate("trip_details/${trip.id}/${person.id}") },
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 5.dp
@@ -65,7 +65,7 @@ fun TripCard(trip: TripModel, person: UserModel, navController: NavController){
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
 
-                if(person.userId == trip.driver.userId) {
+                if(person.id == trip.driver.id) {
                     Card(shape = RoundedCornerShape(15.dp), modifier = Modifier.padding(10.dp)) {
                         Box(
                             contentAlignment = Alignment.Center,
@@ -179,7 +179,7 @@ fun TripCard(trip: TripModel, person: UserModel, navController: NavController){
                     modifier = Modifier.fillMaxSize().padding(20.dp, 0.dp),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    Text(text = trip.cost.toString() + "₽", style = black36)
+                    Text(text = cost.toString() + "₽", style = black36)
                 }
             }
         }

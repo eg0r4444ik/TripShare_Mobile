@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
-import ru.vsu.tripshare_mobile.ui.theme.MyMint
 import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray36
@@ -83,7 +82,7 @@ fun BasicInformation(user: UserModel, person: UserModel, navController: NavContr
         }
 
 
-        if(user.userId == person.userId) {
+        if(user.id == person.id) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight()

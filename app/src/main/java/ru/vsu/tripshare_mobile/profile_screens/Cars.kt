@@ -49,7 +49,7 @@ fun Cars(user: UserModel, person: UserModel, navController: NavController){
         Column(
             verticalArrangement = Arrangement.SpaceAround
         ) {
-            if(user.userId == person.userId) {
+            if(user.id == person.id) {
                 Text(text = "Ваши авто", style = darkGray36, modifier = Modifier.padding(10.dp))
             }else{
                 Text(text = "Авто", style = darkGray36, modifier = Modifier.padding(10.dp))
@@ -80,7 +80,7 @@ fun Cars(user: UserModel, person: UserModel, navController: NavController){
                 Text(text = "У вас нет машин", style = darkGray36)
             }
 
-            if(person.userId == user.userId) {
+            if(person.id == user.id) {
                 Box(
                     modifier = Modifier.fillMaxSize().padding(10.dp)
                 ) {
