@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
 import ru.vsu.tripshare_mobile.ui.theme.white24
+import ru.vsu.tripshare_mobile.ui.theme.white32
 import ru.vsu.tripshare_mobile.ui.theme.white36
 
 @Composable
@@ -53,7 +54,7 @@ fun WelcomeScreen(navController: NavController){
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Добро пожаловать", style = white36,
+                text = "Добро пожаловать", style = white32,
             )
         }
 
@@ -62,7 +63,7 @@ fun WelcomeScreen(navController: NavController){
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "в Trip Share!", style = white36,
+                text = "в Trip Share!", style = white32,
             )
         }
 
@@ -73,7 +74,7 @@ fun WelcomeScreen(navController: NavController){
             contentAlignment = Alignment.BottomCenter
         ) {
             Button(
-                onClick = { navController.navigate("trips_screen") },
+                onClick = { navController.navigate("first_registration") },
                 colors = ButtonDefaults.buttonColors(containerColor = MyBlue),
                 modifier = Modifier
                     .height(70.dp)

@@ -29,6 +29,8 @@ import ru.vsu.tripshare_mobile.profile_screens.settings.EditInfo
 import ru.vsu.tripshare_mobile.profile_screens.settings.EditPreferences
 import ru.vsu.tripshare_mobile.profile_screens.settings.Reviews
 import ru.vsu.tripshare_mobile.profile_screens.settings.Settings
+import ru.vsu.tripshare_mobile.registration_screens.FirstRegistrationScreen
+import ru.vsu.tripshare_mobile.registration_screens.SecondRegistrationScreen
 import ru.vsu.tripshare_mobile.trips_screens.MyTrips
 import ru.vsu.tripshare_mobile.trips_screens.TripDetails
 import java.util.Date
@@ -190,6 +192,12 @@ fun NavGraph(navHostController: NavHostController){
     NavHost(navController = navHostController, startDestination = "welcome"){
         composable("welcome"){
             WelcomeScreen(navHostController)
+        }
+        composable("first_registration"){
+            FirstRegistrationScreen(navHostController)
+        }
+        composable("second_registration"){
+            SecondRegistrationScreen(navHostController)
         }
         composable("find_trip_screen"){
             Scaffold (
