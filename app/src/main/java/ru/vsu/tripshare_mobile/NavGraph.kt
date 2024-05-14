@@ -92,39 +92,21 @@ fun NavGraph(navHostController: NavHostController){
 
     val car = CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
 
-
-    val companion1 = UserModel(6, "Василий", "Платон", "89514960549", "vasya@yandex.ru",
-        "01.01.2001", 5.0, R.drawable.vasya, mutableListOf(
-            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
-        ), mutableListOf(ReviewModel(user, 5, "Хороший водитель"), ReviewModel(vasya, 5, "Любит котов")), "Рок, джаз", "Очень общительный",
-        "Нейтральное", null, null)
-    val companion2 = UserModel(7, "Егор", "Рогачев", "89514960549", "egor@yandex.ru",
-        "01.01.2001", 5.0, R.drawable.egor, mutableListOf(
-            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
-        ), mutableListOf(ReviewModel(vasya, 5, "Хороший водитель"), ReviewModel(tima, 5, "Любит котов")), "Рок, джаз", "Очень общительный",
-        "Нейтральное", null, null)
-
-    val message1 = MessageModel(companion1, "Здравствуйте, можете меня довезти до Москвы к 18:00 14 марта?", true, Date())
+    val message1 = MessageModel(vasya, "Здравствуйте, можете меня довезти до Москвы к 18:00 14 марта?", true, Date())
     val message2 = MessageModel(user, "Привет!", true, Date())
     val message3 = MessageModel(user, "Да, конечно могу", true, Date())
-    val message4 = MessageModel(companion1, "Отлично! Как вы относитесь к животным во время поездки?", true, Date())
+    val message4 = MessageModel(vasya, "Отлично! Как вы относитесь к животным во время поездки?", true, Date())
     val message5 = MessageModel(user, "Не против животных, вы хотите с собой кого-то взять?", true, Date())
-    val message6 = MessageModel(companion1, "Хочу взять собаку", true, Date())
+    val message6 = MessageModel(vasya, "Хочу взять собаку", true, Date())
     val message7 = MessageModel(user, "Хорошо, я напишу когда буду выезжать!", true, Date())
-    val message8 = MessageModel(companion1, "Хорошо, во сколько вы примерно подъедете к месту?", true, Date())
+    val message8 = MessageModel(vasya, "Хорошо, во сколько вы примерно подъедете к месту?", true, Date())
     val message9 = MessageModel(user, "Где-то к 11:20", true, Date())
-    val message10 = MessageModel(companion1, "Ок", true, Date())
+    val message10 = MessageModel(vasya, "Ок", true, Date())
 
     val messages = mutableListOf(message1, message2, message3, message4, message5, message6, message7, message8, message9, message10)
 
-    val chat1 = ChatModel(1, user, companion1, messages)
-    val chat2 = ChatModel(2, user, companion2, mutableListOf(MessageModel(companion2, "До встречи", false, Date())))
+    val chat1 = ChatModel(1, user, vasya, messages)
+    val chat2 = ChatModel(2, user, egor, mutableListOf(MessageModel(egor, "До встречи", false, Date())))
 
     val chats = listOf(chat1, chat2)
 
