@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -25,6 +26,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -246,6 +248,7 @@ fun TripFacilities(text: String, state: MutableState<Boolean>){
 }
 @Composable
 fun AddPlaces(navController: NavController){
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -260,6 +263,7 @@ fun AddPlaces(navController: NavController){
     ) {
 
         var addressFrom by remember { mutableStateOf("") }
+        var places = remember { mutableStateListOf<MutableState<String>>()}
         var addressTo by remember { mutableStateOf("") }
 
         Row(
@@ -297,6 +301,46 @@ fun AddPlaces(navController: NavController){
                 ),
                 shape = RoundedCornerShape(15.dp)
             )
+        }
+
+        places.forEach{
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.location),
+                        contentDescription = "location",
+                        modifier = Modifier.size(50.dp)
+                    )
+                }
+
+                TextField(
+                    value = it.value,
+                    onValueChange = { newText ->
+                        it.value = newText
+                    },
+                    label = { Text("Остановка") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    textStyle = darkGray18,
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = MyLightGray,
+                        focusedIndicatorColor = MyDarkGray,
+                        unfocusedIndicatorColor = MyDarkGray
+                    ),
+                    shape = RoundedCornerShape(15.dp)
+                )
+            }
         }
 
         Row(
@@ -343,8 +387,7 @@ fun AddPlaces(navController: NavController){
             contentAlignment = Alignment.Center
         ) {
             Button(
-                //todo сделать добавление остановки
-                onClick = { navController.navigate("") },
+                onClick = { places.add(mutableStateOf("")) },
                 colors = ButtonDefaults.buttonColors(containerColor = MyMint)
             ) {
                 Box(
