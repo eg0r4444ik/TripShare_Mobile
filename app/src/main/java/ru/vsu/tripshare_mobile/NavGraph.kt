@@ -48,14 +48,14 @@ fun NavGraph(navHostController: NavHostController){
     )
 
     val user = UserModel(2,
-            "Антон", "Тарарыков", "89514960549", "anthonytararykov@yandex.ru",
-    "01.01.2001", 5.0, R.drawable.anton, mutableListOf(
-    CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-    CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-    CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-    CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
-    ), mutableListOf(ReviewModel(egor, 4, "Хороший водитель")), "Рок, джаз", "Очень общительный",
-    "Нейтральное", null, null
+        "Антон", "Тарарыков", "89514960549", "anthonytararykov@yandex.ru",
+        "01.01.2001", 5.0, R.drawable.anton, mutableListOf(
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
+            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
+        ), mutableListOf(ReviewModel(egor, 4, "Хороший водитель")), "Рок, джаз", "Очень общительный",
+        "Нейтральное", null, null
     )
 
     val vasya = UserModel(3,
@@ -113,39 +113,39 @@ fun NavGraph(navHostController: NavHostController){
     val myTrips = listOf(
         TripModel(1,
             TripStatus.PASSENGER, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
-            "г. Москва Певческий пер. 4"),  "Через 3 дня", "15.03.2024",
+                "г. Москва Певческий пер. 4"),  "Через 3 дня", "15.03.2024",
             "15:30", "16.03.2024", "2:30", vasya,
-            listOf(user), car
+            listOf(user), listOf("Можно курить", "Свободный багажник"), car
         ),
         TripModel(2,
             TripStatus.DRIVER, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
                 "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
             "15:30", "16.03.2024", "2:30", user,
-            listOf(vasya), car
+            listOf(vasya), listOf("Можно курить", "Свободный багажник"), car
         ),
         TripModel(3,
             TripStatus.DRIVER, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
                 "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
             "15:30", "16.03.2024", "2:30", user,
-            listOf(egor, andrew, vasya), car
+            listOf(egor, andrew, vasya), listOf("Можно курить", "Свободный багажник"), car
         ),
         TripModel(4,
             TripStatus.DRIVER, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
                 "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
             "15:30", "16.03.2024", "2:30", user,
-            listOf(egor, andrew, vasya, tima), car
+            listOf(egor, andrew, vasya, tima), listOf("Можно курить", "Свободный багажник"), car
         ),
         TripModel(5,
             TripStatus.REJECTED, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
                 "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
             "15:30", "16.03.2024", "2:30", vasya,
-            listOf(egor), car
+            listOf(egor), listOf("Можно курить", "Свободный багажник"), car
         ),
         TripModel(6,
             TripStatus.PENDING, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
                 "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
             "15:30", "16.03.2024", "2:30", andrew,
-            listOf(vasya), car
+            listOf(vasya), listOf("Можно курить", "Свободный багажник"), car
         ),
     )
 
@@ -230,7 +230,7 @@ fun NavGraph(navHostController: NavHostController){
             }
         }
         composable(route = "user_profile/{userId}",
-                arguments = listOf(navArgument("userId") { type = NavType.IntType })
+            arguments = listOf(navArgument("userId") { type = NavType.IntType })
         ){ navBackStack ->
 
             val userId = navBackStack.arguments?.getInt("userId")
@@ -242,7 +242,7 @@ fun NavGraph(navHostController: NavHostController){
             arguments = listOf(
                 navArgument("tripId") { type = NavType.IntType },
                 navArgument("userId") { type = NavType.IntType })
-            ){ navBackStack ->
+        ){ navBackStack ->
             val tripId = navBackStack.arguments?.getInt("tripId")
             val userId = navBackStack.arguments?.getInt("userId")
 

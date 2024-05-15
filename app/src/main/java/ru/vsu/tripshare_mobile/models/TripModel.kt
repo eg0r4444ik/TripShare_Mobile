@@ -13,5 +13,6 @@ data class TripModel(
     val arrivalTime: String,
     val driver: UserModel,
     val participants: List<UserModel>,
+    val facilities: List<String>,
     val car: CarModel
 )
