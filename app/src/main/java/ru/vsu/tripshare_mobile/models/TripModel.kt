@@ -2,7 +2,6 @@ package ru.vsu.tripshare_mobile.models
 
 data class TripModel(
     val id: Int,
-    val status: TripStatus,
     val cityFrom: String,
     val cityTo: String,
     val addresses: List<String>,

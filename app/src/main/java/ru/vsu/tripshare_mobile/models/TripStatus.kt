@@ -4,5 +4,6 @@ enum class TripStatus {
     DRIVER,
     PASSENGER,
     REJECTED,
-    PENDING
+    PENDING,
+    WITHOUT_STATUS
 }
