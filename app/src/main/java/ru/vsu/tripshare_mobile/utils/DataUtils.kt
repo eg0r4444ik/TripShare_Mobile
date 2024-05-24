@@ -2,9 +2,9 @@ package ru.vsu.tripshare_mobile.utils
 
 import java.util.Date
 
-class DataUtils {
+object DataUtils {
 
-    public fun dateToString(date: Date): String{
+    fun dateToString(date: Date): String{
         var res = date.date.toString() + " "
         if(date.month == 0){
             res += "января"
