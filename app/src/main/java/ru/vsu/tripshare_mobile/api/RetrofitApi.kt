@@ -1,16 +1,15 @@
 package ru.vsu.tripshare_mobile.api
 
 import okhttp3.RequestBody
-import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
-import ru.vsu.tripshare_mobile.api.dto.RegistrationRequestDTO
-import ru.vsu.tripshare_mobile.api.dto.RegistrationResponseDTO
-import ru.vsu.tripshare_mobile.api.dto.TokenDTO
-import ru.vsu.tripshare_mobile.api.dto.UserDTO
+import ru.vsu.tripshare_mobile.api.dto.users.RegistrationRequestDTO
+import ru.vsu.tripshare_mobile.api.dto.users.RegistrationResponseDTO
+import ru.vsu.tripshare_mobile.api.dto.users.TokenDTO
+import ru.vsu.tripshare_mobile.api.dto.users.UserDTO
 
 interface RetrofitApi {
 

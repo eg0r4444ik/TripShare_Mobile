@@ -1,28 +1,20 @@
 package ru.vsu.tripshare_mobile.services
 
 import android.security.keystore.UserNotAuthenticatedException
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.vsu.tripshare_mobile.api.dto.RegistrationRequestDTO
-import ru.vsu.tripshare_mobile.api.dto.RegistrationResponseDTO
-import ru.vsu.tripshare_mobile.api.dto.TokenDTO
-import ru.vsu.tripshare_mobile.api.dto.UserDTO
+import ru.vsu.tripshare_mobile.api.dto.users.RegistrationRequestDTO
+import ru.vsu.tripshare_mobile.api.dto.users.RegistrationResponseDTO
 import ru.vsu.tripshare_mobile.config.AppConfig
-import ru.vsu.tripshare_mobile.exceptions.UserNotFoundException
 import ru.vsu.tripshare_mobile.models.UserModel
-import java.nio.file.attribute.UserPrincipalNotFoundException as UserPrincipalNotFoundException1
 
 object AuthService {
 
     fun registerUser(registrationRequestDTO: RegistrationRequestDTO) {
         try {
-            val registeredUser: RegistrationResponseDTO = AppConfig.retrofitAPI.registerUser(registrationRequestDTO)
+            AppConfig.retrofitAPI.registerUser(registrationRequestDTO)
         } catch (e: Exception) {
             e.stackTrace
         }

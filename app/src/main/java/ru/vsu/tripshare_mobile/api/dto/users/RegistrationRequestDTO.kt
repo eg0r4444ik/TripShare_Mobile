@@ -1,18 +1,18 @@
-package ru.vsu.tripshare_mobile.api.dto
+package ru.vsu.tripshare_mobile.api.dto.users
 
-class UserDTO {
+class RegistrationRequestDTO {
+
     val phone: String
     val name: String
     val surname: String
     val email: String?
-    val birthday: String?
+    val birthday: String
     val musicPreferences: String?
     val info: String?
     val talkativeness: Int?
     val attitude_towards_smoking: Int?
     val attitude_towards_animals_during_the_trip: Int?
-    val id: Int
-    val rating: Int?
+    val password: String
     val avatar_id: Int?
 
     constructor(
@@ -20,14 +20,13 @@ class UserDTO {
         name: String,
         surname: String,
         email: String?,
-        birthday: String?,
+        birthday: String,
         musicPreferences: String?,
         info: String?,
         talkativeness: Int?,
         attitude_towards_smoking: Int?,
         attitude_towards_animals_during_the_trip: Int?,
-        id: Int,
-        rating: Int?,
+        password: String,
         avatar_id: Int?
     ) {
         this.phone = phone
@@ -40,8 +39,7 @@ class UserDTO {
         this.talkativeness = talkativeness
         this.attitude_towards_smoking = attitude_towards_smoking
         this.attitude_towards_animals_during_the_trip = attitude_towards_animals_during_the_trip
-        this.rating = rating
+        this.password = password
         this.avatar_id = avatar_id
-        this.id = id
     }
 }

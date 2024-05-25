@@ -3,7 +3,6 @@ package ru.vsu.tripshare_mobile
 //import okhttp3.Response
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -19,24 +18,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import ru.vsu.tripshare_mobile.api.AuthInterceptor
-import ru.vsu.tripshare_mobile.api.RetrofitApi
-import ru.vsu.tripshare_mobile.api.dto.TokenDTO
 import ru.vsu.tripshare_mobile.config.AppConfig
-import ru.vsu.tripshare_mobile.data_store.AuthTokenDataStore
 import ru.vsu.tripshare_mobile.data_store.FirstLaunchDataStore
 import ru.vsu.tripshare_mobile.services.AuthService
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
@@ -82,13 +68,13 @@ fun MainScreen(){
         var startDestination by remember { mutableStateOf<String?>(null) }
         CoroutineScope(Dispatchers.Main).launch {
             val person = AuthService.getUser()
-            person.onSuccess { fetchedUser ->
+            person.onSuccess {
                 AppConfig.initUser(person.getOrNull())
                 if(AppConfig.currentUser!!.imageId == null){
                     AppConfig.currentUser!!.imageId = R.drawable.baseline_person
                 }
                 startDestination = "profile_screen"
-            }.onFailure { throwable ->
+            }.onFailure {
                 startDestination = "first_auth"
             }
         }

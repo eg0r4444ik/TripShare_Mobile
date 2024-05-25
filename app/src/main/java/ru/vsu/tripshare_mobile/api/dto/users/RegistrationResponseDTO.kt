@@ -1,4 +1,4 @@
-package ru.vsu.tripshare_mobile.api.dto
+package ru.vsu.tripshare_mobile.api.dto.users
 
 class RegistrationResponseDTO {
     val phone: String

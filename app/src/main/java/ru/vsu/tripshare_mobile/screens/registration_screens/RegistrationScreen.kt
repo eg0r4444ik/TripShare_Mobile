@@ -1,6 +1,5 @@
 package ru.vsu.tripshare_mobile.screens.registration_screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,18 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.vsu.tripshare_mobile.api.RetrofitApi
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyLightGray
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
 import ru.vsu.tripshare_mobile.ui.theme.mint24
 import ru.vsu.tripshare_mobile.ui.theme.white18
-import ru.vsu.tripshare_mobile.api.dto.RegistrationRequestDTO
-import ru.vsu.tripshare_mobile.api.dto.RegistrationResponseDTO
+import ru.vsu.tripshare_mobile.api.dto.users.RegistrationRequestDTO
 import ru.vsu.tripshare_mobile.services.AuthService
 
 @Composable
@@ -146,7 +140,7 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
         )
 
         TextField(
-            value = email!!,
+            value = email,
             onValueChange = { newText ->
                 email = newText
             },
@@ -188,7 +182,7 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
         var info by remember { mutableStateOf("") }
 
         TextField(
-            value = musicPreferences!!,
+            value = musicPreferences,
             onValueChange = { newText ->
                 musicPreferences = newText
             },
@@ -206,7 +200,7 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
         )
 
         TextField(
-            value = talkativeness!!,
+            value = talkativeness,
             onValueChange = { newText ->
                 talkativeness = newText
             },
@@ -224,7 +218,7 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
         )
 
         TextField(
-            value = attitudeTowardsSmoking!!,
+            value = attitudeTowardsSmoking,
             onValueChange = { newText ->
                 attitudeTowardsSmoking = newText
             },
@@ -242,7 +236,7 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
         )
 
         TextField(
-            value = attitudeTowardsAnimals!!,
+            value = attitudeTowardsAnimals,
             onValueChange = { newText ->
                 attitudeTowardsAnimals = newText
             },
@@ -260,7 +254,7 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
         )
 
         TextField(
-            value = info!!,
+            value = info,
             onValueChange = { newText ->
                 info = newText
             },

@@ -1,6 +1,5 @@
 package ru.vsu.tripshare_mobile.screens.registration_screens
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,14 +28,7 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import ru.vsu.tripshare_mobile.R
-import ru.vsu.tripshare_mobile.api.RetrofitApi
-import ru.vsu.tripshare_mobile.api.dto.TokenDTO
 import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.services.AuthService
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
