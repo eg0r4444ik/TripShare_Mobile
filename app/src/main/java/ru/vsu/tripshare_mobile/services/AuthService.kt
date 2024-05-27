@@ -26,41 +26,11 @@ object AuthService {
                     RequestBody.create("text/plain".toMediaTypeOrNull(), username),
                     RequestBody.create("text/plain".toMediaTypeOrNull(), password))
                 AppConfig.authManager.saveToken(token.access_token)
-                getUser()
+                UserService.getUser()
             } catch (e: Exception) {
                 Result.failure(e)
             }
         }
     }
 
-    suspend fun getUser(): Result<UserModel>{
-        if(AppConfig.authManager.getToken() == null){
-            return Result.failure(UserNotAuthenticatedException())
-        }
-        return withContext(Dispatchers.IO) {
-            try {
-                val response = AppConfig.retrofitAPI.getUser()
-                val user = UserModel(
-                    response.id!!,
-                    response.name,
-                    response.surname,
-                    response.phone,
-                    response.email,
-                    response.birthday,
-                    response.rating,
-                    response.avatar_id,
-                    mutableListOf(),
-                    mutableListOf(),
-                    response.musicPreferences,
-                    response.talkativeness,
-                    response.attitude_towards_smoking,
-                    response.attitude_towards_animals_during_the_trip,
-                    response.info
-                )
-                Result.success(user)
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
-        }
-    }
 }
