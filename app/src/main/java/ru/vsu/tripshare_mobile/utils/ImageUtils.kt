@@ -10,29 +10,16 @@ import java.io.FileOutputStream
 
 object ImageUtils {
 
-    private fun bitmapToBase64(bitmap: Bitmap): String {
+    fun bitmapToBase64(bitmap: Bitmap): String {
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
 
-    fun resourceToBase64(resourceId: Int, context: Context): String? {
-        val bitmap = BitmapFactory.decodeResource(context.resources, resourceId)
-        return bitmapToBase64(bitmap)
-    }
-
-    fun base64ToImage(base64String: String, outputFilePath: String): Boolean {
-        try {
-            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
-            val outputStream = FileOutputStream(File(outputFilePath))
-            outputStream.write(decodedBytes)
-            outputStream.close()
-            return true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
-        }
+    fun base64ToBitmap(base64String: String): Bitmap {
+        val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
     }
 
 }
