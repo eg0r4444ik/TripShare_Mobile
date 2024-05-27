@@ -1,6 +1,6 @@
 package ru.vsu.tripshare_mobile.api.dto.chats
 
-class ChatsDTO {
+class ChatDTO {
     val user_id_1: Int
     val user_id_2: Int
     val id: Int
