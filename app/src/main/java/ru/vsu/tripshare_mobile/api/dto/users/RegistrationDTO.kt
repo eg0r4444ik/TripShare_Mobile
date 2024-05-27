@@ -1,7 +1,6 @@
 package ru.vsu.tripshare_mobile.api.dto.users
 
-class RegistrationRequestDTO {
-
+class RegistrationDTO {
     val phone: String
     val name: String
     val surname: String

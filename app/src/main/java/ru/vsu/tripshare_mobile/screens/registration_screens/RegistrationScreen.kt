@@ -29,7 +29,7 @@ import ru.vsu.tripshare_mobile.ui.theme.MyMint
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
 import ru.vsu.tripshare_mobile.ui.theme.mint24
 import ru.vsu.tripshare_mobile.ui.theme.white18
-import ru.vsu.tripshare_mobile.api.dto.users.RegistrationRequestDTO
+import ru.vsu.tripshare_mobile.api.dto.users.RegistrationDTO
 import ru.vsu.tripshare_mobile.services.AuthService
 
 @Composable
@@ -274,7 +274,7 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
         Button(
             onClick = {
                 if(pass1.equals(pass2)) {
-                    val user = RegistrationRequestDTO(
+                    val user = RegistrationDTO(
                         phone,
                         name,
                         surname,

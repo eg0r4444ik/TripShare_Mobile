@@ -5,14 +5,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
-import ru.vsu.tripshare_mobile.api.dto.users.RegistrationRequestDTO
-import ru.vsu.tripshare_mobile.api.dto.users.RegistrationResponseDTO
+import ru.vsu.tripshare_mobile.api.dto.users.RegistrationDTO
 import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.UserModel
 
 object AuthService {
 
-    fun registerUser(registrationRequestDTO: RegistrationRequestDTO) {
+    fun registerUser(registrationRequestDTO: RegistrationDTO) {
         try {
             AppConfig.retrofitAPI.registerUser(registrationRequestDTO)
         } catch (e: Exception) {
@@ -42,7 +41,7 @@ object AuthService {
             try {
                 val response = AppConfig.retrofitAPI.getUser()
                 val user = UserModel(
-                    response.id,
+                    response.id!!,
                     response.name,
                     response.surname,
                     response.phone,

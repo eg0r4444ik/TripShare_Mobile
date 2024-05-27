@@ -11,7 +11,7 @@ class UserDTO {
     val talkativeness: Int?
     val attitude_towards_smoking: Int?
     val attitude_towards_animals_during_the_trip: Int?
-    val id: Int
+    val id: Int?
     val rating: Int?
     val avatar_id: Int?
 
@@ -26,7 +26,7 @@ class UserDTO {
         talkativeness: Int?,
         attitude_towards_smoking: Int?,
         attitude_towards_animals_during_the_trip: Int?,
-        id: Int,
+        id: Int?,
         rating: Int?,
         avatar_id: Int?
     ) {
