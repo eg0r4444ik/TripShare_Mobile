@@ -6,11 +6,9 @@ class UserModel {
     var surname: String
     var phone: String
     var email: String?
-    var birthday: String?
+    var birthday: String
     var rating: Int?
-    var imageId: Int?
-    var cars: MutableList<CarModel>?
-    var reviews: MutableList<ReviewModel>?
+    var avatarId: Int?
     var musicPreferences: String?
     var talkativeness: Int?
     var attitudeTowardsSmoking: Int?
@@ -23,11 +21,9 @@ class UserModel {
         surname: String,
         phone: String,
         email: String?,
-        birthday: String?,
+        birthday: String,
         rating: Int?,
         imageId: Int?,
-        cars: MutableList<CarModel>?,
-        reviews: MutableList<ReviewModel>?,
         musicPreferences: String?,
         talkativeness: Int?,
         attitudeTowardsSmoking: Int?,
@@ -41,9 +37,7 @@ class UserModel {
         this.email = email
         this.birthday = birthday
         this.rating = rating
-        this.imageId = imageId
-        this.cars = cars
-        this.reviews = reviews
+        this.avatarId = imageId
         this.musicPreferences = musicPreferences
         this.talkativeness = talkativeness
         this.attitudeTowardsSmoking = attitudeTowardsSmoking
