@@ -51,7 +51,7 @@ fun ChatCard(chat: ChatModel, user: UserModel, navController: NavController){
         ){
             Image(
                 //todo заменить !! на проверку на null
-                painter = painterResource(id = chat.companion.imageId!!),
+                painter = painterResource(id = chat.companion.avatarId!!),
                 contentDescription = "companion",
                 modifier = Modifier
                     .size(70.dp)

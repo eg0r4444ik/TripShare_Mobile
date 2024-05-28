@@ -55,18 +55,18 @@ fun Review(review: ReviewModel, navController: NavController){
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable { navController.navigate("user_profile" + "/${review.author.id}" ) }
+                    modifier = Modifier.clickable { navController.navigate("user_profile" + "/${review.authorId.id}" ) }
                 ) {
                     Image(
                         //todo заменить !! на проверку на null
-                        painter = painterResource(id = review.author.imageId!!),
+                        painter = painterResource(id = review.authorId.avatarId!!),
                         contentDescription = "author",
                         modifier = Modifier
                             .size(70.dp)
                             .clip(CircleShape)
                     )
 
-                    Text(text = review.author.name, style = darkGray14)
+                    Text(text = review.authorId.name, style = darkGray14)
                 }
 
                 Row(

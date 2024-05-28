@@ -36,7 +36,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.R
+import ru.vsu.tripshare_mobile.api.dto.trips.TripDTO
+import ru.vsu.tripshare_mobile.api.dto.users.RegistrationDTO
 import ru.vsu.tripshare_mobile.models.UserModel
+import ru.vsu.tripshare_mobile.services.AuthService
+import ru.vsu.tripshare_mobile.services.TripService
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyLightGray
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
@@ -78,8 +82,22 @@ fun AddTrip(person: UserModel, navController: NavController){
             contentAlignment = Alignment.Center
         ) {
             Button(
-                //todo добавить отправку данных на бекенд
-                onClick = { navController.navigate("trips_screen") },
+                onClick = {
+//                    val trip = TripDTO(
+//                        2,
+//                        2,
+//                        true,
+//                        true,
+//                        true,
+//                        true,
+//                        true,
+//                        1,
+//                        null
+//                    )
+//
+//                    TripService.addTrip(trip)
+                    navController.navigate("trips_screen")
+                          },
                 colors = ButtonDefaults.buttonColors(containerColor = MyMint),
                 modifier = Modifier
                     .height(70.dp)

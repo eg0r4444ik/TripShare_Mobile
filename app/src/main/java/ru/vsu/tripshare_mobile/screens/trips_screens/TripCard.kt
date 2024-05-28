@@ -157,7 +157,7 @@ private fun DriverInfo(tripParticipant: TripParticipantModel){
     Text(text = "Водитель:", style = darkGray18)
     Image(
         //todo добавить проверку на null с пустой иконкой
-        painter = painterResource(id = tripParticipant.trip.driver.imageId!!),
+        painter = painterResource(id = tripParticipant.trip.driver.avatarId!!),
         contentDescription = "image",
         modifier = Modifier
             .size(70.dp)
@@ -180,7 +180,7 @@ private fun PassengersInfo(tripParticipant: TripParticipantModel){
         tripParticipant.trip.participants.forEach { participant ->
             Image(
                 //todo добавить проверку на null с пустой иконкой
-                painter = painterResource(id = participant.imageId!!),
+                painter = painterResource(id = participant.avatarId!!),
                 contentDescription = "image",
                 modifier = Modifier
                     .size(if (tripParticipant.trip.participants.size <= 2) 70.dp else if (tripParticipant.trip.participants.size == 3) 50.dp else 40.dp)

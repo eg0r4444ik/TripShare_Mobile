@@ -246,7 +246,7 @@ fun NavGraph(navHostController: NavHostController, startDestination: String){
 
             val userId = navBackStack.arguments?.getInt("userId")
 
-            UserProfile(user!!, user, navHostController)
+            UserProfile(user!!, user, navHostController) //todo
         }
 //        composable(
 //            route = "trip_details/{tripParticipantId}",
@@ -265,18 +265,18 @@ fun NavGraph(navHostController: NavHostController, startDestination: String){
 //
 //            Reviews(users[userId?.minus(1)!!], user, navHostController)
 //        }
-//        composable("edit_info"){
-//            EditInfo(user, navHostController)
-//        }
-//        composable("settings"){
-//            Settings(user, navHostController)
-//        }
-//        composable("edit_preferences"){
-//            EditPreferences(user, navHostController)
-//        }
-//        composable("add_car"){
-//            AddCar(user, navHostController)
-//        }
+        composable("edit_info"){
+            EditInfo(user!!, navHostController)
+        }
+        composable("settings"){
+            Settings(user!!, navHostController)
+        }
+        composable("edit_preferences"){
+            EditPreferences(user!!, navHostController)
+        }
+        composable("add_car"){
+            AddCar(user!!, navHostController)
+        }
 //        composable(
 //            route ="chat/{chatId}",
 //            arguments = listOf(navArgument("chatId") { type = NavType.IntType })

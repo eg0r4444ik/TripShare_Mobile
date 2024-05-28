@@ -70,7 +70,7 @@ fun Settings(user: UserModel, navController: NavController){
 
                 Image(
                     //todo заменить !! на проверку на null
-                    painter = painterResource(id = user.imageId!!),
+                    painter = painterResource(id = user.avatarId!!),
                     contentDescription = "author",
                     modifier = Modifier
                         .size(80.dp)

@@ -103,7 +103,7 @@ fun DriverCard(tripParticipant: TripParticipantModel, navController: NavControll
 
                 Image(
                     //todo заменить !! на проверку на null
-                    painter = painterResource(id = tripParticipant.trip.driver.imageId!!),
+                    painter = painterResource(id = tripParticipant.trip.driver.avatarId!!),
                     contentDescription = "driver",
                     modifier = Modifier
                         .size(70.dp)
@@ -237,7 +237,7 @@ fun PassengersCard(tripParticipant: TripParticipantModel, navController: NavCont
                 ) {
                     Image(
                         //todo заменить !! на проверку на null
-                        painter = painterResource(id = it.imageId!!),
+                        painter = painterResource(id = it.avatarId!!),
                         contentDescription = "companion",
                         modifier = Modifier
                             .size(50.dp)

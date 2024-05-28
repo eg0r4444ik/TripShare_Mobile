@@ -84,8 +84,8 @@ fun SecondAuthScreen(phone: String, navController: NavController){
                             password = ""
                         } else {
                             AppConfig.initUser(user.getOrNull())
-                            if(AppConfig.currentUser!!.imageId == null){
-                                AppConfig.currentUser!!.imageId = R.drawable.baseline_person
+                            if(AppConfig.currentUser!!.avatarId == null){
+                                AppConfig.currentUser!!.avatarId = R.drawable.baseline_person
                             }
                             navController.navigate("profile_screen")
                         }

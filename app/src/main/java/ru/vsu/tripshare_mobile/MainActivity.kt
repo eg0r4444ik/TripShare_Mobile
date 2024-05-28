@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.data_store.FirstLaunchDataStore
 import ru.vsu.tripshare_mobile.services.AuthService
+import ru.vsu.tripshare_mobile.services.UserService
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
 import ru.vsu.tripshare_mobile.ui.theme.white24
 import ru.vsu.tripshare_mobile.ui.theme.white32
@@ -67,11 +68,11 @@ fun MainScreen(){
 
         var startDestination by remember { mutableStateOf<String?>(null) }
         CoroutineScope(Dispatchers.Main).launch {
-            val person = AuthService.getUser()
+            val person = UserService.getUser()
             person.onSuccess {
                 AppConfig.initUser(person.getOrNull())
-                if(AppConfig.currentUser!!.imageId == null){
-                    AppConfig.currentUser!!.imageId = R.drawable.baseline_person
+                if(AppConfig.currentUser!!.avatarId == null){
+                    AppConfig.currentUser!!.avatarId = R.drawable.baseline_person
                 }
                 startDestination = "profile_screen"
             }.onFailure {

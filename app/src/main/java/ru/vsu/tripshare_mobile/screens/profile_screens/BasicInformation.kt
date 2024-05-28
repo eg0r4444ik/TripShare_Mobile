@@ -33,12 +33,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.models.UserModel
+import ru.vsu.tripshare_mobile.services.ImageService
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
 import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
@@ -81,7 +81,7 @@ fun BasicInformation(user: UserModel, person: UserModel, navController: NavContr
                     .padding(10.dp),
                 contentAlignment = Alignment.TopEnd
             ) {
-                user.imageId?.let { painterResource(id = it) }?.let {
+                user.avatarId?.let { painterResource(id = it) }?.let {
                     Image(
                         painter = it,
                         contentDescription = "image",
@@ -169,9 +169,12 @@ fun SelectPhoto(){
                 val source = ImageDecoder.createSource(context.contentResolver, it)
                 ImageDecoder.decodeBitmap(source)
             }
-            bitmap?.let {
-                Image(bitmap = it.asImageBitmap(), contentDescription = null, modifier = Modifier.size(200.dp))
-            }
+
+            val id = ImageService.addImage(bitmap)
+            print(id)
+//            bitmap?.let {
+//                Image(bitmap = it.asImageBitmap(), contentDescription = null, modifier = Modifier.size(200.dp))
+//            }
         }
     }
 }
