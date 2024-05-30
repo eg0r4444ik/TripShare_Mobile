@@ -9,13 +9,13 @@ import ru.vsu.tripshare_mobile.models.UserModel
 
 object UserService {
 
-    suspend fun getUser(): Result<UserModel>{
+    suspend fun getMe(): Result<UserModel>{
         if(AppConfig.authManager.getToken() == null){
             return Result.failure(UserNotAuthenticatedException())
         }
         return withContext(Dispatchers.IO) {
             try {
-                val userDTO = AppConfig.retrofitAPI.getUser()
+                val userDTO = AppConfig.retrofitAPI.getMe()
                 val user = fromDTOtoModel(userDTO)
                 Result.success(user)
             } catch (e: Exception) {
@@ -24,11 +24,27 @@ object UserService {
         }
     }
 
-    fun updateUser(userModel: UserModel){
+    suspend fun getUser(userId: Int): Result<UserModel>{
+        if(AppConfig.authManager.getToken() == null){
+            return Result.failure(UserNotAuthenticatedException())
+        }
+        return withContext(Dispatchers.IO) {
+            try {
+                val userDTO = AppConfig.retrofitAPI.getUser(userId)
+                val user = fromDTOtoModel(userDTO)
+                Result.success(user)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    fun updateMe(){
+        val user = AppConfig.currentUser!!
         try {
-            val userDTO = fromModelToDTO(userModel)
-            AppConfig.retrofitAPI.updateUser(userDTO)
-            AppConfig.currentUser = userModel
+            val userDTO = fromModelToDTO(user)
+            AppConfig.retrofitAPI.updateMe(userDTO)
+            AppConfig.currentUser = user
         } catch (e: Exception) {
             e.stackTrace
         }
@@ -51,7 +67,7 @@ object UserService {
         return userDTO
     }
 
-    private fun fromDTOtoModel(userDTO: UserDTO): UserModel{
+    fun fromDTOtoModel(userDTO: UserDTO): UserModel{
         val user = UserModel(
             userDTO.id!!,
             userDTO.name,
