@@ -16,6 +16,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,8 +29,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.models.ReviewModel
+import ru.vsu.tripshare_mobile.models.UserModel
+import ru.vsu.tripshare_mobile.services.UserService
 import ru.vsu.tripshare_mobile.ui.theme.darkGray14
 import ru.vsu.tripshare_mobile.ui.theme.mint18
 
@@ -55,18 +65,20 @@ fun Review(review: ReviewModel, navController: NavController){
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable { navController.navigate("user_profile" + "/${review.authorId.id}" ) }
+                    modifier = Modifier.clickable { navController.navigate("user_profile" + "/${review.author.id}" ) }
                 ) {
+
                     Image(
-                        //todo заменить !! на проверку на null
-                        painter = painterResource(id = review.authorId.avatarId!!),
+                        painter = painterResource(id = if(review.author.avatarId == null) R.drawable.baseline_person
+                        else review.author.avatarId!!),
                         contentDescription = "author",
                         modifier = Modifier
                             .size(70.dp)
                             .clip(CircleShape)
                     )
 
-                    Text(text = review.authorId.name, style = darkGray14)
+                    Text(text = review.author.name, style = darkGray14)
+
                 }
 
                 Row(

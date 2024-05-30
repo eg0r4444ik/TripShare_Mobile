@@ -14,12 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
+import ru.vsu.tripshare_mobile.models.ReviewModel
 import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.darkGray24
 import ru.vsu.tripshare_mobile.ui.theme.mint24
 
 @Composable
-fun Reviews(user: UserModel, person: UserModel, navController: NavController){
+fun Reviews(reviews: List<ReviewModel>?, user: UserModel, navController: NavController){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -32,7 +33,7 @@ fun Reviews(user: UserModel, person: UserModel, navController: NavController){
             style = mint24
         )
 
-        if(user.reviews == null){
+        if(reviews == null){
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -45,7 +46,7 @@ fun Reviews(user: UserModel, person: UserModel, navController: NavController){
                     .fillMaxWidth()
                     .background(Color.White),
             ) {
-                itemsIndexed(user.reviews!!) { _, item ->
+                itemsIndexed(reviews) { _, item ->
                     Review(item, navController)
                 }
             }

@@ -1,8 +1,15 @@
 package ru.vsu.tripshare_mobile
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -40,141 +47,16 @@ import ru.vsu.tripshare_mobile.screens.registration_screens.SecondAuthScreen
 import ru.vsu.tripshare_mobile.screens.trips_screens.MyTrips
 import ru.vsu.tripshare_mobile.screens.trips_screens.TripDetails
 import ru.vsu.tripshare_mobile.services.AuthService
+import ru.vsu.tripshare_mobile.services.CarService
+import ru.vsu.tripshare_mobile.services.ChatService
+import ru.vsu.tripshare_mobile.services.ReviewService
+import ru.vsu.tripshare_mobile.services.UserService
+import ru.vsu.tripshare_mobile.services.ValidationService
 import java.util.Date
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
 fun NavGraph(navHostController: NavHostController, startDestination: String){
-
-//    val egor = UserModel(1,
-//        "Егор", "Рогачев", "89514960549", "egor_rogachev@yandex.ru",
-//        "01.01.2001", 4, R.drawable.egor, mutableListOf(
-//            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-//        ), mutableListOf(), "Рок, джаз", 10,
-//        5, null, null
-//    )
-
-    val user = AppConfig.currentUser
-
-//    val vasya = UserModel(3,
-//        "Василий", "Платон", "89514960549", "vasya_platon@yandex.ru",
-//        "01.01.2001", 4, R.drawable.vasya, mutableListOf(
-//            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-//        ), mutableListOf(ReviewModel(user, 5, "Хороший водитель"), ReviewModel(egor, 5, "Любит котов")),
-//        "Рок, джаз", 5,
-//        6, 8, null
-//    )
-//
-//    val andrew = UserModel(4,
-//        "Андрей", "Москаленко", "89514960549", "andrew@yandex.ru",
-//        "01.01.2001", 5, R.drawable.andrew, mutableListOf(
-//            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-//            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-//            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-//            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
-//        ), mutableListOf(ReviewModel(user, 5, "Хороший водитель"), ReviewModel(egor, 5, "Любит котов")),
-//        "Рок, джаз", 10,
-//        4, null, null
-//    )
-//
-//    val tima = UserModel(5,
-//        "Тимофей", "Улезько", "89514960549", "t.lezko@yandex.ru",
-//        "01.01.2001", 5, R.drawable.egor, mutableListOf(
-//            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-//            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-//            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi)),
-//            CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
-//        ), mutableListOf(ReviewModel(egor, 5, "Хороший водитель"), ReviewModel(andrew, 5, "Любит котов")),
-//        "Рок, джаз", 7,
-//        3, null, null
-//    )
-//
-//    val users = listOf(egor, user, vasya, andrew, tima)
-//
-//    val car = CarModel("Audi", "TT 2-nd series", "Gray", 2010, mutableListOf(R.drawable.audi))
-//
-//    val message1 = MessageModel(vasya, "Здравствуйте, можете меня довезти до Москвы к 18:00 14 марта?", true, Date())
-//    val message2 = MessageModel(user, "Привет!", true, Date())
-//    val message3 = MessageModel(user, "Да, конечно могу", true, Date())
-//    val message4 = MessageModel(vasya, "Отлично! Как вы относитесь к животным во время поездки?", true, Date())
-//    val message5 = MessageModel(user, "Не против животных, вы хотите с собой кого-то взять?", true, Date())
-//    val message6 = MessageModel(vasya, "Хочу взять собаку", true, Date())
-//    val message7 = MessageModel(user, "Хорошо, я напишу когда буду выезжать!", true, Date())
-//    val message8 = MessageModel(vasya, "Хорошо, во сколько вы примерно подъедете к месту?", true, Date())
-//    val message9 = MessageModel(user, "Где-то к 11:20", true, Date())
-//    val message10 = MessageModel(vasya, "Ок", true, Date())
-//
-//    val messages = mutableListOf(message1, message2, message3, message4, message5, message6, message7, message8, message9, message10)
-//
-//    val chat1 = ChatModel(1, user, vasya, messages)
-//    val chat2 = ChatModel(2, user, egor, mutableListOf(MessageModel(egor, "До встречи", false, Date())))
-//
-//    val chats = listOf(chat1, chat2)
-//
-//    val myTrips = listOf(
-//        TripModel(1, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
-//            "г. Москва Певческий пер. 4"),  "Через 3 дня", "15.03.2024",
-//            "15:30", "16.03.2024", "2:30", vasya,
-//            listOf(user), listOf("Можно курить", "Свободный багажник"), car
-//        ),
-//        TripModel(2, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
-//                "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
-//            "15:30", "16.03.2024", "2:30", user,
-//            listOf(vasya), listOf("Можно курить", "Свободный багажник"), car
-//        ),
-//        TripModel(3, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
-//                "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
-//            "15:30", "16.03.2024", "2:30", user,
-//            listOf(egor, andrew, vasya), listOf("Можно курить", "Свободный багажник"), car
-//        ),
-//        TripModel(4, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
-//                "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
-//            "15:30", "16.03.2024", "2:30", user,
-//            listOf(egor, andrew, vasya, tima), listOf("Можно курить", "Свободный багажник"), car
-//        ),
-//        TripModel(5, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
-//                "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
-//            "15:30", "16.03.2024", "2:30", vasya,
-//            listOf(egor), listOf("Можно курить", "Свободный багажник"), car
-//        ),
-//        TripModel(6, "Воронеж", "Москва", listOf("г. Воронеж, ул. Кирова 12А",
-//                "г. Москва Певческий пер. 4"),"Через 3 дня", "15.03.2024",
-//            "15:30", "16.03.2024", "2:30", andrew,
-//            listOf(vasya), listOf("Можно курить", "Свободный багажник"), car
-//        ),
-//    )
-//
-//    val tripsParticipants = listOf(
-//        TripParticipantModel(0, user, myTrips[0],
-//            TripStatus.WITHOUT_STATUS, 10.0, "11 часов",
-//            1300, "Улица Кирова 12А",
-//            "Певческий пер. 4"),
-//        TripParticipantModel(1, user, myTrips[0],
-//            TripStatus.PASSENGER, 10.0, "11 часов",
-//            1300, "Улица Кирова 12А",
-//            "Певческий пер. 4"),
-//        TripParticipantModel(2, user, myTrips[1],
-//            TripStatus.DRIVER, 10.0, "11 часов",
-//            1300, "Улица Кирова 12А",
-//            "Певческий пер. 4"),
-//        TripParticipantModel(3, user, myTrips[2],
-//            TripStatus.DRIVER, 10.0, "11 часов",
-//            1300, "Улица Кирова 12А",
-//            "Певческий пер. 4"),
-//        TripParticipantModel(4, user, myTrips[3],
-//            TripStatus.DRIVER, 10.0, "11 часов",
-//            1300, "Улица Кирова 12А",
-//            "Певческий пер. 4"),
-//        TripParticipantModel(5, user, myTrips[4],
-//            TripStatus.REJECTED, 10.0, "11 часов",
-//            1300, "Улица Кирова 12А",
-//            "Певческий пер. 4"),
-//        TripParticipantModel(6, user, myTrips[5],
-//            TripStatus.PENDING, 10.0, "11 часов",
-//            1300, "Улица Кирова 12А",
-//            "Певческий пер. 4")
-//
-//    )
 
     NavHost(navController = navHostController, startDestination = startDestination){
         composable("first_auth"){
@@ -198,46 +80,61 @@ fun NavGraph(navHostController: NavHostController, startDestination: String){
                     BottomNavigation(navController = navHostController)
                 }
             ) {
-                FindTrip(user!!, navHostController)
+                FindTrip(AppConfig.currentUser!!, navHostController)
             }
         }
-//        composable(route = "list_of_trips") { navBackStack ->
-//            FoundTripsList(tripsParticipants, navHostController)
-//        }
+        composable(route = "list_of_trips/{place_start}/{place_end}",
+            arguments = listOf(navArgument("place_start") { type = NavType.StringType },
+                navArgument("place_end") { type = NavType.StringType })
+        ) { navBackStack ->
+            val placeStart = navBackStack.arguments?.getString("place_start")
+            val placeEnd = navBackStack.arguments?.getString("place_end")
+
+            FoundTripsList(placeStart!!, placeEnd!!, navHostController)
+        }
         composable("add_trip_screen"){
             Scaffold (
                 bottomBar = {
                     BottomNavigation(navController = navHostController)
                 }
             ) {
-                AddTrip(user!!, navHostController)
+                AddTrip(AppConfig.currentUser!!, navHostController)
             }
         }
-//        composable("trips_screen"){
-//            Scaffold (
-//                bottomBar = {
-//                    BottomNavigation(navController = navHostController)
-//                }
-//            ) {
-//                MyTrips(tripsParticipants, navHostController)
-//            }
-//        }
-//        composable("chats_screen"){
-//            Scaffold (
-//                bottomBar = {
-//                    BottomNavigation(navController = navHostController)
-//                }
-//            ) {
-//                MyChats(chats, user, navHostController)
-//            }
-//        }
+        composable("trips_screen"){
+            Scaffold (
+                bottomBar = {
+                    BottomNavigation(navController = navHostController)
+                }
+            ) {
+                MyTrips(navHostController)
+            }
+        }
+        composable("chats_screen"){
+            Scaffold (
+                bottomBar = {
+                    BottomNavigation(navController = navHostController)
+                }
+            ) {
+                MyChats(AppConfig.currentUser!!, navHostController)
+            }
+        }
         composable("profile_screen"){
             Scaffold (
                 bottomBar = {
                     BottomNavigation(navController = navHostController)
                 }
             ) {
-                Profile(user!!, navHostController)
+                var cars: List<CarModel>? = null
+                val scope = rememberCoroutineScope()
+
+                LaunchedEffect(Unit) {
+                    scope.launch(Dispatchers.Main) {
+                        cars = ValidationService.validate(CarService.getMyCars(), "Ни одной машины не найдено")
+                    }
+                }
+
+                Profile(cars, AppConfig.currentUser!!, navHostController)
             }
         }
         composable(route = "user_profile/{userId}",
@@ -245,8 +142,25 @@ fun NavGraph(navHostController: NavHostController, startDestination: String){
         ){ navBackStack ->
 
             val userId = navBackStack.arguments?.getInt("userId")
+            var user: UserModel? = null
+            var cars: List<CarModel>? = null
+            var isSuccessful by remember { mutableStateOf(false) }
+            val scope = rememberCoroutineScope()
 
-            UserProfile(user!!, user, navHostController) //todo
+            LaunchedEffect(Unit) {
+                scope.launch(Dispatchers.Main) {
+                    user = ValidationService.validate(UserService.getUser(userId!!), "Пользователь не найден")
+                    cars = ValidationService.validate(CarService.getUsersCars(userId), "Пользователь не найден")
+                    if (user != null) {
+                        isSuccessful = true
+                    }
+                }
+            }
+
+            if(isSuccessful){
+                UserProfile(cars, user!!, AppConfig.currentUser!!, navHostController)
+            }
+
         }
 //        composable(
 //            route = "trip_details/{tripParticipantId}",
@@ -257,38 +171,72 @@ fun NavGraph(navHostController: NavHostController, startDestination: String){
 //
 //            TripDetails(tripsParticipants[tripParticipantId!!], navHostController)
 //        }
-//        composable(
-//            route ="reviews/{userId}",
-//            arguments = listOf(navArgument("userId") { type = NavType.IntType })
-//        ){navBackStack ->
-//            val userId = navBackStack.arguments?.getInt("userId")
-//
-//            Reviews(users[userId?.minus(1)!!], user, navHostController)
-//        }
+        composable(
+            route ="reviews/{userId}",
+            arguments = listOf(navArgument("userId") { type = NavType.IntType })
+        ){navBackStack ->
+
+            val userId = navBackStack.arguments?.getInt("userId")
+            var reviews: List<ReviewModel>? = null
+            var isSuccessful by remember { mutableStateOf(false) }
+            val scope = rememberCoroutineScope()
+
+            LaunchedEffect(Unit) {
+                scope.launch(Dispatchers.Main) {
+                    reviews = ValidationService.validate(ReviewService.getUsersReviews(userId!!), "Ни одного отзыва не найдено")
+                    if (reviews != null) {
+                        isSuccessful = true
+                    }
+                }
+            }
+
+            if(isSuccessful){
+                Reviews(reviews, AppConfig.currentUser!!, navHostController)
+            }
+        }
         composable("edit_info"){
-            EditInfo(user!!, navHostController)
+            EditInfo(AppConfig.currentUser!!, navHostController)
         }
         composable("settings"){
-            Settings(user!!, navHostController)
+            Settings(AppConfig.currentUser!!, navHostController)
         }
         composable("edit_preferences"){
-            EditPreferences(user!!, navHostController)
+            EditPreferences(AppConfig.currentUser!!, navHostController)
         }
         composable("add_car"){
-            AddCar(user!!, navHostController)
+            AddCar(AppConfig.currentUser!!, navHostController)
         }
-//        composable(
-//            route ="chat/{chatId}",
-//            arguments = listOf(navArgument("chatId") { type = NavType.IntType })
-//        ){ navBackStack ->
-//
-//            val chatId = navBackStack.arguments?.getInt("chatId")
-//
-//            if(chatId == 1) {
-//                Chat(chat1, user, navHostController)
-//            }else{
-//                Chat(chat2, user, navHostController)
-//            }
-//        }
+        composable(
+            route ="chat/{chatId}",
+            arguments = listOf(navArgument("chatId") { type = NavType.IntType })
+        ){ navBackStack ->
+
+            val chatId = navBackStack.arguments?.getInt("chatId")
+            var chat: ChatModel? = null
+            AppConfig.currentChats?.forEach { if(it.id == chatId) chat = it }
+            var isSuccessful by remember { mutableStateOf(false) }
+            val scope = rememberCoroutineScope()
+
+            LaunchedEffect(Unit) {
+                scope.launch(Dispatchers.Main) {
+                    val messages = ValidationService.validate(ChatService.getChatMessages(chatId!!), "Сообщения не найдены")
+                    if (messages != null) {
+                        chat = chat?.let {
+                            ChatModel(
+                                it.id,
+                                it.user,
+                                it.companion,
+                                messages
+                            )
+                        }
+                        isSuccessful = true
+                    }
+                }
+            }
+
+            if(isSuccessful){
+                Chat(chat!!, AppConfig.currentUser!!, navHostController)
+            }
+        }
     }
 }

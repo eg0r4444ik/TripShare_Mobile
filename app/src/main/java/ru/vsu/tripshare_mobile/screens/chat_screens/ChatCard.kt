@@ -61,10 +61,11 @@ fun ChatCard(chat: ChatModel, user: UserModel, navController: NavController){
             Column(modifier = Modifier.padding(10.dp, 0.dp)){
                 Text(text = chat.companion.surname + " " + chat.companion.name, style = black18)
                 val last = chat.messages.get(chat.messages.size-1)
+                val sender = if(last.senderId == user.id) user else (if(chat.companion.id == user.id) chat.user else chat.companion)
                 // поменять сравнение юзеров
-                Text(text = if(last.sender.email == user.email) "Вы: " + last.text else chat.companion.name
-                        + ": " + (if(last.text.length + last.sender.name.length >= BIG_MESSAGE_LEN)
-                                (last.text.subSequence(0, BIG_MESSAGE_LEN -last.sender.name.length).toString() + "...") else last.text),
+                Text(text = if(sender.email == user.email) "Вы: " + last.text else chat.companion.name
+                        + ": " + (if(last.text.length + sender.name.length >= BIG_MESSAGE_LEN)
+                                (last.text.subSequence(0, BIG_MESSAGE_LEN -sender.name.length).toString() + "...") else last.text),
                     style = darkGray18)
             }
 

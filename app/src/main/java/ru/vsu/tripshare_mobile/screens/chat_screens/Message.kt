@@ -27,8 +27,7 @@ fun Message(message: MessageModel, user: UserModel){
 
     val messageSize = if(message.text.length >= BIG_TEXT_LEN) 0.6f else 0.4f
 
-    // поменять сравнение юзеров
-    if(message.sender.email == user.email){
+    if(message.senderId == user.id){
         Box(modifier = Modifier.fillMaxWidth().padding(10.dp, 0.dp),
             contentAlignment = Alignment.CenterEnd
         ) {

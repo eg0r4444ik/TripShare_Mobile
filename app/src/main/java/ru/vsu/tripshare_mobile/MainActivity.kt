@@ -18,6 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import io.appmetrica.analytics.AppMetrica
+import io.appmetrica.analytics.AppMetricaConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -68,7 +70,7 @@ fun MainScreen(){
 
         var startDestination by remember { mutableStateOf<String?>(null) }
         CoroutineScope(Dispatchers.Main).launch {
-            val person = UserService.getUser()
+            val person = UserService.getMe()
             person.onSuccess {
                 AppConfig.initUser(person.getOrNull())
                 if(AppConfig.currentUser!!.avatarId == null){
@@ -130,7 +132,7 @@ private fun Greeting(){
         contentAlignment = Alignment.Center
     ) {
         androidx.compose.material.Text(
-            text = "Добро пожаловать", style = white32,
+            text = "Добро пожаловать", style = white24,
         )
     }
 
@@ -139,7 +141,7 @@ private fun Greeting(){
         contentAlignment = Alignment.Center
     ) {
         androidx.compose.material.Text(
-            text = "в Trip Share!", style = white32,
+            text = "в Trip Share!", style = white24,
         )
     }
 }
