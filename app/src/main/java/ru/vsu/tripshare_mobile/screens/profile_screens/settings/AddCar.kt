@@ -24,8 +24,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import io.appmetrica.analytics.AppMetrica
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.vsu.tripshare_mobile.models.CarModel
 import ru.vsu.tripshare_mobile.models.UserModel
+import ru.vsu.tripshare_mobile.services.CarService
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyLightGray
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
@@ -46,13 +51,13 @@ fun AddCar(user: UserModel, navController: NavController){
     ) {
         Text(text = "Добавление авто", style = mint24, modifier = Modifier.padding(10.dp, 0.dp))
 
-        Button(
-            modifier = Modifier.height(120.dp).width(160.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MyLightGray),
-            onClick = { /*TODO*/ }
-        ) {
-            Text(text = "Добавить фото", style = darkGray18)
-        }
+//        Button(
+//            modifier = Modifier.height(120.dp).width(160.dp),
+//            colors = ButtonDefaults.buttonColors(containerColor = MyLightGray),
+//            onClick = { /*TODO*/ }
+//        ) {
+//            Text(text = "Добавить фото", style = darkGray18)
+//        }
 
 //        LazyRow(
 //            verticalAlignment = Alignment.CenterVertically,
@@ -161,11 +166,14 @@ fun AddCar(user: UserModel, navController: NavController){
 
         Button(
             onClick = {
-                val car = CarModel(brand, model, color, manufactureYear.toInt(), imageIds)
-                if(user.cars == null){
-                    user.cars = mutableListOf(car)
-                }else {
-                    user.cars!!.add(car)
+                val addCarEvent = "{\"button_clicked\":\"add_car\"}"
+                AppMetrica.reportEvent(
+                    "Adding car event",
+                    addCarEvent
+                )
+                val car = CarModel(1, brand, model, color, manufactureYear.toInt(), mutableListOf(null, null, null, null))
+                CoroutineScope(Dispatchers.Main).launch {
+                    CarService.addCar(car)
                 }
                 navController.navigate("profile_screen")
             },

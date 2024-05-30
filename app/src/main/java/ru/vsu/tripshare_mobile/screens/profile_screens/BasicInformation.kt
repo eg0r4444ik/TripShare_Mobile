@@ -4,6 +4,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -37,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.services.ImageService
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
@@ -158,23 +160,27 @@ fun SelectPhoto(){
             text = "Изменить фото профиля",
             style = mint18,
             modifier = Modifier.clickable {
-                launcher.launch("image/*")
+                Toast.makeText(
+                    AppConfig.appContext,
+                    "Добавление фото пока недоступно",
+                    Toast.LENGTH_SHORT
+                ).show()
+//                launcher.launch("image/*")
         })
-
         //todo отправить фото на бек
-        imageUri?.let {
-            val bitmap = if (Build.VERSION.SDK_INT < 28) {
-                MediaStore.Images.Media.getBitmap(context.contentResolver, it)
-            } else {
-                val source = ImageDecoder.createSource(context.contentResolver, it)
-                ImageDecoder.decodeBitmap(source)
-            }
-
-            val id = ImageService.addImage(bitmap)
-            print(id)
+//        imageUri?.let {
+//            val bitmap = if (Build.VERSION.SDK_INT < 28) {
+//                MediaStore.Images.Media.getBitmap(context.contentResolver, it)
+//            } else {
+//                val source = ImageDecoder.createSource(context.contentResolver, it)
+//                ImageDecoder.decodeBitmap(source)
+//            }
+//
+//            val id = ImageService.addImage(bitmap)
+//            print(id)
 //            bitmap?.let {
 //                Image(bitmap = it.asImageBitmap(), contentDescription = null, modifier = Modifier.size(200.dp))
 //            }
-        }
+//        }
     }
 }

@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.vsu.tripshare_mobile.models.TripModel
 import ru.vsu.tripshare_mobile.models.TripParticipantModel
 import ru.vsu.tripshare_mobile.ui.theme.black18
 import ru.vsu.tripshare_mobile.ui.theme.blue18
@@ -38,7 +39,7 @@ import ru.vsu.tripshare_mobile.ui.theme.mint18
 import ru.vsu.tripshare_mobile.ui.theme.mint36
 
 @Composable
-fun TripDetails(tripParticipant: TripParticipantModel, navController: NavController) {
+fun TripDetails(tripModel: TripModel, navController: NavController) {
 
     val state = rememberScrollState()
 
@@ -55,22 +56,22 @@ fun TripDetails(tripParticipant: TripParticipantModel, navController: NavControl
             style = mint36
         )
 
-        DriverCard(tripParticipant = tripParticipant, navController = navController)
-        StopsCard(tripParticipant = tripParticipant, navController = navController)
-        FacilitiesCard(tripParticipant = tripParticipant, navController = navController)
-        PassengersCard(tripParticipant = tripParticipant, navController = navController)
+        DriverCard(tripModel, navController = navController)
+        StopsCard(tripModel, navController = navController)
+        FacilitiesCard(tripModel, navController = navController)
+        PassengersCard(tripModel, navController = navController)
 
     }
 }
 
 @Composable
-fun DriverCard(tripParticipant: TripParticipantModel, navController: NavController){
+fun DriverCard(tripModel: TripModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
             .padding(10.dp)
-            .clickable { navController.navigate("user_profile/${tripParticipant.trip.driver.id}") },
+            .clickable { navController.navigate("user_profile/${tripModel.driver.id}") },
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 5.dp
@@ -99,11 +100,11 @@ fun DriverCard(tripParticipant: TripParticipantModel, navController: NavControll
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
 
-                Text(text = tripParticipant.trip.driver.name, style = darkGray36)
+                Text(text = tripModel.driver.name, style = darkGray36)
 
                 Image(
                     //todo заменить !! на проверку на null
-                    painter = painterResource(id = tripParticipant.trip.driver.avatarId!!),
+                    painter = painterResource(id = tripModel.driver.avatarId!!),
                     contentDescription = "driver",
                     modifier = Modifier
                         .size(70.dp)
@@ -115,7 +116,7 @@ fun DriverCard(tripParticipant: TripParticipantModel, navController: NavControll
 }
 
 @Composable
-fun StopsCard(tripParticipant: TripParticipantModel, navController: NavController){
+fun StopsCard(tripModel: TripModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -140,10 +141,10 @@ fun StopsCard(tripParticipant: TripParticipantModel, navController: NavControlle
                 Text(text = "Остановки", style = darkGray24)
             }
 
-            val addresses = tripParticipant.trip.addresses
-            tripParticipant.trip.addresses.forEach{
-                if(it.equals(tripParticipant.addressFrom) ||
-                    it.equals(tripParticipant.addressTo)) {
+            val addresses = tripModel.addresses
+            tripModel.addresses.forEach{
+                if(it.equals(tripModel.cityFrom) ||
+                    it.equals(tripModel.cityTo)) {
                     Text(text = "*" + it, style = blue18)
                 }else if(it.equals(addresses.get(0))
                     || it.equals(addresses.get(addresses.size-1))) {
@@ -154,7 +155,7 @@ fun StopsCard(tripParticipant: TripParticipantModel, navController: NavControlle
             }
         }
 
-        val trip = tripParticipant.trip
+        val trip = tripModel
 
         Column(
             modifier = Modifier.fillMaxWidth().padding(10.dp),
@@ -175,7 +176,7 @@ fun StopsCard(tripParticipant: TripParticipantModel, navController: NavControlle
 }
 
 @Composable
-fun FacilitiesCard(tripParticipant: TripParticipantModel, navController: NavController){
+fun FacilitiesCard(tripModel: TripModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -189,7 +190,7 @@ fun FacilitiesCard(tripParticipant: TripParticipantModel, navController: NavCont
         )
     ){
 
-        val trip = tripParticipant.trip
+        val trip = tripModel
 
         Column(
             modifier = Modifier.fillMaxWidth().padding(10.dp),
@@ -203,15 +204,24 @@ fun FacilitiesCard(tripParticipant: TripParticipantModel, navController: NavCont
                 Text(text = "Удобства поездки", style = darkGray24)
             }
 
-            trip.facilities.forEach{
-                Text(text = "*" + it, style = blue18)
+            if(trip.freeTrunk) {
+                Text(text = "* Свободный багажник", style = blue18)
+            }
+            if(trip.maxTwoPassengersInTheBackSeat) {
+                Text(text = "* Максимум два пассажира на заднем сидении", style = blue18)
+            }
+            if(trip.smokingAllowed) {
+                Text(text = "* Разрешено курить", style = blue18)
+            }
+            if(trip.petsAllowed) {
+                Text(text = "* Разрешено с животными", style = blue18)
             }
         }
     }
 }
 
 @Composable
-fun PassengersCard(tripParticipant: TripParticipantModel, navController: NavController){
+fun PassengersCard(tripModel: TripModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -226,7 +236,7 @@ fun PassengersCard(tripParticipant: TripParticipantModel, navController: NavCont
     ){
 
         Column() {
-            tripParticipant.trip.participants.forEach {
+            tripModel.participants.forEach {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

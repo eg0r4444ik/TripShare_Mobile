@@ -25,14 +25,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.vsu.tripshare_mobile.R
+import ru.vsu.tripshare_mobile.models.CarModel
 import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
 import ru.vsu.tripshare_mobile.ui.theme.darkGray14
+import ru.vsu.tripshare_mobile.ui.theme.darkGray24
 import ru.vsu.tripshare_mobile.ui.theme.darkGray36
 import ru.vsu.tripshare_mobile.ui.theme.white18
 
 @Composable
-fun Cars(user: UserModel, person: UserModel, navController: NavController){
+fun Cars(cars: List<CarModel>?, user: UserModel, person: UserModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -55,20 +58,21 @@ fun Cars(user: UserModel, person: UserModel, navController: NavController){
                 Text(text = "Авто", style = darkGray36, modifier = Modifier.padding(10.dp))
             }
 
-            if(user.cars != null) {
+            if(cars != null) {
                 LazyRow(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(10.dp)
                 ) {
-                    itemsIndexed(user.cars!!) { _, item ->
+                    itemsIndexed(cars) { _, item ->
                         Column(
-                            modifier = Modifier.padding(10.dp, 10.dp).clickable { navController.navigate("add_car") },
+                            modifier = Modifier
+                                .padding(10.dp, 10.dp)
+                                .clickable { navController.navigate("add_car") },
                             verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            //todo добавить проверну на null
                             Image(
-                                painterResource(id = item.imageIds!!.get(0)),
+                                painterResource(id = if(item.imageIds.get(0) == null) R.drawable.baseline_car else item.imageIds.get(0)!!),
                                 contentDescription = "car",
                                 modifier = Modifier.size(160.dp, 120.dp)
                             )
@@ -77,17 +81,27 @@ fun Cars(user: UserModel, person: UserModel, navController: NavController){
                     }
                 }
             }else{
-                Text(text = "У вас нет машин", style = darkGray36)
+                Box(
+                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "У вас нет машин", style = darkGray24)
+                }
             }
 
             if(person.id == user.id) {
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(10.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(10.dp)
                 ) {
                     Button(
                         onClick = { navController.navigate("add_car") },
                         colors = ButtonDefaults.buttonColors(containerColor = MyMint),
-                        modifier = Modifier.fillMaxWidth().height(50.dp).padding(20.dp, 0.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .padding(20.dp, 0.dp)
                     ) {
                         Box(
                             contentAlignment = Alignment.Center

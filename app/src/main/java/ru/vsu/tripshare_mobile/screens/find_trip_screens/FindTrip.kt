@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import io.appmetrica.analytics.AppMetrica
 import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
@@ -330,8 +331,14 @@ fun FindTrip(person: UserModel, navController: NavController){
                     contentAlignment = Alignment.Center
                 ) {
                     Button(
-                        //todo добавить отправку данных на бекенд
-                        onClick = { navController.navigate("list_of_trips") },
+                        onClick = {
+                            val findTripEvent = "{\"button_clicked\":\"find_trip\"}"
+                            AppMetrica.reportEvent(
+                                "Finding a trip event",
+                                findTripEvent
+                            )
+                            navController.navigate("list_of_trips/${addressFrom}/${addressTo}")
+                                  },
                         colors = ButtonDefaults.buttonColors(containerColor = MyMint),
                         modifier = Modifier
                             .height(50.dp)

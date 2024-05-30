@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.R
+import ru.vsu.tripshare_mobile.models.TripModel
 import ru.vsu.tripshare_mobile.models.TripParticipantModel
 import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
@@ -40,12 +41,12 @@ import ru.vsu.tripshare_mobile.ui.theme.mint24
 import ru.vsu.tripshare_mobile.ui.theme.white14
 
 @Composable
-fun TripCard(tripParticipant: TripParticipantModel, navController: NavController){
+fun TripCard(tripModel: TripModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
-            .clickable { navController.navigate("trip_details/${tripParticipant.id}") },
+            .clickable { navController.navigate("trip_details/${tripModel.id}") },
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 5.dp
@@ -58,14 +59,14 @@ fun TripCard(tripParticipant: TripParticipantModel, navController: NavController
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            TripInfoLeft(tripParticipant = tripParticipant)
-            TripInfoRight(tripParticipant = tripParticipant)
+            TripInfoLeft(tripModel)
+            TripInfoRight(tripModel)
         }
     }
 }
 
 @Composable
-private fun TripInfoLeft(tripParticipant: TripParticipantModel){
+private fun TripInfoLeft(tripModel: TripModel){
     Column(
         modifier = Modifier
             .height(300.dp)
@@ -75,24 +76,24 @@ private fun TripInfoLeft(tripParticipant: TripParticipantModel){
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
-        TripStatus(tripParticipant = tripParticipant)
+        TripStatus(tripModel)
 
-        if(tripParticipant.status == TripStatus.DRIVER) {
-            PassengersInfo(tripParticipant = tripParticipant)
+        if(tripModel.status == TripStatus.DRIVER) {
+            PassengersInfo(tripModel)
         }else{
-            DriverInfo(tripParticipant = tripParticipant)
+            DriverInfo(tripModel)
         }
 
-        if(tripParticipant.status == TripStatus.WITHOUT_STATUS){
-            DistanceInfo(distance = tripParticipant.distance)
-        }else{
-            DaysUntilInfo(daysUntil = tripParticipant.trip.daysUntil)
-        }
+//        if(tripModel.status == TripStatus.WITHOUT_STATUS){
+//            DistanceInfo(distance = tripModel.distance)
+//        }else{
+//            DaysUntilInfo(daysUntil = tripModel.daysUntil)
+//        }
     }
 }
 
 @Composable
-private fun TripInfoRight(tripParticipant: TripParticipantModel){
+private fun TripInfoRight(tripModel: TripModel){
     Column (
         modifier = Modifier
             .height(300.dp)
@@ -102,14 +103,14 @@ private fun TripInfoRight(tripParticipant: TripParticipantModel){
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = tripParticipant.trip.cityFrom, style = mint24)
+            Text(text = tripModel.cityFrom, style = mint24)
             Text(text = "-", style = mint24)
-            Text(text = tripParticipant.trip.cityTo, style = mint24)
+            Text(text = tripModel.cityTo, style = mint24)
         }
         Text(text = "Отправление:", style = blue18)
-        Text(text = tripParticipant.trip.departureDate + " " + tripParticipant.trip.departureTime, style = darkGray18)
+        Text(text = tripModel.departureDate + " " + tripModel.departureTime, style = darkGray18)
         Text(text = "Прибытие:", style = blue18)
-        Text(text = tripParticipant.trip.arrivalDate + " " + tripParticipant.trip.arrivalTime, style = darkGray18)
+        Text(text = tripModel.arrivalDate + " " + tripModel.arrivalTime, style = darkGray18)
 
         Box(
             modifier = Modifier
@@ -117,23 +118,23 @@ private fun TripInfoRight(tripParticipant: TripParticipantModel){
                 .padding(20.dp, 0.dp),
             contentAlignment = Alignment.BottomEnd
         ) {
-            Text(text = tripParticipant.cost.toString() + "₽", style = black36)
+            Text(text = tripModel.cost.toString() + "₽", style = black36)
         }
     }
 }
 
 @Composable
-private fun TripStatus(tripParticipant: TripParticipantModel){
+private fun TripStatus(tripModel: TripModel){
     Card(shape = RoundedCornerShape(15.dp), modifier = Modifier.padding(10.dp)){
-        if(tripParticipant.status == TripStatus.PASSENGER) {
+        if(tripModel.status == TripStatus.PASSENGER) {
             TripStatus(text = "Пассажир", color = MyBlue)
-        }else if(tripParticipant.status == TripStatus.PENDING){
+        }else if(tripModel.status == TripStatus.PENDING){
             TripStatus(text = "В ожидании", color = MyDarkGray)
-        }else if(tripParticipant.status == TripStatus.REJECTED){
+        }else if(tripModel.status == TripStatus.REJECTED){
             TripStatus(text = "Отклонено", color = MyRed)
-        }else if(tripParticipant.status == TripStatus.DRIVER){
+        }else if(tripModel.status == TripStatus.DRIVER){
             TripStatus(text = "Водитель", color = MyPurple)
-        }else if(tripParticipant.status == TripStatus.WITHOUT_STATUS){
+        }else if(tripModel.status == TripStatus.WITHOUT_STATUS){
             TripStatus(text = "Нет запроса", color = MyDarkGray)
         }
     }
@@ -153,11 +154,11 @@ private fun TripStatus(text: String, color: Color){
 }
 
 @Composable
-private fun DriverInfo(tripParticipant: TripParticipantModel){
+private fun DriverInfo(tripModel: TripModel){
     Text(text = "Водитель:", style = darkGray18)
     Image(
         //todo добавить проверку на null с пустой иконкой
-        painter = painterResource(id = tripParticipant.trip.driver.avatarId!!),
+        painter = painterResource(id = tripModel.driver.avatarId!!),
         contentDescription = "image",
         modifier = Modifier
             .size(70.dp)
@@ -166,30 +167,30 @@ private fun DriverInfo(tripParticipant: TripParticipantModel){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = tripParticipant.trip.driver.surname, style = darkGray14)
-        Text(text = tripParticipant.trip.driver.name, style = darkGray14)
+        Text(text = tripModel.driver.surname, style = darkGray14)
+        Text(text = tripModel.driver.name, style = darkGray14)
     }
 }
 
 @Composable
-private fun PassengersInfo(tripParticipant: TripParticipantModel){
+private fun PassengersInfo(tripModel: TripModel){
     Text(text = "Пассажиры:", style = darkGray18)
     Row(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        tripParticipant.trip.participants.forEach { participant ->
+        tripModel.participants.forEach { participant ->
             Image(
                 //todo добавить проверку на null с пустой иконкой
                 painter = painterResource(id = participant.avatarId!!),
                 contentDescription = "image",
                 modifier = Modifier
-                    .size(if (tripParticipant.trip.participants.size <= 2) 70.dp else if (tripParticipant.trip.participants.size == 3) 50.dp else 40.dp)
+                    .size(if (tripModel.participants.size <= 2) 70.dp else if (tripModel.participants.size == 3) 50.dp else 40.dp)
                     .clip(CircleShape)
             )
         }
     }
     Text(
-        text = if (tripParticipant.trip.participants.size == 1) "1 пассажир" else (tripParticipant.trip.participants.size.toString() + " пассажира"),
+        text = if (tripModel.participants.size == 1) "1 пассажир" else (tripModel.participants.size.toString() + " пассажира"),
         style = darkGray14
     )
 }

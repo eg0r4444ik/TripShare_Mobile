@@ -35,9 +35,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import io.appmetrica.analytics.AppMetrica
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.api.dto.trips.TripDTO
 import ru.vsu.tripshare_mobile.api.dto.users.RegistrationDTO
+import ru.vsu.tripshare_mobile.models.TripModel
+import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.services.AuthService
 import ru.vsu.tripshare_mobile.services.TripService
@@ -69,258 +75,33 @@ fun AddTrip(person: UserModel, navController: NavController){
             Text(text = "Создайте поездку!", style = mint36)
         }
 
-        AddPlaces(navController)
-        AddDepartureDateTime(navController)
-        AddArrivalDateTime(navController)
-
-        AddAdditionalOptions(navController)
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Button(
-                onClick = {
-//                    val trip = TripDTO(
-//                        2,
-//                        2,
-//                        true,
-//                        true,
-//                        true,
-//                        true,
-//                        true,
-//                        1,
-//                        null
-//                    )
-//
-//                    TripService.addTrip(trip)
-                    navController.navigate("trips_screen")
-                          },
-                colors = ButtonDefaults.buttonColors(containerColor = MyMint),
-                modifier = Modifier
-                    .height(70.dp)
-                    .width(380.dp)
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "Создать поездку", style = white24)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun AddAdditionalOptions(navController: NavController){
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp) ,
-        shape = RoundedCornerShape(15.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 5.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White,
-        )
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            var participantsCount by remember { mutableStateOf("") }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(10.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.person),
-                        contentDescription = "person",
-                        modifier = Modifier.size(50.dp)
-                    )
-                }
-                TextField(
-                    value = participantsCount,
-                    onValueChange = { newText ->
-                        participantsCount = newText
-                    },
-                    label = { Text("Количество пассажиров") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp),
-                    textStyle = darkGray18,
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = MyLightGray,
-                        focusedIndicatorColor = MyDarkGray,
-                        unfocusedIndicatorColor = MyDarkGray
-                    ),
-                    shape = RoundedCornerShape(15.dp)
-                )
-            }
-
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = "Выберите удобства", style = blue18)
-            }
-
-            val passengersCount = remember { mutableStateOf(false) }
-            val smoking = remember { mutableStateOf(false) }
-            val freeTrunk = remember { mutableStateOf(false) }
-            val animals = remember { mutableStateOf(false) }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                ru.vsu.tripshare_mobile.screens.find_trip_screens.TripFacilities(
-                    text = "Максимум 2 пассажира на заднем сидении",
-                    state = passengersCount
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                ru.vsu.tripshare_mobile.screens.find_trip_screens.TripFacilities(
-                    text = "Можно курить",
-                    state = smoking
-                )
-
-                ru.vsu.tripshare_mobile.screens.find_trip_screens.TripFacilities(
-                    text = "Свободный багажник",
-                    state = freeTrunk
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                ru.vsu.tripshare_mobile.screens.find_trip_screens.TripFacilities(
-                    text = "Можно перевозить животных",
-                    state = animals
-                )
-            }
-        }
-
-        var description by remember { mutableStateOf("") }
-
-        TextField(
-            value = description,
-            onValueChange = { newText ->
-                description = newText
-            },
-            label = { Text("Описание поездки") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp)
-                .padding(10.dp),
-            textStyle = darkGray18,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MyLightGray,
-                focusedIndicatorColor = MyDarkGray,
-                unfocusedIndicatorColor = MyDarkGray
-            ),
-            shape = RoundedCornerShape(15.dp)
-        )
-    }
-}
-
-@Composable
-fun TripFacilities(text: String, state: MutableState<Boolean>){
-    Row (
-        verticalAlignment = Alignment.CenterVertically
-    ){
-        Checkbox(
-            checked = state.value,
-            onCheckedChange = { state.value = it }
-        )
-        Text(
-            text,
-            style = darkGray14,
-            modifier = Modifier.padding(4.dp)
-        )
-    }
-}
-@Composable
-fun AddPlaces(navController: NavController){
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp) ,
-        shape = RoundedCornerShape(15.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 5.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White,
-        )
-    ) {
-
         var addressFrom by remember { mutableStateOf("") }
         var places = remember { mutableStateListOf<MutableState<String>>()}
         var addressTo by remember { mutableStateOf("") }
+        var departureDate by remember { mutableStateOf("") }
+        var departureTime by remember { mutableStateOf("") }
+        var arrivalDate by remember { mutableStateOf("") }
+        var arrivalTime by remember { mutableStateOf("") }
+        var participantsCount by remember { mutableStateOf("") }
+        val passengersCount = remember { mutableStateOf(false) }
+        val smoking = remember { mutableStateOf(false) }
+        val freeTrunk = remember { mutableStateOf(false) }
+        val animals = remember { mutableStateOf(false) }
+        var description by remember { mutableStateOf("") }
 
-        Row(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(10.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.location),
-                    contentDescription = "location",
-                    modifier = Modifier.size(50.dp)
-                )
-            }
-            TextField(
-                value = addressFrom,
-                onValueChange = { newText ->
-                    addressFrom = newText
-                },
-                label = { Text("Откуда") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                textStyle = darkGray18,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = MyLightGray,
-                    focusedIndicatorColor = MyDarkGray,
-                    unfocusedIndicatorColor = MyDarkGray
-                ),
-                shape = RoundedCornerShape(15.dp)
+                .padding(10.dp) ,
+            shape = RoundedCornerShape(15.dp),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 5.dp
+            ),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
             )
-        }
+        ) {
 
-        places.forEach{
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -339,13 +120,201 @@ fun AddPlaces(navController: NavController){
                         modifier = Modifier.size(50.dp)
                     )
                 }
-
                 TextField(
-                    value = it.value,
+                    value = addressFrom,
                     onValueChange = { newText ->
-                        it.value = newText
+                        addressFrom = newText
                     },
-                    label = { Text("Остановка") },
+                    label = { Text("Откуда") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    textStyle = darkGray18,
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = MyLightGray,
+                        focusedIndicatorColor = MyDarkGray,
+                        unfocusedIndicatorColor = MyDarkGray
+                    ),
+                    shape = RoundedCornerShape(15.dp)
+                )
+            }
+
+            places.forEach{
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.location),
+                            contentDescription = "location",
+                            modifier = Modifier.size(50.dp)
+                        )
+                    }
+
+                    TextField(
+                        value = it.value,
+                        onValueChange = { newText ->
+                            it.value = newText
+                        },
+                        label = { Text("Остановка") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        textStyle = darkGray18,
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = MyLightGray,
+                            focusedIndicatorColor = MyDarkGray,
+                            unfocusedIndicatorColor = MyDarkGray
+                        ),
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.location),
+                        contentDescription = "location",
+                        modifier = Modifier.size(50.dp)
+                    )
+                }
+                TextField(
+                    value = addressTo,
+                    onValueChange = { newText ->
+                        addressTo = newText
+                    },
+                    label = { Text("Куда") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    textStyle = darkGray18,
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = MyLightGray,
+                        focusedIndicatorColor = MyDarkGray,
+                        unfocusedIndicatorColor = MyDarkGray
+                    ),
+                    shape = RoundedCornerShape(15.dp)
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Button(
+                    onClick = { places.add(mutableStateOf("")) },
+                    colors = ButtonDefaults.buttonColors(containerColor = MyMint)
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "Добавить остановку", style = white18)
+                    }
+                }
+            }
+        }
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp) ,
+            shape = RoundedCornerShape(15.dp),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 5.dp
+            ),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
+            )
+        ) {
+
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Укажите дату в время отправления", style = mint18)
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.calendar),
+                        contentDescription = "calendar",
+                        modifier = Modifier.size(50.dp)
+                    )
+                }
+                TextField(
+                    value = departureDate,
+                    onValueChange = { newText ->
+                        departureDate = newText
+                    },
+                    label = { Text("Дата отправления") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    textStyle = darkGray18,
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = MyLightGray,
+                        focusedIndicatorColor = MyDarkGray,
+                        unfocusedIndicatorColor = MyDarkGray
+                    ),
+                    shape = RoundedCornerShape(15.dp)
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.clock),
+                        contentDescription = "clock",
+                        modifier = Modifier.size(50.dp)
+                    )
+                }
+                TextField(
+                    value = departureTime,
+                    onValueChange = { newText ->
+                        departureTime = newText
+                    },
+                    label = { Text("Время отправления") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
@@ -359,33 +328,216 @@ fun AddPlaces(navController: NavController){
                 )
             }
         }
-
-        Row(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
-            horizontalArrangement = Arrangement.SpaceAround
+                .padding(10.dp) ,
+            shape = RoundedCornerShape(15.dp),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 5.dp
+            ),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
+            )
         ) {
+
             Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(10.dp),
+                modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.location),
-                    contentDescription = "location",
-                    modifier = Modifier.size(50.dp)
-                )
+                Text(text = "Укажите примерную", style = mint18)
             }
-            TextField(
-                value = addressTo,
-                onValueChange = { newText ->
-                    addressTo = newText
-                },
-                label = { Text("Куда") },
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "дату в время прибытия", style = mint18)
+            }
+
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.calendar),
+                        contentDescription = "calendar",
+                        modifier = Modifier.size(50.dp)
+                    )
+                }
+                TextField(
+                    value = arrivalDate,
+                    onValueChange = { newText ->
+                        arrivalDate = newText
+                    },
+                    label = { Text("Дата прибытия") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    textStyle = darkGray18,
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = MyLightGray,
+                        focusedIndicatorColor = MyDarkGray,
+                        unfocusedIndicatorColor = MyDarkGray
+                    ),
+                    shape = RoundedCornerShape(15.dp)
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.clock),
+                        contentDescription = "clock",
+                        modifier = Modifier.size(50.dp)
+                    )
+                }
+                TextField(
+                    value = arrivalTime,
+                    onValueChange = { newText ->
+                        arrivalTime = newText
+                    },
+                    label = { Text("Время прибытия") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    textStyle = darkGray18,
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = MyLightGray,
+                        focusedIndicatorColor = MyDarkGray,
+                        unfocusedIndicatorColor = MyDarkGray
+                    ),
+                    shape = RoundedCornerShape(15.dp)
+                )
+            }
+        }
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp) ,
+            shape = RoundedCornerShape(15.dp),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 5.dp
+            ),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
+            )
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.person),
+                            contentDescription = "person",
+                            modifier = Modifier.size(50.dp)
+                        )
+                    }
+                    TextField(
+                        value = participantsCount,
+                        onValueChange = { newText ->
+                            participantsCount = newText
+                        },
+                        label = { Text("Количество пассажиров") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        textStyle = darkGray18,
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = MyLightGray,
+                            focusedIndicatorColor = MyDarkGray,
+                            unfocusedIndicatorColor = MyDarkGray
+                        ),
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                }
+
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "Выберите удобства", style = blue18)
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    ru.vsu.tripshare_mobile.screens.find_trip_screens.TripFacilities(
+                        text = "Максимум 2 пассажира на заднем сидении",
+                        state = passengersCount
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    ru.vsu.tripshare_mobile.screens.find_trip_screens.TripFacilities(
+                        text = "Можно курить",
+                        state = smoking
+                    )
+
+                    ru.vsu.tripshare_mobile.screens.find_trip_screens.TripFacilities(
+                        text = "Свободный багажник",
+                        state = freeTrunk
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    ru.vsu.tripshare_mobile.screens.find_trip_screens.TripFacilities(
+                        text = "Можно перевозить животных",
+                        state = animals
+                    )
+                }
+            }
+
+            TextField(
+                value = description,
+                onValueChange = { newText ->
+                    description = newText
+                },
+                label = { Text("Описание поездки") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
                     .padding(10.dp),
                 textStyle = darkGray18,
                 colors = TextFieldDefaults.textFieldColors(
@@ -404,223 +556,59 @@ fun AddPlaces(navController: NavController){
             contentAlignment = Alignment.Center
         ) {
             Button(
-                onClick = { places.add(mutableStateOf("")) },
-                colors = ButtonDefaults.buttonColors(containerColor = MyMint)
+                onClick = {
+                    val addTripEvent = "{\"button_clicked\":\"add_trip\"}"
+                    AppMetrica.reportEvent(
+                        "Adding a trip event",
+                        addTripEvent
+                    )
+
+                    var addresses = mutableStateListOf<String>()
+                    addresses.add(addressFrom)
+                    places.forEach {
+                        addresses.add(it.value)
+                    }
+                    addresses.add(addressTo)
+                    val trip = TripModel(
+                        1,
+                        addressFrom,
+                        addressTo,
+                        addresses,
+                        "5 дней",
+                        departureDate,
+                        departureTime,
+                        arrivalDate,
+                        arrivalTime,
+                        person,
+                        listOf<UserModel>(),
+                        passengersCount.value,
+                        smoking.value,
+                        animals.value,
+                        freeTrunk.value,
+                        null,
+                        TripStatus.DRIVER,
+                        2000
+                    )
+
+                    CoroutineScope(Dispatchers.Main).launch {
+                        TripService.addTrip(trip)
+                    }
+                    navController.navigate("trips_screen")
+                          },
+                colors = ButtonDefaults.buttonColors(containerColor = MyMint),
+                modifier = Modifier
+                    .height(70.dp)
+                    .width(380.dp)
             ) {
                 Box(
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "Добавить остановку", style = white18)
+                    Text(text = "Создать поездку", style = white24)
                 }
             }
         }
     }
 }
 
-@Composable
-fun AddDepartureDateTime(navController: NavController){
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp) ,
-        shape = RoundedCornerShape(15.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 5.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White,
-        )
-    ) {
 
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = "Укажите дату в время отправления", style = mint18)
-        }
 
-        var departureDate by remember { mutableStateOf("") }
-        var departureTime by remember { mutableStateOf("") }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(10.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.calendar),
-                    contentDescription = "calendar",
-                    modifier = Modifier.size(50.dp)
-                )
-            }
-            TextField(
-                value = departureDate,
-                onValueChange = { newText ->
-                    departureDate = newText
-                },
-                label = { Text("Дата отправления") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                textStyle = darkGray18,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = MyLightGray,
-                    focusedIndicatorColor = MyDarkGray,
-                    unfocusedIndicatorColor = MyDarkGray
-                ),
-                shape = RoundedCornerShape(15.dp)
-            )
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(10.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.clock),
-                    contentDescription = "clock",
-                    modifier = Modifier.size(50.dp)
-                )
-            }
-            TextField(
-                value = departureTime,
-                onValueChange = { newText ->
-                    departureTime = newText
-                },
-                label = { Text("Время отправления") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                textStyle = darkGray18,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = MyLightGray,
-                    focusedIndicatorColor = MyDarkGray,
-                    unfocusedIndicatorColor = MyDarkGray
-                ),
-                shape = RoundedCornerShape(15.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun AddArrivalDateTime(navController: NavController){
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp) ,
-        shape = RoundedCornerShape(15.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 5.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White,
-        )
-    ) {
-
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = "Укажите примерную", style = mint18)
-        }
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = "дату в время прибытия", style = mint18)
-        }
-
-        var arrivalDate by remember { mutableStateOf("") }
-        var arrivalTime by remember { mutableStateOf("") }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(10.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.calendar),
-                    contentDescription = "calendar",
-                    modifier = Modifier.size(50.dp)
-                )
-            }
-            TextField(
-                value = arrivalDate,
-                onValueChange = { newText ->
-                    arrivalDate = newText
-                },
-                label = { Text("Дата прибытия") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                textStyle = darkGray18,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = MyLightGray,
-                    focusedIndicatorColor = MyDarkGray,
-                    unfocusedIndicatorColor = MyDarkGray
-                ),
-                shape = RoundedCornerShape(15.dp)
-            )
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(10.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.clock),
-                    contentDescription = "clock",
-                    modifier = Modifier.size(50.dp)
-                )
-            }
-            TextField(
-                value = arrivalTime,
-                onValueChange = { newText ->
-                    arrivalTime = newText
-                },
-                label = { Text("Время прибытия") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                textStyle = darkGray18,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = MyLightGray,
-                    focusedIndicatorColor = MyDarkGray,
-                    unfocusedIndicatorColor = MyDarkGray
-                ),
-                shape = RoundedCornerShape(15.dp)
-            )
-        }
-    }
-}
