@@ -50,6 +50,7 @@ android {
 }
 
 dependencies {
+    implementation("io.appmetrica.analytics:analytics:6.5.0")
     implementation ("androidx.compose.ui:ui:1.4.0")
     implementation ("androidx.compose.material:material:1.4.0")
     implementation ("androidx.compose.ui:ui-tooling-preview:1.4.0")

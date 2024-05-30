@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import io.appmetrica.analytics.AppMetrica
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -77,6 +78,11 @@ fun SecondAuthScreen(phone: String, navController: NavController){
 
             Button(
                 onClick = {
+                    val authEvent = "{\"button_clicked\":\"auth\"}"
+                    AppMetrica.reportEvent(
+                        "Authorization event",
+                        authEvent
+                    )
                     CoroutineScope(Dispatchers.Main).launch {
                         val user = AuthService.auth(phone, password)
                         if (user.isFailure) {

@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import io.appmetrica.analytics.AppMetrica
 import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyLightGray
@@ -127,6 +128,11 @@ fun EditInfo(user: UserModel, navController: NavController){
 
         Button(
             onClick = {
+                val editInfoEvent = "{\"button_clicked\":\"edit\"}"
+                AppMetrica.reportEvent(
+                    "Edit information about yourself event",
+                    editInfoEvent
+                )
                 user.name = name
                 user.surname = surname
                 user.email = email

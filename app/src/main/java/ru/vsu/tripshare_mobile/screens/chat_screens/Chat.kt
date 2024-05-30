@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import io.appmetrica.analytics.AppMetrica
 import ru.vsu.tripshare_mobile.models.ChatModel
 import ru.vsu.tripshare_mobile.models.MessageModel
 import ru.vsu.tripshare_mobile.models.UserModel
@@ -141,7 +142,12 @@ fun Chat(chat: ChatModel, user: UserModel, navController: NavController){
                     imeAction = ImeAction.Send
                 ),
                 keyboardActions = KeyboardActions(onSend = {
-                    chat.messages.add(MessageModel(user, text, false, Date()))
+                    val sendMessageEvent = "{\"button_clicked\":\"send_message\"}"
+                    AppMetrica.reportEvent(
+                        "Send message event",
+                        sendMessageEvent
+                    )
+                    chat.messages.add(MessageModel(user.id, text, false, Date()))
                     text = ""
                 }),
                 shape = RoundedCornerShape(15.dp)

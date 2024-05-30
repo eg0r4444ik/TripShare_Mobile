@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import io.appmetrica.analytics.AppMetrica
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyLightGray
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
@@ -273,6 +274,11 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
 
         Button(
             onClick = {
+                val registrationEvent = "{\"button_clicked\":\"registration\"}"
+                AppMetrica.reportEvent(
+                    "Registration event",
+                    registrationEvent
+                )
                 if(pass1.equals(pass2)) {
                     val user = RegistrationDTO(
                         phone,
