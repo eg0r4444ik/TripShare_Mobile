@@ -17,10 +17,10 @@ class StopDTO {
         place_name: String,
         datetime: Date,
         num: Int,
-        is_start: Boolean?,
-        is_stop: Boolean?,
-        trip_id: Int?,
-        id: Int?
+        is_start: Boolean,
+        is_stop: Boolean,
+        trip_id: Int,
+        id: Int
     ) {
         this.place = place
         this.place_name = place_name
@@ -30,5 +30,21 @@ class StopDTO {
         this.is_stop = is_stop
         this.trip_id = trip_id
         this.id = id
+    }
+
+    constructor(
+        place: String,
+        place_name: String,
+        datetime: Date,
+        num: Int
+    ) {
+        this.place = place
+        this.place_name = place_name
+        this.datetime = datetime
+        this.num = num
+        this.is_start = null
+        this.is_stop = null
+        this.trip_id = null
+        this.id = null
     }
 }

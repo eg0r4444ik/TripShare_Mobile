@@ -12,6 +12,11 @@ data class TripModel(
     val arrivalTime: String,
     val driver: UserModel,
     val participants: List<UserModel>,
-    val facilities: List<String>,
-    val car: CarModel
+    val maxTwoPassengersInTheBackSeat: Boolean,
+    val smokingAllowed: Boolean,
+    val petsAllowed: Boolean,
+    val freeTrunk: Boolean,
+    val car: CarModel?,
+    val status: TripStatus,
+    val cost: Int
 )
