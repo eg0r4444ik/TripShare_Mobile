@@ -10,12 +10,14 @@ import ru.vsu.tripshare_mobile.models.CarModel
 
 object CarService {
 
-    fun addCar(carModel: CarModel){
-        try {
-            val carDTO = fromModelToDTO(carModel)
-            AppConfig.retrofitAPI.addCar(carDTO)
-        } catch (e: Exception) {
-            e.stackTrace
+    suspend fun addCar(carModel: CarModel){
+        return withContext(Dispatchers.IO) {
+            try {
+                val carDTO = fromModelToDTO(carModel)
+                AppConfig.retrofitAPI.addCar(carDTO)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
         }
     }
 
@@ -62,6 +64,7 @@ object CarService {
 
     private fun fromDTOtoModel(carDTO: CarDTO): CarModel {
         val car = CarModel(
+            carDTO.id!!,
             carDTO.brand,
             carDTO.model,
             carDTO.color,

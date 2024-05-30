@@ -26,7 +26,7 @@ object AuthService {
                     RequestBody.create("text/plain".toMediaTypeOrNull(), username),
                     RequestBody.create("text/plain".toMediaTypeOrNull(), password))
                 AppConfig.authManager.saveToken(token.access_token)
-                UserService.getUser()
+                UserService.getMe()
             } catch (e: Exception) {
                 Result.failure(e)
             }

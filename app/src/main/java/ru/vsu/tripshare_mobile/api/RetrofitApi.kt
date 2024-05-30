@@ -9,6 +9,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 import ru.vsu.tripshare_mobile.api.dto.cars.CarDTO
 import ru.vsu.tripshare_mobile.api.dto.chats.ChatDTO
 import ru.vsu.tripshare_mobile.api.dto.chats.MessageDTO
@@ -28,26 +29,29 @@ interface RetrofitApi {
     suspend fun getToken(@Part("username") username: RequestBody, @Part("password") password: RequestBody): TokenDTO
 
     @GET("users/me")
-    suspend fun getUser(): UserDTO
+    suspend fun getMe(): UserDTO
 
     @PUT("users/me")
-    fun updateUser(@Body userDTO: UserDTO): UserDTO
+    fun updateMe(@Body userDTO: UserDTO): UserDTO
+
+    @GET("users/{user_id}")
+    suspend fun getUser(@Path("user_id") id: Int): UserDTO
 
     //-------------------------------------------------------------------------------------------------------------------------------------------
 
     @POST("trips/")
-    fun addTrip(@Body tripDTO: TripDTO): TripDTO
+    suspend fun addTrip(@Body tripDTO: TripDTO): TripDTO
 
     @GET("trips/as_driver")
     suspend fun getTripsAsDriver(): List<TripDTO>
 
     @GET("trips/search")
-    suspend fun findTrips(): List<TripDTO> //???
+    suspend fun findTrips(@Query("place_start") placeStart: String, @Query("place_end") placeEnd: String): List<TripDTO>
 
     //-------------------------------------------------------------------------------------------------------------------------------------------
 
     @POST("cars/")
-    fun addCar(@Body carDTO: CarDTO): CarDTO
+    suspend fun addCar(@Body carDTO: CarDTO): CarDTO
 
     @GET("cars/me")
     suspend fun getMyCars(): List<CarDTO>
@@ -69,7 +73,7 @@ interface RetrofitApi {
     suspend fun getMyChats(): List<ChatDTO>
 
     @POST("chat/messages")
-    fun addMessage(@Body messageDTO: MessageDTO): MessageDTO //???
+    fun addMessage(@Query("receiver_id") receiverId: Int, @Body messageDTO: MessageDTO): MessageDTO
 
     @GET("chat/{chat_id}/messages")
     suspend fun getChatMessages(@Path("chat_id") id: Int): List<MessageDTO>
@@ -84,5 +88,11 @@ interface RetrofitApi {
 
     @DELETE("reviews/{review_id}")
     fun deleteReview(@Path("review_id") id: Int): String
+
+    @GET("reviews/me")
+    suspend fun getMyReviews(): List<ReviewDTO>
+
+    @GET("reviews/user/{user_id}")
+    suspend fun getUsersReviews(@Path("user_id") id: Int): List<ReviewDTO>
 
 }
