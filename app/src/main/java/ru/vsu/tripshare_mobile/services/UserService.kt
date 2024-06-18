@@ -1,6 +1,7 @@
 package ru.vsu.tripshare_mobile.services
 
 import android.security.keystore.UserNotAuthenticatedException
+import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.vsu.tripshare_mobile.api.dto.users.UserDTO
@@ -39,14 +40,17 @@ object UserService {
         }
     }
 
-    fun updateMe(){
-        val user = AppConfig.currentUser!!
+    suspend fun updateMe(){
         try {
+            val user = AppConfig.currentUser!!
             val userDTO = fromModelToDTO(user)
             AppConfig.retrofitAPI.updateMe(userDTO)
-            AppConfig.currentUser = user
         } catch (e: Exception) {
-            e.stackTrace
+            Toast.makeText(
+                AppConfig.appContext,
+                "Введенные данные некорректны",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

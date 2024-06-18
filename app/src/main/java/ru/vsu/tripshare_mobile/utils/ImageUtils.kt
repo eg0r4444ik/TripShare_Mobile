@@ -1,12 +1,11 @@
 package ru.vsu.tripshare_mobile.utils
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
+import com.google.firebase.Firebase
+import com.google.firebase.storage.storage
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 
 object ImageUtils {
 
@@ -20,6 +19,26 @@ object ImageUtils {
     fun base64ToBitmap(base64String: String): Bitmap {
         val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+    }
+
+    fun saveImage(bitmap: Bitmap){
+        val storage = Firebase.storage.reference.child("images")
+        val task = storage.child("images").putBytes(
+            bitmapToByteArray(bitmap)
+        )
+        task.addOnSuccessListener { uploadTask ->
+            uploadTask.metadata?.reference
+                ?.downloadUrl?.addOnCompleteListener{ uriTask ->
+                    val uri = uriTask.result.toString()
+                    print(uri)
+                }
+        }
+    }
+
+    fun bitmapToByteArray(bitmap: Bitmap): ByteArray{
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        return baos.toByteArray()
     }
 
 }

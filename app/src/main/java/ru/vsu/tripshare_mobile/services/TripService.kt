@@ -4,13 +4,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import ru.vsu.tripshare_mobile.api.dto.trips.StopDTO
 import ru.vsu.tripshare_mobile.api.dto.trips.TripDTO
 import ru.vsu.tripshare_mobile.api.dto.trips.TripStatusDTO
 import ru.vsu.tripshare_mobile.config.AppConfig
+import ru.vsu.tripshare_mobile.models.StopModel
 import ru.vsu.tripshare_mobile.models.TripModel
 import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.models.UserModel
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.Date
 
 object TripService {
@@ -28,15 +35,18 @@ object TripService {
 
     suspend fun getTripsAsDriver(): Result<List<TripModel>>{
         return withContext(Dispatchers.IO) {
+            var trip = mutableListOf<TripModel>()
             try {
                 val tripDTO = AppConfig.retrofitAPI.getTripsAsDriver()
-                var trip = mutableListOf<TripModel>()
                 tripDTO.forEach{
-                    trip.add(tripFromDTOtoModel(it))
+                    val tripModel = tripFromDTOtoModel(it)
+                    if(tripModel.isSuccess && tripModel.getOrNull() != null) {
+                        trip.add(tripModel.getOrNull()!!)
+                    }
                 }
                 Result.success(trip)
             } catch (e: Exception) {
-                Result.failure(e)
+                Result.success(trip)
             }
         }
     }
@@ -47,7 +57,10 @@ object TripService {
                 val tripDTO = AppConfig.retrofitAPI.findTrips(placeStart, placeEnd)
                 var trip = mutableListOf<TripModel>()
                 tripDTO.forEach{
-                    trip.add(tripFromDTOtoModel(it))
+                    val tripModel = tripFromDTOtoModel(it)
+                    if(tripModel.isSuccess && tripModel.getOrNull() != null) {
+                        trip.add(tripModel.getOrNull()!!)
+                    }
                 }
                 Result.success(trip)
             } catch (e: Exception) {
@@ -65,53 +78,61 @@ object TripService {
             tripModel.petsAllowed,
             tripModel.freeTrunk,
             1,
-            stopsFromModelToDTO(tripModel.addresses)
+            stopsFromModelToDTO(tripModel.stops)
         )
 
         return tripDTO
     }
 
-    private fun tripFromDTOtoModel(tripDTO: TripDTO): TripModel{
-        var tripModel: TripModel? = null
-
-        CoroutineScope(Dispatchers.Main).launch {
-            val driver = ValidationService.validate(UserService.getUser(tripDTO.driver_id!!), "Пользователя не существует")
-            if (driver != null){
-                tripModel = TripModel(
-                    tripDTO.id!!,
-                    tripDTO.stops.get(0).place_name,
-                    tripDTO.stops.get(tripDTO.stops.size).place_name,
-                    stopsFromDTOtoModel(tripDTO.stops),
-                    "5 дней",
-                    "",
-                    "",
-                    "",
-                   "",
-                    driver,
-                    listOf<UserModel>(),
-                    tripDTO.max_two_passengers_in_the_back_seat,
-                    tripDTO.smoking_allowed,
-                    tripDTO.pets_allowed,
-                    tripDTO.free_trunk,
-                    null,
-                    statusFromDTOtoModel(tripDTO.status!!),
-                    tripDTO.cost_sum
-                )
+    private suspend fun tripFromDTOtoModel(tripDTO: TripDTO): Result<TripModel>{
+        return withContext(Dispatchers.IO) {
+            try {
+                val driver = ValidationService.validate(UserService.getUser(tripDTO.driver_id!!), "Пользователя не существует")
+                if (driver != null){
+                    val trip = TripModel(
+                        tripDTO.id!!,
+                        tripDTO.stops.get(0).place_name,
+                        tripDTO.stops.get(tripDTO.stops.size-1).place_name,
+                        stopsFromDTOtoModel(tripDTO.stops),
+                        "5 дней",
+                        "",
+                        "",
+                        "",
+                        "",
+                        driver,
+                        listOf<UserModel>(),
+                        tripDTO.max_two_passengers_in_the_back_seat,
+                        tripDTO.smoking_allowed,
+                        tripDTO.pets_allowed,
+                        tripDTO.free_trunk,
+                        null,
+                        statusFromDTOtoModel(tripDTO.status!!),
+                        tripDTO.cost_sum
+                    )
+                    Result.success(trip)
+                }else{
+                    Result.failure(Exception())
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
             }
         }
-
-        return tripModel!!
     }
 
-    private fun stopsFromModelToDTO(stops: List<String>): List<StopDTO>{
+    private fun stopsFromModelToDTO(stops: List<StopModel>): List<StopDTO>{
         var stopsDTO = mutableListOf<StopDTO>()
-        var curr = 1
+        var curr = 0
         stops.forEach{
+            val inputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+            val localDateTime = LocalDateTime.parse(it.date + " " + it.time, inputFormatter)
+            val instant = localDateTime.toInstant(ZoneOffset.UTC)
+            val isoFormatter = DateTimeFormatter.ISO_INSTANT
+            val iso8601String = isoFormatter.format(instant)
             stopsDTO.add(
                 StopDTO(
                     "55.75972°",
-                    it,
-                    Date(),
+                    it.placeName,
+                    iso8601String,
                     curr)
             )
             curr++
@@ -120,10 +141,10 @@ object TripService {
         return stopsDTO
     }
 
-    private fun stopsFromDTOtoModel(stopsDTO: List<StopDTO>): List<String>{
-        var stops = mutableListOf<String>()
+    private fun stopsFromDTOtoModel(stopsDTO: List<StopDTO>): List<StopModel>{
+        var stops = mutableListOf<StopModel>()
         stopsDTO.forEach{
-            stops.add(it.place_name)
+            stops.add(StopModel(it.place_name, "", ""))
         }
         return stops
     }

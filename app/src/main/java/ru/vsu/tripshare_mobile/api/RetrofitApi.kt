@@ -22,7 +22,7 @@ import ru.vsu.tripshare_mobile.api.dto.users.UserDTO
 interface RetrofitApi {
 
     @POST("users/")
-    fun registerUser(@Body registrationDTO: RegistrationDTO?): UserDTO
+    suspend fun registerUser(@Body registrationDTO: RegistrationDTO?): UserDTO
 
     @Multipart
     @POST("users/token")
@@ -32,7 +32,7 @@ interface RetrofitApi {
     suspend fun getMe(): UserDTO
 
     @PUT("users/me")
-    fun updateMe(@Body userDTO: UserDTO): UserDTO
+    suspend fun updateMe(@Body userDTO: UserDTO): UserDTO
 
     @GET("users/{user_id}")
     suspend fun getUser(@Path("user_id") id: Int): UserDTO
@@ -73,7 +73,7 @@ interface RetrofitApi {
     suspend fun getMyChats(): List<ChatDTO>
 
     @POST("chat/messages")
-    fun addMessage(@Query("receiver_id") receiverId: Int, @Body messageDTO: MessageDTO): MessageDTO
+    suspend fun addMessage(@Query("receiver_id") receiverId: Int, @Body messageDTO: MessageDTO): MessageDTO
 
     @GET("chat/{chat_id}/messages")
     suspend fun getChatMessages(@Path("chat_id") id: Int): List<MessageDTO>
@@ -81,7 +81,7 @@ interface RetrofitApi {
     //-------------------------------------------------------------------------------------------------------------------------------------------
 
     @POST("reviews/")
-    fun addReview(@Body reviewDTO: ReviewDTO): ReviewDTO
+    suspend fun addReview(@Body reviewDTO: ReviewDTO): ReviewDTO
 
     @GET("reviews/{review_id}")
     suspend fun getReview(@Path("review_id") id: Int): ReviewDTO

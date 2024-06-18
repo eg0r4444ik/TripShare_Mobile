@@ -2,20 +2,20 @@ package ru.vsu.tripshare_mobile.services
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.http.GET
-import retrofit2.http.Path
 import ru.vsu.tripshare_mobile.api.dto.reviews.ReviewDTO
 import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.ReviewModel
+import ru.vsu.tripshare_mobile.models.UserModel
 
 object ReviewService {
 
-    fun addReview(reviewModel: ReviewModel, userId: Int){
-        try {
-            val reviewDTO = fromModelToDTO(reviewModel, userId)
-            AppConfig.retrofitAPI.addReview(reviewDTO)
-        } catch (e: Exception) {
-            e.stackTrace
+    suspend fun addReview(reviewModel: ReviewModel){
+        return withContext(Dispatchers.IO) {
+            try {
+                val reviewDTO = fromModelToDTO(reviewModel)
+                AppConfig.retrofitAPI.addReview(reviewDTO)
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -23,8 +23,12 @@ object ReviewService {
         return withContext(Dispatchers.IO) {
             try {
                 val reviewDTO = AppConfig.retrofitAPI.getReview(reviewId)
-                val review = fromDTOtoModel(reviewDTO)
-                Result.success(review)
+                val writer = UserService.getUser(reviewDTO.writer_id!!)
+                var review: ReviewModel? = null
+                if(writer.isSuccess) {
+                    review = fromDTOtoModel(reviewDTO, writer.getOrNull()!!)
+                }
+                Result.success(review!!)
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -45,7 +49,10 @@ object ReviewService {
                 val reviewsDTO = AppConfig.retrofitAPI.getMyReviews()
                 val reviews = mutableListOf<ReviewModel>()
                 reviewsDTO.forEach{
-                    reviews.add(fromDTOtoModel(it))
+                    val writer = UserService.getUser(it.writer_id!!)
+                    if(writer.isSuccess) {
+                        reviews.add(fromDTOtoModel(it, writer.getOrNull()!!))
+                    }
                 }
                 Result.success(reviews)
             } catch (e: Exception) {
@@ -60,7 +67,10 @@ object ReviewService {
                 val reviewsDTO = AppConfig.retrofitAPI.getUsersReviews(userId)
                 val reviews = mutableListOf<ReviewModel>()
                 reviewsDTO.forEach{
-                    reviews.add(fromDTOtoModel(it))
+                    val writer = UserService.getUser(it.writer_id!!)
+                    if(writer.isSuccess) {
+                        reviews.add(fromDTOtoModel(it, writer.getOrNull()!!))
+                    }
                 }
                 Result.success(reviews)
             } catch (e: Exception) {
@@ -69,19 +79,19 @@ object ReviewService {
         }
     }
 
-    private fun fromModelToDTO(reviewModel: ReviewModel, userId: Int): ReviewDTO {
+    private fun fromModelToDTO(reviewModel: ReviewModel): ReviewDTO {
         val reviewDTO = ReviewDTO(
             reviewModel.comment,
             reviewModel.grade,
             null,
-            userId
+            reviewModel.author.id
         )
         return reviewDTO
     }
 
-    private fun fromDTOtoModel(reviewDTO: ReviewDTO): ReviewModel {
+    private fun fromDTOtoModel(reviewDTO: ReviewDTO, writer: UserModel): ReviewModel {
         val reviewModel = ReviewModel(
-            UserService.fromDTOtoModel(reviewDTO.writer!!),
+            writer,
             reviewDTO.rating,
             reviewDTO.text
         )
