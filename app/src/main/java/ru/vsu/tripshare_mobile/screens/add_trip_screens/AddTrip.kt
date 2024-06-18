@@ -1,5 +1,6 @@
 package ru.vsu.tripshare_mobile.screens.add_trip_screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +43,8 @@ import kotlinx.coroutines.launch
 import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.api.dto.trips.TripDTO
 import ru.vsu.tripshare_mobile.api.dto.users.RegistrationDTO
+import ru.vsu.tripshare_mobile.config.AppConfig
+import ru.vsu.tripshare_mobile.models.StopModel
 import ru.vsu.tripshare_mobile.models.TripModel
 import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.models.UserModel
@@ -57,6 +60,7 @@ import ru.vsu.tripshare_mobile.ui.theme.mint18
 import ru.vsu.tripshare_mobile.ui.theme.mint36
 import ru.vsu.tripshare_mobile.ui.theme.white18
 import ru.vsu.tripshare_mobile.ui.theme.white24
+import java.lang.Exception
 
 @Composable
 fun AddTrip(person: UserModel, navController: NavController){
@@ -84,6 +88,7 @@ fun AddTrip(person: UserModel, navController: NavController){
         var arrivalTime by remember { mutableStateOf("") }
         var participantsCount by remember { mutableStateOf("") }
         val passengersCount = remember { mutableStateOf(false) }
+        var cost by remember { mutableStateOf("") }
         val smoking = remember { mutableStateOf(false) }
         val freeTrunk = remember { mutableStateOf(false) }
         val animals = remember { mutableStateOf(false) }
@@ -480,6 +485,43 @@ fun AddTrip(person: UserModel, navController: NavController){
                     )
                 }
 
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.money),
+                            contentDescription = "money",
+                            modifier = Modifier.size(50.dp)
+                        )
+                    }
+                    TextField(
+                        value = cost,
+                        onValueChange = { newText ->
+                            cost = newText
+                        },
+                        label = { Text("Стоимость поездки") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        textStyle = darkGray18,
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = MyLightGray,
+                            focusedIndicatorColor = MyDarkGray,
+                            unfocusedIndicatorColor = MyDarkGray
+                        ),
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                }
+
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
@@ -563,38 +605,48 @@ fun AddTrip(person: UserModel, navController: NavController){
                         addTripEvent
                     )
 
-                    var addresses = mutableStateListOf<String>()
-                    addresses.add(addressFrom)
-                    places.forEach {
-                        addresses.add(it.value)
-                    }
-                    addresses.add(addressTo)
-                    val trip = TripModel(
-                        1,
-                        addressFrom,
-                        addressTo,
-                        addresses,
-                        "5 дней",
-                        departureDate,
-                        departureTime,
-                        arrivalDate,
-                        arrivalTime,
-                        person,
-                        listOf<UserModel>(),
-                        passengersCount.value,
-                        smoking.value,
-                        animals.value,
-                        freeTrunk.value,
-                        null,
-                        TripStatus.DRIVER,
-                        2000
-                    )
+                    try {
+                        var stops = mutableStateListOf<StopModel>()
+                        stops.add(StopModel(addressFrom, departureDate, departureTime))
+                        places.forEach {
+                            stops.add(StopModel(it.value, departureDate, departureTime))
+                        }
+                        stops.add(StopModel(addressTo, arrivalDate, arrivalTime))
 
-                    CoroutineScope(Dispatchers.Main).launch {
-                        TripService.addTrip(trip)
+                        val trip = TripModel(
+                            1,
+                            addressFrom,
+                            addressTo,
+                            stops,
+                            "5 дней",
+                            departureDate,
+                            departureTime,
+                            arrivalDate,
+                            arrivalTime,
+                            person,
+                            listOf<UserModel>(),
+                            passengersCount.value,
+                            smoking.value,
+                            animals.value,
+                            freeTrunk.value,
+                            null,
+                            TripStatus.DRIVER,
+                            cost.toInt()
+                        )
+
+                        CoroutineScope(Dispatchers.Main).launch {
+                            TripService.addTrip(trip)
+                        }
+                        navController.navigate("trips_screen")
+                    }catch (e: Exception){
+                        Toast.makeText(
+                            AppConfig.appContext,
+                            "Введенные данные неккоректны. Проверьте, что дата и время удоблетворяют формату 'dd.mm.yyyy' и 'hh:mm', " +
+                                    "а также что стоимость поездки и количество пассажиров - целые числа",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                    navController.navigate("trips_screen")
-                          },
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = MyMint),
                 modifier = Modifier
                     .height(70.dp)

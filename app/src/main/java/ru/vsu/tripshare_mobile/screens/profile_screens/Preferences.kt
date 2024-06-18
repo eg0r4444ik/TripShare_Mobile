@@ -54,11 +54,13 @@ fun Preferences(user: UserModel, person: UserModel, navController: NavController
                 modifier = Modifier.padding(10.dp),
                 horizontalAlignment = Alignment.Start
             ){
-                Preference("Музыкальные предпочтения", user.musicPreferences)
-                Preference("Общительность", user.talkativeness.toString() + "/10")
-                Preference("Отношение к курению", user.attitudeTowardsSmoking.toString() + "/10")
-                Preference("Отношение к животным", user.attitudeTowardsAnimals.toString() + "/10")
-                Preference("Дополнительная информация", user.info)
+                Preference("Музыкальные предпочтения", if(user.musicPreferences == null ||
+                    user.musicPreferences.equals("")) "Не указано" else user.musicPreferences)
+                Preference("Общительность", if(user.talkativeness == null) "Не указано" else user.talkativeness.toString() + "/10")
+                Preference("Отношение к курению", if(user.attitudeTowardsSmoking == null) "Не указано" else user.attitudeTowardsSmoking.toString() + "/10")
+                Preference("Отношение к животным", if(user.attitudeTowardsAnimals == null) "Не указано" else user.attitudeTowardsAnimals.toString() + "/10")
+                Preference("Дополнительная информация", if(user.info == null
+                    || user.info.equals("")) "Не указано" else user.info)
             }
 
             if(person.id == user.id) {

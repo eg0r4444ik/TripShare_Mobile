@@ -4,7 +4,6 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -34,13 +33,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.UserModel
-import ru.vsu.tripshare_mobile.services.ImageService
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
 import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
@@ -48,6 +46,7 @@ import ru.vsu.tripshare_mobile.ui.theme.darkGray36
 import ru.vsu.tripshare_mobile.ui.theme.darkGray48
 import ru.vsu.tripshare_mobile.ui.theme.mint18
 import ru.vsu.tripshare_mobile.ui.theme.white18
+import ru.vsu.tripshare_mobile.utils.ImageUtils
 
 @Composable
 fun BasicInformation(user: UserModel, person: UserModel, navController: NavController){
@@ -83,15 +82,13 @@ fun BasicInformation(user: UserModel, person: UserModel, navController: NavContr
                     .padding(10.dp),
                 contentAlignment = Alignment.TopEnd
             ) {
-                user.avatarId?.let { painterResource(id = it) }?.let {
-                    Image(
-                        painter = it,
-                        contentDescription = "image",
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape)
-                    )
-                }
+                Image(
+                    painterResource(id = if(user.avatarId == null) R.drawable.baseline_person else user.avatarId!!),
+                    contentDescription = "image",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                )
             }
         }
 
@@ -126,8 +123,7 @@ fun BasicInformation(user: UserModel, person: UserModel, navController: NavContr
                     .padding(10.dp)
             ) {
                 Button(
-                    //todo добавить добавление чата
-                    onClick = { navController.navigate("chat") },
+                    onClick = { navController.navigate("new_chat/${user.id}") },
                     colors = ButtonDefaults.buttonColors(containerColor = MyBlue),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -147,8 +143,8 @@ fun BasicInformation(user: UserModel, person: UserModel, navController: NavContr
 
 @Composable
 fun SelectPhoto(){
+    val context = AppConfig.appContext
     var imageUri by remember { mutableStateOf<Uri?>(null) }
-    val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -160,27 +156,21 @@ fun SelectPhoto(){
             text = "Изменить фото профиля",
             style = mint18,
             modifier = Modifier.clickable {
-                Toast.makeText(
-                    AppConfig.appContext,
-                    "Добавление фото пока недоступно",
-                    Toast.LENGTH_SHORT
-                ).show()
-//                launcher.launch("image/*")
-        })
-        //todo отправить фото на бек
-//        imageUri?.let {
-//            val bitmap = if (Build.VERSION.SDK_INT < 28) {
-//                MediaStore.Images.Media.getBitmap(context.contentResolver, it)
-//            } else {
-//                val source = ImageDecoder.createSource(context.contentResolver, it)
-//                ImageDecoder.decodeBitmap(source)
-//            }
-//
-//            val id = ImageService.addImage(bitmap)
-//            print(id)
-//            bitmap?.let {
+                launcher.launch("image/*")
+            }
+        )
+        imageUri?.let {
+            val bitmap = if (Build.VERSION.SDK_INT < 28) {
+                MediaStore.Images.Media.getBitmap(context.contentResolver, it)
+            } else {
+                val source = ImageDecoder.createSource(context.contentResolver, it)
+                ImageDecoder.decodeBitmap(source)
+            }
+
+            bitmap?.let {
+                ImageUtils.saveImage(bitmap)
 //                Image(bitmap = it.asImageBitmap(), contentDescription = null, modifier = Modifier.size(200.dp))
-//            }
-//        }
+            }
+        }
     }
 }

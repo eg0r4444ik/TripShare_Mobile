@@ -1,5 +1,7 @@
 package ru.vsu.tripshare_mobile.screens.profile_screens.settings
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,8 +28,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.vsu.tripshare_mobile.R
+import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
+import ru.vsu.tripshare_mobile.ui.theme.MyRed
 import ru.vsu.tripshare_mobile.ui.theme.darkGray24
 import ru.vsu.tripshare_mobile.ui.theme.darkGray48
 import ru.vsu.tripshare_mobile.ui.theme.mint24
@@ -69,8 +74,7 @@ fun Settings(user: UserModel, navController: NavController){
                 Text(text = user.name, style = darkGray48)
 
                 Image(
-                    //todo заменить !! на проверку на null
-                    painter = painterResource(id = user.avatarId!!),
+                    painterResource(id = if(user.avatarId == null) R.drawable.baseline_person else user.avatarId!!),
                     contentDescription = "author",
                     modifier = Modifier
                         .size(80.dp)
@@ -80,45 +84,7 @@ fun Settings(user: UserModel, navController: NavController){
         }
 
         Button(
-            onClick = { navController.navigate("change_pass") },
-            colors = ButtonDefaults.buttonColors(containerColor = MyMint),
-            elevation = ButtonDefaults.buttonElevation(5.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(120.dp)
-                .padding(10.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(10.dp, 0.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(text = "Смена пароля", style = white24)
-            }
-        }
-
-        Button(
             onClick = { navController.navigate("add_payment") },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-            elevation = ButtonDefaults.buttonElevation(5.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(120.dp)
-                .padding(10.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(10.dp, 0.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(text = "Добавить способ оплаты", style = darkGray24)
-            }
-        }
-
-        Button(
-            onClick = { navController.navigate("payment_history") },
             colors = ButtonDefaults.buttonColors(containerColor = MyMint),
             elevation = ButtonDefaults.buttonElevation(5.dp),
             modifier = Modifier
@@ -132,12 +98,19 @@ fun Settings(user: UserModel, navController: NavController){
                     .padding(10.dp, 0.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
-                Text(text = "История платежей", style = white24)
+                Text(text = "Добавить способ оплаты", style = white24)
             }
         }
 
         Button(
-            onClick = { navController.navigate("write_to_support") },
+            onClick = {
+                val telegramUri = "https://t.me/TonyBambony07"
+
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse(telegramUri)
+
+                AppConfig.appContext.startActivity(intent)
+            },
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
             elevation = ButtonDefaults.buttonElevation(5.dp),
             modifier = Modifier
@@ -155,37 +128,30 @@ fun Settings(user: UserModel, navController: NavController){
             }
         }
 
-//        Box(
-//            modifier = Modifier.fillMaxSize(),
-//            contentAlignment = Alignment.BottomCenter
-//        ) {
-//            Column(
-//                modifier = Modifier.fillMaxSize(),
-//                verticalArrangement = Arrangement.SpaceAround
-//            ) {
-//                Button(
-//                    //todo выход из аккаунта
-//                    onClick = { },
-//                    colors = ButtonDefaults.buttonColors(containerColor = MyRed),
-//                    elevation = ButtonDefaults.buttonElevation(5.dp),
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(80.dp)
-//                        .padding(10.dp)
-//                ) {
-//                    Box(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(10.dp, 0.dp),
-//                        contentAlignment = Alignment.Center
-//                    ) {
-//                        Text(text = "Выйти из аккаунта", style = white24)
-//                    }
-//                }
-//
-//                // todo сделать удаление аккаунта
-//                Text(text = "Удалить аккаунт", style = red24)
-//            }
-//        }
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Button(
+                onClick = {
+                    navController.navigate("first_auth")
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = MyRed),
+                elevation = ButtonDefaults.buttonElevation(5.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
+                    .padding(10.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(10.dp, 0.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "Выйти из аккаунта", style = white24)
+                }
+            }
+        }
     }
 }

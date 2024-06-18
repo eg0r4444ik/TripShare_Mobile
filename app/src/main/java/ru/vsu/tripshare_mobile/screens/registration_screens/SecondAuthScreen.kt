@@ -29,7 +29,6 @@ import io.appmetrica.analytics.AppMetrica
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.services.AuthService
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
@@ -89,10 +88,7 @@ fun SecondAuthScreen(phone: String, navController: NavController){
                             Toast.makeText(AppConfig.appContext, "Вы ввели неверный пароль", Toast.LENGTH_SHORT).show()
                             password = ""
                         } else {
-                            AppConfig.initUser(user.getOrNull())
-                            if(AppConfig.currentUser!!.avatarId == null){
-                                AppConfig.currentUser!!.avatarId = R.drawable.baseline_person
-                            }
+                            AppConfig.currentUser = user.getOrNull()
                             navController.navigate("profile_screen")
                         }
                     }

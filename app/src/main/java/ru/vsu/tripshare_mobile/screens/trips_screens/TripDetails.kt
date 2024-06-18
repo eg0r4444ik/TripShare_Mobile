@@ -141,13 +141,13 @@ fun StopsCard(tripModel: TripModel, navController: NavController){
                 Text(text = "Остановки", style = darkGray24)
             }
 
-            val addresses = tripModel.addresses
-            tripModel.addresses.forEach{
-                if(it.equals(tripModel.cityFrom) ||
-                    it.equals(tripModel.cityTo)) {
+            val stops = tripModel.stops
+            tripModel.stops.forEach{
+                if(it.placeName.equals(tripModel.cityFrom) ||
+                    it.placeName.equals(tripModel.cityTo)) {
                     Text(text = "*" + it, style = blue18)
-                }else if(it.equals(addresses.get(0))
-                    || it.equals(addresses.get(addresses.size-1))) {
+                }else if(it.equals(stops.get(0).placeName)
+                    || it.equals(stops.get(stops.size-1).placeName)) {
                     Text(text = "*" + it, style = mint18)
                 }else{
                     Text(text = "*" + it, style = darkGray18)

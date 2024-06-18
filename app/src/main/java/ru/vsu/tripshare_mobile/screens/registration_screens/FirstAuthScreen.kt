@@ -1,5 +1,6 @@
 package ru.vsu.tripshare_mobile.screens.registration_screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,8 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
+import ru.vsu.tripshare_mobile.ui.theme.blueNormal18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
 import ru.vsu.tripshare_mobile.ui.theme.mint26
 import ru.vsu.tripshare_mobile.ui.theme.mintNormal18
@@ -72,8 +75,16 @@ fun FirstAuthScreen(navController: NavController){
 
             Button(
                 onClick = {
-                    navController.navigate("second_auth/${phone}")
-                          },
+                    if (isPhoneNumber(phone)) {
+                        navController.navigate("second_auth/${phone}")
+                    } else {
+                        Toast.makeText(
+                            AppConfig.appContext,
+                            "Введите корректный номер телефона",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                },
                 //todo проверить что пользователь зарегистрирован
 //                onClick = { navController.navigate("registration/${phone}") },
                 colors = ButtonDefaults.buttonColors(containerColor = MyMint),
@@ -95,6 +106,17 @@ fun FirstAuthScreen(navController: NavController){
             ) {
                 Text(text = "Зарегистрироваться", style = mintNormal18, modifier = Modifier.clickable { navController.navigate("registration/${phone}") })
             }
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Продолжить без входа", style = blueNormal18, modifier = Modifier.clickable { navController.navigate("find_trip_screen") })
+            }
         }
     }
+}
+
+private fun isPhoneNumber(input: String): Boolean {
+    val phonePattern = "^(\\+\\d{1,3})?\\d{10,11}\$".toRegex()
+    return phonePattern.matches(input)
 }

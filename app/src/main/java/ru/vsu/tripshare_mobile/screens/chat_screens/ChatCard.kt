@@ -1,5 +1,6 @@
 package ru.vsu.tripshare_mobile.screens.chat_screens
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.models.ChatModel
 import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.black18
@@ -30,7 +32,10 @@ import ru.vsu.tripshare_mobile.ui.theme.darkGray18
 
 const val BIG_MESSAGE_LEN = 40
 @Composable
-fun ChatCard(chat: ChatModel, user: UserModel, navController: NavController){
+fun ChatCard(chat: ChatModel, unread: List<ChatModel>, user: UserModel, navController: NavController){
+
+    val companion = if(chat.companion.id != user.id) chat.companion else chat.user
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -50,8 +55,7 @@ fun ChatCard(chat: ChatModel, user: UserModel, navController: NavController){
             verticalAlignment = Alignment.CenterVertically
         ){
             Image(
-                //todo заменить !! на проверку на null
-                painter = painterResource(id = chat.companion.avatarId!!),
+                painter = painterResource(id = if(companion.avatarId == null) R.drawable.baseline_person else companion.avatarId!!),
                 contentDescription = "companion",
                 modifier = Modifier
                     .size(70.dp)
@@ -59,29 +63,35 @@ fun ChatCard(chat: ChatModel, user: UserModel, navController: NavController){
             )
 
             Column(modifier = Modifier.padding(10.dp, 0.dp)){
-                Text(text = chat.companion.surname + " " + chat.companion.name, style = black18)
+                Text(text = companion.surname + " " + companion.name, style = black18)
                 val last = chat.messages.get(chat.messages.size-1)
-                val sender = if(last.senderId == user.id) user else (if(chat.companion.id == user.id) chat.user else chat.companion)
+                val sender = if(last.senderId == user.id) user else (if(companion.id == user.id) chat.user else companion)
                 // поменять сравнение юзеров
-                Text(text = if(sender.email == user.email) "Вы: " + last.text else chat.companion.name
+                Text(text = if(sender.email == user.email) "Вы: " + last.text else companion.name
                         + ": " + (if(last.text.length + sender.name.length >= BIG_MESSAGE_LEN)
                                 (last.text.subSequence(0, BIG_MESSAGE_LEN -sender.name.length).toString() + "...") else last.text),
                     style = darkGray18)
             }
 
-            if(hasUnreadMessages(chat)){
+            if(hasUnreadMessages(chat, unread)){
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().padding(10.dp),
                     contentAlignment = Alignment.TopEnd
                 ){
-                    //todo нарисовать кружок
+                    Canvas(modifier = Modifier.size(20.dp)) {
+                        drawCircle(color = Color.Red, radius = size.minDimension / 2)
+                    }
                 }
             }
         }
     }
 }
 
-private fun hasUnreadMessages(chat: ChatModel): Boolean {
-    chat.messages.forEach { if(!it.isRead) return true }
+private fun hasUnreadMessages(chat: ChatModel, unread: List<ChatModel>): Boolean {
+    unread.forEach{
+        if(it.id == chat.id){
+            return true
+        }
+    }
     return false
 }

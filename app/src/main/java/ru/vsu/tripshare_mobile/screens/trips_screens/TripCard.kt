@@ -76,11 +76,11 @@ private fun TripInfoLeft(tripModel: TripModel){
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
-        TripStatus(tripModel)
-
         if(tripModel.status == TripStatus.DRIVER) {
+            TripStatus(tripModel, true)
             PassengersInfo(tripModel)
         }else{
+            TripStatus(tripModel, false)
             DriverInfo(tripModel)
         }
 
@@ -124,7 +124,7 @@ private fun TripInfoRight(tripModel: TripModel){
 }
 
 @Composable
-private fun TripStatus(tripModel: TripModel){
+private fun TripStatus(tripModel: TripModel, isDriver: Boolean){
     Card(shape = RoundedCornerShape(15.dp), modifier = Modifier.padding(10.dp)){
         if(tripModel.status == TripStatus.PASSENGER) {
             TripStatus(text = "Пассажир", color = MyBlue)
@@ -132,7 +132,7 @@ private fun TripStatus(tripModel: TripModel){
             TripStatus(text = "В ожидании", color = MyDarkGray)
         }else if(tripModel.status == TripStatus.REJECTED){
             TripStatus(text = "Отклонено", color = MyRed)
-        }else if(tripModel.status == TripStatus.DRIVER){
+        }else if(tripModel.status == TripStatus.DRIVER || isDriver){
             TripStatus(text = "Водитель", color = MyPurple)
         }else if(tripModel.status == TripStatus.WITHOUT_STATUS){
             TripStatus(text = "Нет запроса", color = MyDarkGray)
@@ -157,8 +157,7 @@ private fun TripStatus(text: String, color: Color){
 private fun DriverInfo(tripModel: TripModel){
     Text(text = "Водитель:", style = darkGray18)
     Image(
-        //todo добавить проверку на null с пустой иконкой
-        painter = painterResource(id = tripModel.driver.avatarId!!),
+        painter = painterResource(id = if(tripModel.driver.avatarId == null) R.drawable.baseline_person else tripModel.driver.avatarId!!),
         contentDescription = "image",
         modifier = Modifier
             .size(70.dp)
@@ -180,8 +179,7 @@ private fun PassengersInfo(tripModel: TripModel){
     ) {
         tripModel.participants.forEach { participant ->
             Image(
-                //todo добавить проверку на null с пустой иконкой
-                painter = painterResource(id = participant.avatarId!!),
+                painter = painterResource(id = if(tripModel.driver.avatarId == null) R.drawable.baseline_person else participant.avatarId!!),
                 contentDescription = "image",
                 modifier = Modifier
                     .size(if (tripModel.participants.size <= 2) 70.dp else if (tripModel.participants.size == 3) 50.dp else 40.dp)

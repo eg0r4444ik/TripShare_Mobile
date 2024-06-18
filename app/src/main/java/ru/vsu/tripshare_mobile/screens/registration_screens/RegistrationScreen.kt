@@ -1,11 +1,19 @@
 package ru.vsu.tripshare_mobile.screens.registration_screens
 
+import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.widget.DatePicker
+import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -13,6 +21,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,67 +33,40 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import io.appmetrica.analytics.AppMetrica
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import ru.vsu.tripshare_mobile.api.dto.users.RegistrationDTO
+import ru.vsu.tripshare_mobile.config.AppConfig
+import ru.vsu.tripshare_mobile.services.AuthService
+import ru.vsu.tripshare_mobile.ui.theme.MyBlue
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyLightGray
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
 import ru.vsu.tripshare_mobile.ui.theme.mint24
 import ru.vsu.tripshare_mobile.ui.theme.white18
-import ru.vsu.tripshare_mobile.api.dto.users.RegistrationDTO
-import ru.vsu.tripshare_mobile.services.AuthService
+import java.util.Calendar
+import java.util.Date
 
+@SuppressLint("UnrememberedMutableState")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationScreen(phoneNumber: String, navController: NavController){
 
     val state = rememberScrollState()
     // todo Добавить валидацию полей
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(state)
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(state)
     ) {
         Text(text = "Создание аккаунта", style = mint24, modifier = Modifier.padding(10.dp, 0.dp))
-
-        var pass1 by remember { mutableStateOf("") }
-        var pass2 by remember { mutableStateOf("") }
-        TextField(
-            value = pass1,
-            onValueChange = { newText ->
-                pass1 = newText
-            },
-            label = { Text("Пароль") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            textStyle = darkGray18,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MyLightGray,
-                focusedIndicatorColor = MyDarkGray,
-                unfocusedIndicatorColor = MyDarkGray
-            ),
-            shape = RoundedCornerShape(15.dp)
-        )
-        TextField(
-            value = pass2,
-            onValueChange = { newText ->
-                pass2 = newText
-            },
-            label = { Text("Повторите пароль") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            textStyle = darkGray18,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MyLightGray,
-                focusedIndicatorColor = MyDarkGray,
-                unfocusedIndicatorColor = MyDarkGray
-            ),
-            shape = RoundedCornerShape(15.dp)
-        )
 
         var name by remember { mutableStateOf("") }
         var surname by remember { mutableStateOf("") }
         var phone by remember { mutableStateOf(phoneNumber) }
         var email by remember { mutableStateOf("") }
-        var birthday by remember { mutableStateOf("") }
 
         TextField(
             value = name,
@@ -158,12 +140,51 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
             shape = RoundedCornerShape(15.dp)
         )
 
-        TextField(
-            value = birthday,
-            onValueChange = { newText ->
-                birthday = newText
+        val context = AppConfig.appContext
+
+        val year: Int
+        val month: Int
+        val day: Int
+
+        val calendar = Calendar.getInstance()
+        year = calendar.get(Calendar.YEAR)
+        month = calendar.get(Calendar.MONTH)
+        day = calendar.get(Calendar.DAY_OF_MONTH)
+        calendar.time = Date()
+
+        val date = remember { mutableStateOf("") }
+        val datePickerDialog = DatePickerDialog(
+            context,
+            { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+                date.value = String.format("%02d.%02d.%s", dayOfMonth, month, year)
+            }, year, month, day
+        )
+
+        Row(
+            modifier = Modifier.fillMaxSize().padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+
+            Text(text = "Дата рождения: \n${date.value}", style = darkGray18)
+            Spacer(modifier = Modifier.size(16.dp))
+            Button(onClick = {
+                datePickerDialog.show()
             },
-            label = { Text("Дата рождения") },
+                colors = ButtonDefaults.buttonColors(containerColor = MyBlue),
+            ) {
+                Text(text = "Выбрать дату", style = white18)
+            }
+        }
+
+        var pass1 by remember { mutableStateOf("") }
+        var pass2 by remember { mutableStateOf("") }
+        TextField(
+            value = pass1,
+            onValueChange = { newText ->
+                pass1 = newText
+            },
+            label = { Text("Пароль") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
@@ -175,91 +196,12 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
             ),
             shape = RoundedCornerShape(15.dp)
         )
-
-        var musicPreferences by remember { mutableStateOf("") }
-        var talkativeness by remember { mutableStateOf("") }
-        var attitudeTowardsSmoking by remember { mutableStateOf("") }
-        var attitudeTowardsAnimals by remember { mutableStateOf("") }
-        var info by remember { mutableStateOf("") }
-
         TextField(
-            value = musicPreferences,
+            value = pass2,
             onValueChange = { newText ->
-                musicPreferences = newText
+                pass2 = newText
             },
-            label = { androidx.compose.material.Text("Любимые музыкальные жанры") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            textStyle = darkGray18,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MyLightGray,
-                focusedIndicatorColor = MyDarkGray,
-                unfocusedIndicatorColor = MyDarkGray
-            ),
-            shape = RoundedCornerShape(15.dp)
-        )
-
-        TextField(
-            value = talkativeness,
-            onValueChange = { newText ->
-                talkativeness = newText
-            },
-            label = { androidx.compose.material.Text("Степень разговорчивости") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            textStyle = darkGray18,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MyLightGray,
-                focusedIndicatorColor = MyDarkGray,
-                unfocusedIndicatorColor = MyDarkGray
-            ),
-            shape = RoundedCornerShape(15.dp)
-        )
-
-        TextField(
-            value = attitudeTowardsSmoking,
-            onValueChange = { newText ->
-                attitudeTowardsSmoking = newText
-            },
-            label = { androidx.compose.material.Text("Отношение к курению") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            textStyle = darkGray18,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MyLightGray,
-                focusedIndicatorColor = MyDarkGray,
-                unfocusedIndicatorColor = MyDarkGray
-            ),
-            shape = RoundedCornerShape(15.dp)
-        )
-
-        TextField(
-            value = attitudeTowardsAnimals,
-            onValueChange = { newText ->
-                attitudeTowardsAnimals = newText
-            },
-            label = { androidx.compose.material.Text("Отношение к животным в поездке") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            textStyle = darkGray18,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MyLightGray,
-                focusedIndicatorColor = MyDarkGray,
-                unfocusedIndicatorColor = MyDarkGray
-            ),
-            shape = RoundedCornerShape(15.dp)
-        )
-
-        TextField(
-            value = info,
-            onValueChange = { newText ->
-                info = newText
-            },
-            label = { androidx.compose.material.Text("Дополнительная информация") },
+            label = { Text("Повторите пароль") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
@@ -279,23 +221,55 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
                     "Registration event",
                     registrationEvent
                 )
-                if(pass1.equals(pass2)) {
+                if(!pass1.equals(pass2)) {
+                    Toast.makeText(
+                        AppConfig.appContext,
+                        "Пароли должны совпадать",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }else if(pass1.equals("")){
+                    Toast.makeText(
+                        AppConfig.appContext,
+                        "Заполните пароль",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }else if(name.equals("") || surname.equals("")){
+                    Toast.makeText(
+                        AppConfig.appContext,
+                        "Заполните имя и фамилию",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }else if(!isPhoneNumber(phone)){
+                    Toast.makeText(
+                        AppConfig.appContext,
+                        "Введите корректный номер телефона",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }else if(!isEmail(email)){
+                    Toast.makeText(
+                        AppConfig.appContext,
+                        "Введите корректный email",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }else{
                     val user = RegistrationDTO(
                         phone,
                         name,
                         surname,
                         email,
-                        birthday,
-                        musicPreferences,
-                        info,
-                        if(talkativeness.equals(""))  null else talkativeness.toInt(),
-                        if(attitudeTowardsSmoking.equals(""))  null else attitudeTowardsSmoking.toInt(),
-                        if(attitudeTowardsAnimals.equals(""))  null else attitudeTowardsAnimals.toInt(),
+                        date.value,
+                        "",
+                        "",
+                        null,
+                        null,
+                        null,
                         pass1,
                         null
                     )
 
-                    AuthService.registerUser(user)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        AuthService.registerUser(user)
+                    }
                     navController.navigate("first_auth")
                 }
             },
@@ -312,4 +286,14 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
             }
         }
     }
+}
+
+private fun isPhoneNumber(input: String): Boolean {
+    val phonePattern = "^(\\+\\d{1,3})?\\d{10,11}\$".toRegex()
+    return phonePattern.matches(input)
+}
+
+private fun isEmail(input: String): Boolean {
+    val phonePattern = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+\$".toRegex()
+    return phonePattern.matches(input)
 }

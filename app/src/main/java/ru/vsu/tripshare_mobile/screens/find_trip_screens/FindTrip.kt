@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import io.appmetrica.analytics.AppMetrica
 import ru.vsu.tripshare_mobile.R
-import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyLightGray
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
@@ -47,7 +46,7 @@ import ru.vsu.tripshare_mobile.ui.theme.mint36
 import ru.vsu.tripshare_mobile.ui.theme.white18
 
 @Composable
-fun FindTrip(person: UserModel, navController: NavController){
+fun FindTrip(navController: NavController){
 
     val state = rememberScrollState()
 

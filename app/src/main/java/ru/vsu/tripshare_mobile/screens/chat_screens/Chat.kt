@@ -37,9 +37,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import io.appmetrica.analytics.AppMetrica
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.models.ChatModel
 import ru.vsu.tripshare_mobile.models.MessageModel
 import ru.vsu.tripshare_mobile.models.UserModel
+import ru.vsu.tripshare_mobile.services.ChatService
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.black18
@@ -51,6 +56,8 @@ import java.util.Date
 @Composable
 fun Chat(chat: ChatModel, user: UserModel, navController: NavController){
 
+    val companion = if(chat.companion.id != user.id) chat.companion else chat.user
+
     Column {
 
         Row(
@@ -58,12 +65,11 @@ fun Chat(chat: ChatModel, user: UserModel, navController: NavController){
                 .fillMaxWidth()
                 .height(75.dp)
                 .padding(10.dp, 10.dp)
-                .clickable { navController.navigate("user_profile/${chat.companion.id}") },
+                .clickable { navController.navigate("user_profile/${companion.id}") },
             verticalAlignment = Alignment.Top,
         ){
             Image(
-                //todo заменить !! на проверку на null
-                painter = painterResource(id = chat.companion.avatarId!!),
+                painter = painterResource(id = if(companion.avatarId == null) R.drawable.baseline_person else companion.avatarId!!),
                 contentDescription = "companion",
                 modifier = Modifier
                     .size(50.dp)
@@ -77,7 +83,7 @@ fun Chat(chat: ChatModel, user: UserModel, navController: NavController){
                 contentAlignment = Alignment.CenterStart
             ) {
                 Text(
-                    text = chat.companion.surname + " " + chat.companion.name,
+                    text = companion.surname + " " + companion.name,
                     style = black18
                 )
             }
@@ -147,7 +153,14 @@ fun Chat(chat: ChatModel, user: UserModel, navController: NavController){
                         "Send message event",
                         sendMessageEvent
                     )
-                    chat.messages.add(MessageModel(user.id, text, false, Date()))
+                    val txt = text.toString()
+                    chat.messages.add(MessageModel(user.id, txt, Date()))
+                    CoroutineScope(Dispatchers.Main).launch {
+                        ChatService.addMessage(
+                            companion.id,
+                            MessageModel(user.id, txt, Date())
+                        )
+                    }
                     text = ""
                 }),
                 shape = RoundedCornerShape(15.dp)
