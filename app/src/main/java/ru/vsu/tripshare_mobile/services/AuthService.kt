@@ -11,11 +11,12 @@ import ru.vsu.tripshare_mobile.models.UserModel
 
 object AuthService {
 
-    fun registerUser(registrationRequestDTO: RegistrationDTO) {
-        try {
-            AppConfig.retrofitAPI.registerUser(registrationRequestDTO)
-        } catch (e: Exception) {
-            e.stackTrace
+    suspend fun registerUser(registrationRequestDTO: RegistrationDTO) {
+        return withContext(Dispatchers.IO) {
+            try {
+                AppConfig.retrofitAPI.registerUser(registrationRequestDTO)
+            } catch (e: Exception) {
+            }
         }
     }
 

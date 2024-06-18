@@ -1,6 +1,5 @@
 package ru.vsu.tripshare_mobile
 
-//import okhttp3.Response
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -18,19 +17,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import io.appmetrica.analytics.AppMetrica
-import io.appmetrica.analytics.AppMetricaConfig
+import com.google.firebase.FirebaseApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.data_store.FirstLaunchDataStore
-import ru.vsu.tripshare_mobile.services.AuthService
 import ru.vsu.tripshare_mobile.services.UserService
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
 import ru.vsu.tripshare_mobile.ui.theme.white24
-import ru.vsu.tripshare_mobile.ui.theme.white32
 
 class MainActivity : ComponentActivity() {
 
@@ -39,7 +35,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppConfig.init(this)
+            FirebaseApp.initializeApp(this)
+//            ImageUtils.saveImage()
             MainScreen()
+//            val painter: Painter = rememberImagePainter("https://firebasestorage.googleapis.com/v0/b/tripshare-426319.appspot.com/o/images%2Fimages?alt=media&token=99da661f-55dc-4df8-addc-7c87abd225df")
+//
+//            Image(painter = painter, contentDescription = "Image from URL")
         }
     }
 }
@@ -72,10 +73,7 @@ fun MainScreen(){
         CoroutineScope(Dispatchers.Main).launch {
             val person = UserService.getMe()
             person.onSuccess {
-                AppConfig.initUser(person.getOrNull())
-                if(AppConfig.currentUser!!.avatarId == null){
-                    AppConfig.currentUser!!.avatarId = R.drawable.baseline_person
-                }
+                AppConfig.currentUser = person.getOrNull()
                 startDestination = "profile_screen"
             }.onFailure {
                 startDestination = "first_auth"

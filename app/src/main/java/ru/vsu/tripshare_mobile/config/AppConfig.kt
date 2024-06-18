@@ -1,6 +1,5 @@
 package ru.vsu.tripshare_mobile.config
 
-import android.annotation.SuppressLint
 import android.content.Context
 import com.google.gson.GsonBuilder
 import io.appmetrica.analytics.AppMetrica
@@ -12,7 +11,6 @@ import ru.vsu.tripshare_mobile.api.AuthInterceptor
 import ru.vsu.tripshare_mobile.api.RetrofitApi
 import ru.vsu.tripshare_mobile.data_store.AuthTokenDataStore
 import ru.vsu.tripshare_mobile.models.ChatModel
-import ru.vsu.tripshare_mobile.models.TripModel
 import ru.vsu.tripshare_mobile.models.UserModel
 
 object AppConfig {
@@ -21,7 +19,7 @@ object AppConfig {
 
     val config = AppMetricaConfig.newConfigBuilder("4ce5c2a5-d516-4f95-821f-e5dfaceddc76").build()
 
-    val BASE_URL = "http://45.91.8.198:8000/"
+    val BASE_URL = "http://193.222.62.211:8000/"
 
     val gson = GsonBuilder()
         .setLenient()
@@ -52,10 +50,6 @@ object AppConfig {
             .build()
         retrofitAPI = retrofit.create(RetrofitApi::class.java)
         AppMetrica.activate(appContext, config)
-    }
-
-    fun initUser(user: UserModel?){
-        currentUser = user
     }
 
 }
