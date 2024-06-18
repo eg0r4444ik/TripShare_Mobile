@@ -125,6 +125,13 @@ val blue18 = TextStyle(
     fontFamily = montserrat
 )
 
+val blueNormal18 = TextStyle(
+    color = MyBlue,
+    fontWeight = FontWeight.Normal,
+    fontSize = 18.sp,
+    fontFamily = montserrat
+)
+
 val white12 = TextStyle(
     color = Color.White,
     fontWeight = FontWeight.Bold,

@@ -4,7 +4,7 @@ data class TripModel(
     val id: Int,
     val cityFrom: String,
     val cityTo: String,
-    val addresses: List<String>,
+    val stops: List<StopModel>,
     val daysUntil: String,
     val departureDate: String,
     val departureTime: String,

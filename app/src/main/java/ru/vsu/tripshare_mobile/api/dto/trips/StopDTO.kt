@@ -5,7 +5,7 @@ import java.util.Date
 class StopDTO {
     val place: String
     val place_name: String
-    val datetime: Date
+    val datetime: String
     val num: Int
     val is_start: Boolean?
     val is_stop: Boolean?
@@ -15,7 +15,7 @@ class StopDTO {
     constructor(
         place: String,
         place_name: String,
-        datetime: Date,
+        datetime: String,
         num: Int,
         is_start: Boolean,
         is_stop: Boolean,
@@ -35,7 +35,7 @@ class StopDTO {
     constructor(
         place: String,
         place_name: String,
-        datetime: Date,
+        datetime: String,
         num: Int
     ) {
         this.place = place
