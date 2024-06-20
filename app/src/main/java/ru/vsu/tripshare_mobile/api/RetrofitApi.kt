@@ -106,8 +106,23 @@ interface RetrofitApi {
     @POST("requests/me")
     suspend fun addRequest(@Body requestDTO: RequestDTO): RequestDTO
 
+    @POST("requests/for_trip/{trip_id}")
+    suspend fun getTripRequests(@Path("trip_id") id: Int): List<RequestDTO>
+
     @POST("requests/find")
     suspend fun findTrips(@Body findTripRequestDTO: FindTripRequestDTO): List<FindTripResponseDTO>
+
+    @POST("requests/accept/{request_id}")
+    suspend fun acceptRequest(@Path("request_id") id: Int): String
+
+    @POST("requests/decline/{request_id}")
+    suspend fun declineRequest(@Path("request_id") id: Int): String
+
+    @POST("requests/finish_trip/{trip_id}")
+    suspend fun finishTrip(@Path("trip_id") id: Int): String
+
+    @POST("requests/error_trip_id/{trip_id}")
+    suspend fun errorTrip(@Path("trip_id") id: Int): String
 
     //-------------------------------------------------------------------------------------------------------------------------------------------
 

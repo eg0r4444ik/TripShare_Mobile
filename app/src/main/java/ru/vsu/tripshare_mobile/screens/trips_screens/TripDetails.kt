@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,13 +47,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.api.dto.requests.RequestDTO
+import ru.vsu.tripshare_mobile.api.dto.requests.RequestStatusDTO
 import ru.vsu.tripshare_mobile.config.AppConfig
+import ru.vsu.tripshare_mobile.models.RequestModel
 import ru.vsu.tripshare_mobile.models.TripModel
 import ru.vsu.tripshare_mobile.services.PlaceService
 import ru.vsu.tripshare_mobile.services.RequestService
 import ru.vsu.tripshare_mobile.services.TripService
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
+import ru.vsu.tripshare_mobile.ui.theme.MyMint
+import ru.vsu.tripshare_mobile.ui.theme.MyPurple
+import ru.vsu.tripshare_mobile.ui.theme.MyRed
 import ru.vsu.tripshare_mobile.ui.theme.black18
 import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
@@ -67,8 +73,11 @@ import ru.vsu.tripshare_mobile.ui.theme.white14
 fun TripDetails(tripId: Int, navController: NavController) {
 
     var tripModel by remember { mutableStateOf<TripModel?>(null) }
-    var existRequest = false
+    var existRequest by remember{ mutableStateOf(false) }
     var regions by remember { mutableStateOf(emptyList<String>()) }
+    var requests by remember { mutableStateOf(emptyList<RequestModel>()) }
+
+    var flag1 by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         val tripModelResult = TripService.getTrip(tripId)
@@ -81,6 +90,7 @@ fun TripDetails(tripId: Int, navController: NavController) {
             list.add(PlaceService.getPlace(it.placeName).getOrNull()!!.address)
         }
         regions = list
+        requests = RequestService.getTripRequests(tripId).getOrNull()!!
     }
 
     Scaffold(
@@ -111,9 +121,19 @@ fun TripDetails(tripId: Int, navController: NavController) {
                             Button(
                                 onClick = {
                                     CoroutineScope(Dispatchers.Main).launch {
+                                        var departureId: Int? = null
+                                        var arrivalId: Int? = null
+                                        tripModel!!.stops.forEach{
+                                            if(it.placeName.equals(AppConfig.currentFindRequest!!.start.place)){
+                                                departureId = it.id
+                                            }
+                                            if(it.placeName.equals(AppConfig.currentFindRequest!!.end.place)){
+                                                arrivalId = it.id
+                                            }
+                                        }
                                         RequestService.addRequest(RequestDTO(AppConfig.currentFindRequest!!.needed_seats,
-                                            AppConfig.currentFindRequest!!.start.place.toInt(),
-                                            AppConfig.currentFindRequest!!.end.place.toInt(), tripModel!!.id))
+                                            departureId!!, arrivalId!!, tripModel!!.id))
+                                        existRequest = true
                                     }
                                 },
                                 colors = ButtonDefaults.buttonColors(containerColor = MyBlue),
@@ -130,7 +150,175 @@ fun TripDetails(tripId: Int, navController: NavController) {
                             }
                         }
                     }else{
-                        //todo отрисовывать запросы
+                        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally){
+                            requests.forEach {
+                                if (it.status == RequestStatusDTO.CREATED) {
+                                    Card(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(10.dp)
+                                            .clickable { navController.navigate("user_profile/${it.id}") },
+                                        shape = RoundedCornerShape(15.dp),
+                                        elevation = CardDefaults.cardElevation(
+                                            defaultElevation = 5.dp
+                                        ),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = Color.White,
+                                        )
+                                    ) {
+
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(75.dp)
+                                                .padding(10.dp, 10.dp),
+                                            verticalAlignment = Alignment.Top,
+                                        ) {
+                                            if (it.user!!.avatarUrl == null) {
+                                                Image(
+                                                    painterResource(id = R.drawable.baseline_person),
+                                                    contentDescription = "companion",
+                                                    modifier = Modifier
+                                                        .size(50.dp)
+                                                        .clip(CircleShape)
+                                                )
+                                            } else {
+                                                val painter: Painter =
+                                                    rememberImagePainter(it.user.avatarUrl!!)
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(50.dp)
+                                                        .clip(CircleShape)
+                                                ) {
+                                                    Image(
+                                                        painter = painter,
+                                                        contentDescription = "Image from URL",
+                                                        contentScale = ContentScale.Crop,
+                                                        modifier = Modifier
+                                                            .fillMaxSize()
+                                                            .clip(CircleShape)
+                                                            .border(1.dp, MyDarkGray, CircleShape)
+                                                    )
+                                                }
+                                            }
+
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .padding(10.dp, 0.dp),
+                                                contentAlignment = Alignment.CenterStart
+                                            ) {
+                                                Text(
+                                                    text = it.user.surname + " " + it.user.name,
+                                                    style = black18
+                                                )
+                                            }
+                                        }
+
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(10.dp),
+                                            verticalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Button(
+                                                onClick = {
+                                                    CoroutineScope(Dispatchers.Main).launch {
+                                                        RequestService.acceptRequest(it.id!!)
+                                                    }
+                                                          },
+                                                colors = ButtonDefaults.buttonColors(containerColor = MyMint),
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .height(50.dp)
+                                                    .padding(20.dp, 0.dp)
+                                            ) {
+                                                Box(
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    androidx.compose.material3.Text(
+                                                        text = "Принять",
+                                                        style = white14
+                                                    )
+                                                }
+                                            }
+
+                                            Spacer(modifier = Modifier.height(10.dp))
+
+                                            Button(
+                                                onClick = {
+                                                    CoroutineScope(Dispatchers.Main).launch {
+                                                        RequestService.declineRequest(it.id!!)
+                                                    }
+                                                },
+                                                colors = ButtonDefaults.buttonColors(containerColor = MyBlue),
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .height(50.dp)
+                                                    .padding(20.dp, 0.dp)
+                                            ) {
+                                                Box(
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    androidx.compose.material3.Text(
+                                                        text = "Отклонить",
+                                                        style = white14
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if(flag1) {
+                                Button(
+                                    onClick = {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            RequestService.finishTrip(tripId)
+                                        }
+                                        flag1 = false
+                                    },
+                                    colors = ButtonDefaults.buttonColors(containerColor = MyPurple),
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.9f)
+                                        .height(50.dp)
+                                ) {
+                                    Box(
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        androidx.compose.material3.Text(
+                                            text = "Завершить поездку",
+                                            style = white14
+                                        )
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                Button(
+                                    onClick = {
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            RequestService.errorTrip(tripId)
+                                        }
+                                        flag1 = false
+                                    },
+                                    colors = ButtonDefaults.buttonColors(containerColor = MyRed),
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.9f)
+                                        .height(50.dp)
+                                ) {
+                                    Box(
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        androidx.compose.material3.Text(
+                                            text = "Отменить поездку",
+                                            style = white14
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -254,7 +442,9 @@ fun StopsCard(tripModel: TripModel, regions: List<String>, navController: NavCon
         val trip = tripModel
 
         Column(
-            modifier = Modifier.fillMaxWidth().padding(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = "Отправление:", style = blue18)
@@ -289,7 +479,9 @@ fun FacilitiesCard(tripModel: TripModel, navController: NavController){
         val trip = tripModel
 
         Column(
-            modifier = Modifier.fillMaxWidth().padding(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
         ) {
             Box(
                 modifier = Modifier

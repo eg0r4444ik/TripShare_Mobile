@@ -970,13 +970,13 @@ fun AddTrip(person: UserModel, cars: List<CarModel>, navController: NavControlle
                                             ?.get(0)?.id.toString()
                                     val addressToId = PlaceService.suggestPlace(addressTo).getOrNull()
                                         ?.get(0)?.id.toString()
-                                    stops.add(StopModel(addressFromId, departureDate, departureTime))
+                                    stops.add(StopModel(addressFromId, departureDate, departureTime, null))
                                     places.forEach {
                                         val id = PlaceService.suggestPlace(it.value).getOrNull()
                                             ?.get(0)?.id.toString()
-                                        stops.add(StopModel(id, departureDate, departureTime))
+                                        stops.add(StopModel(id, departureDate, departureTime, null))
                                     }
-                                    stops.add(StopModel(addressToId, arrivalDate, arrivalTime))
+                                    stops.add(StopModel(addressToId, arrivalDate, arrivalTime, null))
 
                                     val trip = TripModel(
                                         0,

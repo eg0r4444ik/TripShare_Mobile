@@ -12,6 +12,11 @@ object ReviewService {
     suspend fun addReview(reviewModel: ReviewModel){
         return withContext(Dispatchers.IO) {
             try {
+//                val reviews = getUsersReviews(reviewModel.author.id)
+//                var flag = false
+//                reviews.getOrNull()?.forEach {
+//                    if(it.author.id == )
+//                }
                 val reviewDTO = fromModelToDTO(reviewModel)
                 AppConfig.retrofitAPI.addReview(reviewDTO)
             } catch (e: Exception) {

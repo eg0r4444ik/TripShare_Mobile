@@ -36,7 +36,7 @@ import ru.vsu.tripshare_mobile.ui.theme.MyBlue
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyPurple
 import ru.vsu.tripshare_mobile.ui.theme.MyRed
-import ru.vsu.tripshare_mobile.ui.theme.black36
+import ru.vsu.tripshare_mobile.ui.theme.black30
 import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray14
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
@@ -122,7 +122,7 @@ private fun TripInfoRight(tripModel: TripModel){
                 .padding(20.dp, 0.dp),
             contentAlignment = Alignment.BottomEnd
         ) {
-            Text(text = tripModel.cost.toString() + "₽", style = black36)
+            Text(text = tripModel.cost.toString() + "₽", style = black30)
         }
     }
 }
@@ -140,6 +140,8 @@ private fun TripStatus(tripModel: TripModel, isDriver: Boolean){
             TripStatus(text = "Водитель", color = MyPurple)
         }else if(tripModel.status == TripStatus.WITHOUT_STATUS){
             TripStatus(text = "Нет запроса", color = MyDarkGray)
+        }else if(tripModel.status == TripStatus.FINISHED){
+            TripStatus(text = "Завершена", color = Color.Green)
         }
     }
 }

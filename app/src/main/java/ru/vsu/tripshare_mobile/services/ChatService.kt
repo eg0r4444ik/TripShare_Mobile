@@ -38,24 +38,70 @@ object ChatService {
 
                 var unread = mutableListOf<ChatModel>()
 
-                if(AppConfig.currentChats != null && AppConfig.currentChats!!.isNotEmpty()) {
-                    chats.forEach { new ->
-                        var exist = false
-                        AppConfig.currentChats?.forEach { curr ->
-                            if (new.id == curr.id) {
-                                exist = true
-                                if (new.messages.size > curr.messages.size) {
-                                    unread.add(new)
-                                }
+                chats.forEach { new ->
+                    var exist = false
+                    AppConfig.currentChats?.forEach { curr ->
+                        if (new.id == curr.id) {
+                            exist = true
+                            if (new.messages.size > curr.messages.size) {
+                                unread.add(new)
                             }
                         }
-                        if (!exist) {
-                            unread.add(new)
-                        }
+                    }
+                    if (!exist) {
+                        unread.add(new)
                     }
                 }
 
+
                 AppConfig.currentChats = chats
+                Result.success(unread)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun checkChatUpdate(): Result<Boolean>{
+        return withContext(Dispatchers.IO) {
+            try {
+                val chatsDTO = AppConfig.retrofitAPI.getMyChats()
+                val chats = mutableListOf<ChatModel>()
+                chatsDTO.forEach{
+                    var chat: ChatModel? = null
+                    val user = ValidationService.validate(UserService.getUser(it.user_id_1), "Пользователя не существует")
+                    val companion = ValidationService.validate(UserService.getUser(it.user_id_2), "Пользователя не существует")
+                    if (user != null && companion != null){
+                        chat = ChatModel(
+                            it.id,
+                            user,
+                            companion,
+                            getChatMessages(it.id).getOrElse { mutableListOf() }
+                        )
+                    }
+                    if(chat != null) {
+                        chats.add(chat)
+                    }
+                }
+
+                var unread = false
+
+                chats.forEach { new ->
+                    var exist = false
+                    AppConfig.currentChats?.forEach { curr ->
+                        if (new.id == curr.id) {
+                            exist = true
+                            if (new.messages.size > curr.messages.size) {
+                                unread = true
+                            }
+                        }
+                    }
+                    if (!exist) {
+                        unread = true
+                    }
+                }
+
+
                 Result.success(unread)
             } catch (e: Exception) {
                 Result.failure(e)

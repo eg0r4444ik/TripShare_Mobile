@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.models.TripModel
+import ru.vsu.tripshare_mobile.services.RequestService
 import ru.vsu.tripshare_mobile.services.TripService
 import ru.vsu.tripshare_mobile.ui.theme.darkGray36
 import ru.vsu.tripshare_mobile.ui.theme.mint36
@@ -35,9 +36,17 @@ fun MyTrips(navController: NavController) {
     var update by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
+        val result = mutableListOf<TripModel>()
         val tripsResult = TripService.getTripsAsDriver()
+        val requests = RequestService.getMyTripsAsPassenger()
+        requests.forEach {
+            result.add(it)
+        }
         if(tripsResult.isSuccess) {
-            trips = tripsResult.getOrNull()!!
+            tripsResult.getOrNull()!!.forEach {
+                result.add(it)
+            }
+            trips = result
             update = true
         }
     }

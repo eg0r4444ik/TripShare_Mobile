@@ -1,5 +1,6 @@
 package ru.vsu.tripshare_mobile.screens.payments_screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
 import ru.vsu.tripshare_mobile.ui.theme.mint24
 import ru.vsu.tripshare_mobile.ui.theme.white14
@@ -66,7 +68,7 @@ fun AddPayment(navController: NavController){
             Column(modifier = Modifier.padding(16.dp)) {
                 OutlinedTextField(
                     value = cardNumber,
-                    onValueChange = { cardNumber = it },
+                    onValueChange = { if(it.length <= 24) cardNumber = it },
                     label = { Text("Номер карты") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
@@ -90,7 +92,7 @@ fun AddPayment(navController: NavController){
                     Spacer(modifier = Modifier.width(16.dp))
                     OutlinedTextField(
                         value = cvv,
-                        onValueChange = { cvv = it },
+                        onValueChange = { if(it.length <= 3) cvv = it },
                         label = { Text("CVV") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth()
@@ -99,7 +101,27 @@ fun AddPayment(navController: NavController){
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
-                        navController.navigate("profile_screen")
+                        if(cvv.length != 3){
+                            Toast.makeText(
+                            AppConfig.appContext,
+                            "Неправильный cvv",
+                            Toast.LENGTH_LONG
+                            ).show()
+                        }else if(cardNumber.length < 12){
+                            Toast.makeText(
+                                AppConfig.appContext,
+                                "Неправильный номер карты",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }else if(expiryDate.length != 5 || expiryDate[2] != '/'){
+                            Toast.makeText(
+                                AppConfig.appContext,
+                                "Заполните поле в формате MM/YY",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }else {
+                            navController.navigate("profile_screen")
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MyMint),
                     elevation = ButtonDefaults.buttonElevation(5.dp),

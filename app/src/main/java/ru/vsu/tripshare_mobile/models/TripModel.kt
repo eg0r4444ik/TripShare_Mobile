@@ -17,7 +17,7 @@ data class TripModel(
     val petsAllowed: Boolean,
     val freeTrunk: Boolean,
     val carId: Int?,
-    val status: TripStatus,
+    var status: TripStatus,
     val cost: Int,
     val participantsCount: Int
 )

@@ -62,6 +62,13 @@ val black28 = TextStyle(
     fontFamily = montserrat
 )
 
+val black30 = TextStyle(
+    color = Color.Black,
+    fontWeight = FontWeight.Bold,
+    fontSize = 30.sp,
+    fontFamily = montserrat
+)
+
 val black36 = TextStyle(
     color = Color.Black,
     fontWeight = FontWeight.Bold,

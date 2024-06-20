@@ -48,6 +48,8 @@ object AppConfig {
 
     var currentCar: CarModel? = null
 
+    var idx = 1
+
     fun init(context: Context) {
         appContext = context
         authManager = AuthTokenDataStore(appContext)

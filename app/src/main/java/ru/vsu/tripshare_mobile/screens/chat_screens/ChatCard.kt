@@ -59,7 +59,7 @@ fun ChatCard(chat: ChatModel, unread: List<ChatModel>, user: UserModel, navContr
             modifier = Modifier.fillMaxSize().padding(10.dp, 0.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
-            if(user.avatarUrl == null) {
+            if(companion.avatarUrl == null) {
                 Image(
                     painterResource(id = R.drawable.baseline_person),
                     contentDescription = "companion",
@@ -68,7 +68,7 @@ fun ChatCard(chat: ChatModel, unread: List<ChatModel>, user: UserModel, navContr
                         .clip(CircleShape)
                 )
             }else{
-                val painter: Painter = rememberImagePainter(user.avatarUrl!!)
+                val painter: Painter = rememberImagePainter(companion.avatarUrl!!)
                 Box(
                     modifier = Modifier
                         .size(70.dp)

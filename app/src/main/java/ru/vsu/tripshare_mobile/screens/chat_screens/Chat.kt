@@ -72,7 +72,7 @@ fun Chat(chat: ChatModel, user: UserModel, navController: NavController){
                 .clickable { navController.navigate("user_profile/${companion.id}") },
             verticalAlignment = Alignment.Top,
         ){
-            if (user.avatarUrl == null) {
+            if (companion.avatarUrl == null) {
                 Image(
                     painterResource(id = R.drawable.baseline_person),
                     contentDescription = "companion",
@@ -81,7 +81,7 @@ fun Chat(chat: ChatModel, user: UserModel, navController: NavController){
                         .clip(CircleShape)
                 )
             } else {
-                val painter: Painter = rememberImagePainter(user.avatarUrl!!)
+                val painter: Painter = rememberImagePainter(companion.avatarUrl!!)
                 Box(
                     modifier = Modifier
                         .size(50.dp)

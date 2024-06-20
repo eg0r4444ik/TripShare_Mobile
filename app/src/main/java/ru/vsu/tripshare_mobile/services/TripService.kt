@@ -11,7 +11,6 @@ import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.StopModel
 import ru.vsu.tripshare_mobile.models.TripModel
 import ru.vsu.tripshare_mobile.models.TripStatus
-import ru.vsu.tripshare_mobile.models.UserModel
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -89,6 +88,8 @@ object TripService {
     suspend fun tripFromDTOtoModel(tripDTO: TripDTO): Result<TripModel>{
         return withContext(Dispatchers.IO) {
             try {
+                val participants = RequestService.getParticipants(tripDTO.id!!)
+
                 val driver = ValidationService.validate(UserService.getUser(tripDTO.driver_id!!), "Пользователя не существует")
                 val cityFrom = PlaceService.getPlace(tripDTO.stops.get(0).place_name).getOrNull()!!.address
                 val cityTo = PlaceService.getPlace(tripDTO.stops.get(tripDTO.stops.size-1).place_name).getOrNull()!!.address
@@ -117,13 +118,13 @@ object TripService {
                         arrivalDateTime,
                         "",
                         driver,
-                        listOf<UserModel>(),
+                        participants,
                         tripDTO.max_two_passengers_in_the_back_seat,
                         tripDTO.smoking_allowed,
                         tripDTO.pets_allowed,
                         tripDTO.free_trunk,
                         tripDTO.car_id,
-                        if(AppConfig.currentUser == null || tripDTO.driver_id != AppConfig.currentUser!!.id) statusFromDTOtoModel(tripDTO.status!!) else TripStatus.DRIVER,
+                        if(AppConfig.currentUser == null || tripDTO.driver_id != AppConfig.currentUser!!.id || tripDTO.status == TripStatusDTO.FINISHED) statusFromDTOtoModel(tripDTO.status!!) else TripStatus.DRIVER,
                         tripDTO.cost_sum,
                         tripDTO.max_passengers
                     )
@@ -162,7 +163,7 @@ object TripService {
     private fun stopsFromDTOtoModel(stopsDTO: List<StopDTO>): List<StopModel>{
         var stops = mutableListOf<StopModel>()
         stopsDTO.forEach{
-            stops.add(StopModel(it.place_name, "", ""))
+            stops.add(StopModel(it.place_name, "", "", it.id!!))
         }
         return stops
     }

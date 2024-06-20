@@ -5,5 +5,6 @@ enum class TripStatus {
     PASSENGER,
     REJECTED,
     PENDING,
-    WITHOUT_STATUS
+    WITHOUT_STATUS,
+    FINISHED
 }

@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -72,35 +71,53 @@ fun Payments(navController: NavController){
                         .fillMaxWidth()
                 ) {
                     itemsIndexed(payments) { _, item ->
-                        Spacer(modifier = Modifier.height(10.dp))
-                        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-                        val isoInstantDeparture = item.datetime_fn
-                        val instant = Instant.parse(isoInstantDeparture)
-                        val zonedDateTime = instant.atZone(ZoneId.systemDefault())
-                        val dateTime = formatter.format(zonedDateTime)
 
-                        if(item.from_user_id == AppConfig.currentUser!!.id) {
-                            Row(
-                                modifier = Modifier.padding(10.dp)
-                            ) {
-                                PaymentStatus(item.status)
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                                .padding(10.dp),
+                            shape = RoundedCornerShape(15.dp),
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = 5.dp
+                            ),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.White,
+                            )
+                        ) {
+                            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                            val isoInstant = item.datetime_cr + "Z"
+                            val instant = Instant.parse(isoInstant)
+                            val zonedDateTime = instant.atZone(ZoneId.systemDefault())
+                            val dateTime = formatter.format(zonedDateTime)
+
+                            if (item.from_user_id == AppConfig.currentUser!!.id) {
                                 Column(
-                                    modifier = Modifier.padding(10.dp)
+                                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text(text = "-" + item.amount, style = blue18)
-                                    Text(text = dateTime, style = darkGray18)
+                                    PaymentStatus(item.status)
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth().padding(10.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(text = "-" + item.amount, style = blue18)
+                                        Text(text = dateTime, style = darkGray18)
+                                    }
                                 }
-                            }
-                        }else{
-                            Row(
-                                modifier = Modifier.padding(10.dp)
-                            ) {
-                                PaymentStatus(item.status)
+                            } else {
                                 Column(
-                                    modifier = Modifier.padding(10.dp)
+                                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text(text = "+" + item.amount, style = blue18)
-                                    Text(text = dateTime, style = darkGray18)
+                                    PaymentStatus(item.status)
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth().padding(10.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(text = "+" + item.amount, style = blue18)
+                                        Text(text = dateTime, style = darkGray18)
+                                    }
                                 }
                             }
                         }
@@ -133,7 +150,8 @@ private fun PaymentStatus(text: String, color: Color){
         modifier = Modifier
             .background(color)
             .fillMaxWidth()
-            .height(34.dp)
+            .padding(10.dp)
+            .height(50.dp)
     ) {
         Text(text = text, style = white14)
     }
