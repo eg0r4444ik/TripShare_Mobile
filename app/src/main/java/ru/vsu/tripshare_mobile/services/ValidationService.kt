@@ -12,7 +12,7 @@ object ValidationService {
             Toast.makeText(
                 AppConfig.appContext,
                 exceptionText,
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_LONG
             ).show()
         }
 

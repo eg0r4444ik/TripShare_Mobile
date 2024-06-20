@@ -6,14 +6,17 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.vsu.tripshare_mobile.api.dto.cars.CarDTO
 import ru.vsu.tripshare_mobile.api.dto.chats.ChatDTO
 import ru.vsu.tripshare_mobile.api.dto.chats.MessageDTO
+import ru.vsu.tripshare_mobile.api.dto.places.PlaceDTO
+import ru.vsu.tripshare_mobile.api.dto.requests.RequestDTO
 import ru.vsu.tripshare_mobile.api.dto.reviews.ReviewDTO
+import ru.vsu.tripshare_mobile.api.dto.trips.FindTripRequestDTO
+import ru.vsu.tripshare_mobile.api.dto.trips.FindTripResponseDTO
 import ru.vsu.tripshare_mobile.api.dto.trips.TripDTO
 import ru.vsu.tripshare_mobile.api.dto.users.RegistrationDTO
 import ru.vsu.tripshare_mobile.api.dto.users.TokenDTO
@@ -31,7 +34,7 @@ interface RetrofitApi {
     @GET("users/me")
     suspend fun getMe(): UserDTO
 
-    @PUT("users/me")
+    @POST("users/me")
     suspend fun updateMe(@Body userDTO: UserDTO): UserDTO
 
     @GET("users/{user_id}")
@@ -42,11 +45,11 @@ interface RetrofitApi {
     @POST("trips/")
     suspend fun addTrip(@Body tripDTO: TripDTO): TripDTO
 
-    @GET("trips/as_driver")
+    @GET("trips/me_as_driver")
     suspend fun getTripsAsDriver(): List<TripDTO>
 
-    @GET("trips/search")
-    suspend fun findTrips(@Query("place_start") placeStart: String, @Query("place_end") placeEnd: String): List<TripDTO>
+    @GET("trips/{id}")
+    suspend fun getTrip(@Path("id") id: Int): TripDTO
 
     //-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -94,5 +97,24 @@ interface RetrofitApi {
 
     @GET("reviews/user/{user_id}")
     suspend fun getUsersReviews(@Path("user_id") id: Int): List<ReviewDTO>
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------
+
+    @GET("requests/me")
+    suspend fun getMyRequests(): List<RequestDTO>
+
+    @POST("requests/me")
+    suspend fun addRequest(@Body requestDTO: RequestDTO): RequestDTO
+
+    @POST("requests/find")
+    suspend fun findTrips(@Body findTripRequestDTO: FindTripRequestDTO): List<FindTripResponseDTO>
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------
+
+    @GET("places/suggest/{to_find}")
+    suspend fun suggestPlace(@Path("to_find") address: String): List<PlaceDTO>
+
+    @GET("places/{id}")
+    suspend fun getPlace(@Path("id") id: Int): PlaceDTO
 
 }

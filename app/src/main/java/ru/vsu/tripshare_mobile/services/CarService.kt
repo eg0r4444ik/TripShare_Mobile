@@ -2,8 +2,6 @@ package ru.vsu.tripshare_mobile.services
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
 import ru.vsu.tripshare_mobile.api.dto.cars.CarDTO
 import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.CarModel
@@ -54,10 +52,7 @@ object CarService {
             carModel.model,
             carModel.color,
             carModel.manufactureYear,
-            carModel.imageIds[0],
-            carModel.imageIds[1],
-            carModel.imageIds[2],
-            carModel.imageIds[3]
+            carModel.imageUrl
         )
         return carDTO
     }
@@ -69,7 +64,7 @@ object CarService {
             carDTO.model,
             carDTO.color,
             carDTO.year_of_manufacture,
-            mutableListOf(carDTO.image0_id, carDTO.image1_id, carDTO.image2_id, carDTO.image3_id)
+            carDTO.iamges_url
         )
         return car
     }

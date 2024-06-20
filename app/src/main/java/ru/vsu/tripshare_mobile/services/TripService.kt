@@ -1,11 +1,9 @@
 package ru.vsu.tripshare_mobile.services
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
+import ru.vsu.tripshare_mobile.api.dto.trips.FindTripRequestDTO
+import ru.vsu.tripshare_mobile.api.dto.trips.FindTripResponseDTO
 import ru.vsu.tripshare_mobile.api.dto.trips.StopDTO
 import ru.vsu.tripshare_mobile.api.dto.trips.TripDTO
 import ru.vsu.tripshare_mobile.api.dto.trips.TripStatusDTO
@@ -16,9 +14,9 @@ import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.models.UserModel
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 object TripService {
 
@@ -51,18 +49,22 @@ object TripService {
         }
     }
 
-    suspend fun findTrips(placeStart: String, placeEnd: String): Result<List<TripModel>>{
+    suspend fun getTrip(id: Int): Result<TripModel>{
         return withContext(Dispatchers.IO) {
             try {
-                val tripDTO = AppConfig.retrofitAPI.findTrips(placeStart, placeEnd)
-                var trip = mutableListOf<TripModel>()
-                tripDTO.forEach{
-                    val tripModel = tripFromDTOtoModel(it)
-                    if(tripModel.isSuccess && tripModel.getOrNull() != null) {
-                        trip.add(tripModel.getOrNull()!!)
-                    }
-                }
-                Result.success(trip)
+                val tripDTO = AppConfig.retrofitAPI.getTrip(id)
+                Result.success(tripFromDTOtoModel(tripDTO).getOrNull()!!)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun findTrips(requestDTO: FindTripRequestDTO): Result<List<FindTripResponseDTO>>{
+        return withContext(Dispatchers.IO) {
+            try {
+                val responseDTO = AppConfig.retrofitAPI.findTrips(requestDTO)
+                Result.success(responseDTO)
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -84,20 +86,35 @@ object TripService {
         return tripDTO
     }
 
-    private suspend fun tripFromDTOtoModel(tripDTO: TripDTO): Result<TripModel>{
+    suspend fun tripFromDTOtoModel(tripDTO: TripDTO): Result<TripModel>{
         return withContext(Dispatchers.IO) {
             try {
                 val driver = ValidationService.validate(UserService.getUser(tripDTO.driver_id!!), "Пользователя не существует")
+                val cityFrom = PlaceService.getPlace(tripDTO.stops.get(0).place_name).getOrNull()!!.address
+                val cityTo = PlaceService.getPlace(tripDTO.stops.get(tripDTO.stops.size-1).place_name).getOrNull()!!.address
+
+                val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                val isoInstantDeparture = tripDTO.stops.get(0).datetime + "Z"
+                val departureInstant = Instant.parse(isoInstantDeparture)
+                val departureZonedDateTime = departureInstant.atZone(ZoneId.systemDefault())
+                val departureDateTime = formatter.format(departureZonedDateTime)
+
+
+                val isoInstantArrival = tripDTO.stops.get(tripDTO.stops.size-1).datetime + "Z"
+                val arrivalInstant = Instant.parse(isoInstantArrival)
+                val arrivalZonedDateTime = arrivalInstant.atZone(ZoneId.systemDefault())
+                val arrivalDateTime = formatter.format(arrivalZonedDateTime)
+
                 if (driver != null){
                     val trip = TripModel(
                         tripDTO.id!!,
-                        tripDTO.stops.get(0).place_name,
-                        tripDTO.stops.get(tripDTO.stops.size-1).place_name,
+                        cityFrom,
+                        cityTo,
                         stopsFromDTOtoModel(tripDTO.stops),
                         "5 дней",
+                        departureDateTime,
                         "",
-                        "",
-                        "",
+                        arrivalDateTime,
                         "",
                         driver,
                         listOf<UserModel>(),
@@ -105,9 +122,10 @@ object TripService {
                         tripDTO.smoking_allowed,
                         tripDTO.pets_allowed,
                         tripDTO.free_trunk,
-                        null,
-                        statusFromDTOtoModel(tripDTO.status!!),
-                        tripDTO.cost_sum
+                        tripDTO.car_id,
+                        if(tripDTO.driver_id == AppConfig.currentUser!!.id) TripStatus.DRIVER else statusFromDTOtoModel(tripDTO.status!!),
+                        tripDTO.cost_sum,
+                        tripDTO.max_passengers
                     )
                     Result.success(trip)
                 }else{
@@ -130,7 +148,7 @@ object TripService {
             val iso8601String = isoFormatter.format(instant)
             stopsDTO.add(
                 StopDTO(
-                    "55.75972°",
+                    it.placeName,
                     it.placeName,
                     iso8601String,
                     curr)

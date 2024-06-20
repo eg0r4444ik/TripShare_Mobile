@@ -9,6 +9,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.vsu.tripshare_mobile.api.AuthInterceptor
 import ru.vsu.tripshare_mobile.api.RetrofitApi
+import ru.vsu.tripshare_mobile.api.dto.trips.FindTripRequestDTO
+import ru.vsu.tripshare_mobile.api.dto.trips.FindTripResponseDTO
 import ru.vsu.tripshare_mobile.data_store.AuthTokenDataStore
 import ru.vsu.tripshare_mobile.models.ChatModel
 import ru.vsu.tripshare_mobile.models.UserModel
@@ -36,6 +38,12 @@ object AppConfig {
     var currentUser: UserModel? = null
 
     var currentChats: List<ChatModel>? = null
+
+    var currentCarImageUrl: String? = null
+
+    var currentListOfTrips: List<FindTripResponseDTO>? = null
+
+    var currentFindRequest: FindTripRequestDTO? = null
 
     fun init(context: Context) {
         appContext = context

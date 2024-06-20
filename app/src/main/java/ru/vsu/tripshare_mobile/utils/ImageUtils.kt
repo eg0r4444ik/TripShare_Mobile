@@ -5,6 +5,11 @@ import android.graphics.BitmapFactory
 import android.util.Base64
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import ru.vsu.tripshare_mobile.config.AppConfig
+import ru.vsu.tripshare_mobile.services.UserService
 import java.io.ByteArrayOutputStream
 
 object ImageUtils {
@@ -21,16 +26,34 @@ object ImageUtils {
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
     }
 
-    fun saveImage(bitmap: Bitmap){
+    fun saveUserImage(bitmap: Bitmap){
         val storage = Firebase.storage.reference.child("images")
-        val task = storage.child("images").putBytes(
+        val task = storage.child(generateRandomString()).putBytes(
             bitmapToByteArray(bitmap)
         )
         task.addOnSuccessListener { uploadTask ->
             uploadTask.metadata?.reference
                 ?.downloadUrl?.addOnCompleteListener{ uriTask ->
                     val uri = uriTask.result.toString()
-                    print(uri)
+                    AppConfig.currentUser!!.avatarUrl = uri
+                    CoroutineScope(Dispatchers.Main).launch {
+                        UserService.updateMe()
+                    }
+                }
+        }
+    }
+
+    fun saveCarImage(bitmap: Bitmap){
+        var uri: String? = null
+        val storage = Firebase.storage.reference.child("images")
+        val task = storage.child(generateRandomString()).putBytes(
+            bitmapToByteArray(bitmap)
+        )
+        task.addOnSuccessListener { uploadTask ->
+            uploadTask.metadata?.reference
+                ?.downloadUrl?.addOnCompleteListener{ uriTask ->
+                    uri = uriTask.result.toString()
+                    AppConfig.currentCarImageUrl = uri
                 }
         }
     }
@@ -39,6 +62,13 @@ object ImageUtils {
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         return baos.toByteArray()
+    }
+
+    fun generateRandomString(length: Int = 15): String {
+        val characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        return (1..length)
+            .map { characters.random() }
+            .joinToString("")
     }
 
 }

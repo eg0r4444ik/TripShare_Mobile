@@ -49,7 +49,7 @@ object UserService {
             Toast.makeText(
                 AppConfig.appContext,
                 "Введенные данные некорректны",
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_LONG
             ).show()
         }
     }
@@ -66,7 +66,7 @@ object UserService {
             userModel.talkativeness,
             userModel.attitudeTowardsSmoking,
             userModel.attitudeTowardsAnimals,
-            userModel.avatarId
+            userModel.avatarUrl
         )
         return userDTO
     }
@@ -80,7 +80,7 @@ object UserService {
             userDTO.email,
             userDTO.birthday,
             userDTO.rating,
-            userDTO.avatar_id,
+            userDTO.avatar_url,
             userDTO.musicPreferences,
             userDTO.talkativeness,
             userDTO.attitude_towards_smoking,
