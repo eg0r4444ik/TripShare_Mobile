@@ -12,6 +12,7 @@ import ru.vsu.tripshare_mobile.api.RetrofitApi
 import ru.vsu.tripshare_mobile.api.dto.trips.FindTripRequestDTO
 import ru.vsu.tripshare_mobile.api.dto.trips.FindTripResponseDTO
 import ru.vsu.tripshare_mobile.data_store.AuthTokenDataStore
+import ru.vsu.tripshare_mobile.models.CarModel
 import ru.vsu.tripshare_mobile.models.ChatModel
 import ru.vsu.tripshare_mobile.models.UserModel
 
@@ -44,6 +45,8 @@ object AppConfig {
     var currentListOfTrips: List<FindTripResponseDTO>? = null
 
     var currentFindRequest: FindTripRequestDTO? = null
+
+    var currentCar: CarModel? = null
 
     fun init(context: Context) {
         appContext = context

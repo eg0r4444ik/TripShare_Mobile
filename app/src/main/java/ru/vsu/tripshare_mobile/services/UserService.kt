@@ -26,9 +26,6 @@ object UserService {
     }
 
     suspend fun getUser(userId: Int): Result<UserModel>{
-        if(AppConfig.authManager.getToken() == null){
-            return Result.failure(UserNotAuthenticatedException())
-        }
         return withContext(Dispatchers.IO) {
             try {
                 val userDTO = AppConfig.retrofitAPI.getUser(userId)

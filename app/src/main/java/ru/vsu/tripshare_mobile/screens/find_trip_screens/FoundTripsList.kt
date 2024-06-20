@@ -29,7 +29,7 @@ import ru.vsu.tripshare_mobile.ui.theme.mint26
 @Composable
 fun FoundTripsList(navController: NavController){
 
-    var trips = remember { mutableStateListOf<TripModel?>() }
+    var trips = remember { mutableStateListOf<TripModel?>(null) }
     LaunchedEffect(Unit) {
         AppConfig.currentListOfTrips?.let {
             val response = AppConfig.currentListOfTrips

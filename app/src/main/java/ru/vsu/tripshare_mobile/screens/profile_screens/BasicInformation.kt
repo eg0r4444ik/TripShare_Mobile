@@ -1,5 +1,6 @@
 package ru.vsu.tripshare_mobile.screens.profile_screens
 
+import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -34,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -57,6 +59,7 @@ import ru.vsu.tripshare_mobile.utils.ImageUtils
 fun BasicInformation(user: UserModel, person: UserModel, navController: NavController){
 
     var avatarUrl by remember { mutableStateOf<String?>(user.avatarUrl) }
+    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     Card(
         modifier = Modifier
@@ -90,7 +93,23 @@ fun BasicInformation(user: UserModel, person: UserModel, navController: NavContr
                     .padding(10.dp),
                 contentAlignment = Alignment.TopEnd
             ) {
-                if(avatarUrl == null) {
+                if(bitmap != null){
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                    ) {
+                        Image(
+                            bitmap = bitmap!!.asImageBitmap(),
+                            contentDescription = "Image from URL",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                                .border(1.dp, MyDarkGray, CircleShape)
+                        )
+                    }
+                }else if(avatarUrl == null) {
                     Box(
                         modifier = Modifier
                             .size(100.dp)
@@ -152,7 +171,7 @@ fun BasicInformation(user: UserModel, person: UserModel, navController: NavContr
                             }
                         )
                         imageUri?.let {
-                            val bitmap = if (Build.VERSION.SDK_INT < 28) {
+                            bitmap = if (Build.VERSION.SDK_INT < 28) {
                                 MediaStore.Images.Media.getBitmap(context.contentResolver, it)
                             } else {
                                 val source = ImageDecoder.createSource(context.contentResolver, it)
@@ -160,7 +179,7 @@ fun BasicInformation(user: UserModel, person: UserModel, navController: NavContr
                             }
 
                             bitmap?.let {
-                                ImageUtils.saveUserImage(bitmap)
+                                ImageUtils.saveUserImage(bitmap!!)
                                 avatarUrl = AppConfig.currentUser!!.avatarUrl
                             }
                         }

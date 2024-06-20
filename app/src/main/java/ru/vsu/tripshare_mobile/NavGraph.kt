@@ -28,6 +28,7 @@ import ru.vsu.tripshare_mobile.screens.chat_screens.MyChats
 import ru.vsu.tripshare_mobile.screens.find_trip_screens.FindTrip
 import ru.vsu.tripshare_mobile.screens.find_trip_screens.FoundTripsList
 import ru.vsu.tripshare_mobile.screens.payments_screens.AddPayment
+import ru.vsu.tripshare_mobile.screens.payments_screens.Payments
 import ru.vsu.tripshare_mobile.screens.profile_screens.Profile
 import ru.vsu.tripshare_mobile.screens.profile_screens.UserProfile
 import ru.vsu.tripshare_mobile.screens.profile_screens.settings.AddCar
@@ -35,7 +36,9 @@ import ru.vsu.tripshare_mobile.screens.profile_screens.settings.AddReview
 import ru.vsu.tripshare_mobile.screens.profile_screens.settings.EditInfo
 import ru.vsu.tripshare_mobile.screens.profile_screens.settings.EditPreferences
 import ru.vsu.tripshare_mobile.screens.profile_screens.settings.Reviews
+import ru.vsu.tripshare_mobile.screens.profile_screens.settings.Screen
 import ru.vsu.tripshare_mobile.screens.profile_screens.settings.Settings
+import ru.vsu.tripshare_mobile.screens.profile_screens.settings.ViewCar
 import ru.vsu.tripshare_mobile.screens.registration_screens.AuthorizationRequestScreen
 import ru.vsu.tripshare_mobile.screens.registration_screens.FirstAuthScreen
 import ru.vsu.tripshare_mobile.screens.registration_screens.RegistrationScreen
@@ -167,10 +170,13 @@ fun NavGraph(navHostController: NavHostController, startDestination: String){
             route = "trip_details/{tripId}",
             arguments = listOf(navArgument("tripId") { type = NavType.IntType }),
             ){ navBackStack ->
+            if(AppConfig.currentUser == null){
+                AuthorizationRequestScreen(navHostController)
+            }else {
+                val tripId = navBackStack.arguments?.getInt("tripId")
 
-            val tripId = navBackStack.arguments?.getInt("tripId")
-
-            TripDetails(tripId!!, navHostController)
+                TripDetails(tripId!!, navHostController)
+            }
         }
         composable(
             route ="reviews/{userId}",
@@ -217,6 +223,13 @@ fun NavGraph(navHostController: NavHostController, startDestination: String){
                 AddPayment(navHostController)
             }
         }
+        composable("payments"){
+            if(AppConfig.currentUser == null){
+                AuthorizationRequestScreen(navHostController)
+            }else {
+                Payments(navHostController)
+            }
+        }
         composable("edit_preferences"){
             if(AppConfig.currentUser == null){
                 AuthorizationRequestScreen(navHostController)
@@ -229,6 +242,22 @@ fun NavGraph(navHostController: NavHostController, startDestination: String){
                 AuthorizationRequestScreen(navHostController)
             }else {
                 AddCar(AppConfig.currentUser!!, navHostController)
+            }
+        }
+        composable("view_car"){
+            if(AppConfig.currentUser == null){
+                AuthorizationRequestScreen(navHostController)
+            }else {
+                ViewCar(AppConfig.currentUser!!, navHostController)
+            }
+        }
+        composable(route ="screen/{way}",
+            arguments = listOf(navArgument("way") { type = NavType.StringType })){navBackStack ->
+            if(AppConfig.currentUser == null){
+                AuthorizationRequestScreen(navHostController)
+            }else {
+                val way = navBackStack.arguments?.getString("way")
+                Screen(way!!, navHostController)
             }
         }
         composable(

@@ -1,7 +1,6 @@
 package ru.vsu.tripshare_mobile.screens.profile_screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -23,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -32,9 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import ru.vsu.tripshare_mobile.R
+import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.CarModel
 import ru.vsu.tripshare_mobile.models.UserModel
-import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
 import ru.vsu.tripshare_mobile.ui.theme.darkGray14
 import ru.vsu.tripshare_mobile.ui.theme.darkGray24
@@ -74,7 +71,10 @@ fun Cars(cars: List<CarModel>?, user: UserModel, person: UserModel, navControlle
                         Column(
                             modifier = Modifier
                                 .padding(10.dp, 10.dp)
-                                .clickable { navController.navigate("add_car") },
+                                .clickable {
+                                    AppConfig.currentCar = item
+                                    navController.navigate("view_car")
+                                           },
                             verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -89,16 +89,12 @@ fun Cars(cars: List<CarModel>?, user: UserModel, person: UserModel, navControlle
                                 Box(
                                     modifier = Modifier
                                         .size(100.dp)
-                                        .clip(CircleShape)
                                 ) {
                                     Image(
                                         painter = painter,
                                         contentDescription = "Image from URL",
                                         contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .clip(CircleShape)
-                                            .border(1.dp, MyDarkGray, CircleShape)
+                                        modifier = Modifier.fillMaxSize()
                                     )
                                 }
                             }

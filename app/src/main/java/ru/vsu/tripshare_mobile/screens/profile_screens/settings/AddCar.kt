@@ -1,6 +1,7 @@
 package ru.vsu.tripshare_mobile.screens.profile_screens.settings
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -18,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -35,13 +35,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
 import io.appmetrica.analytics.AppMetrica
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -72,7 +70,7 @@ fun AddCar(user: UserModel, navController: NavController){
     ) {
         Text(text = "Добавление авто", style = mint24, modifier = Modifier.padding(10.dp, 0.dp))
 
-        var imageUrl by remember { mutableStateOf<String?>(null) }
+        var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
         val context = AppConfig.appContext
         var imageUri by remember { mutableStateOf<Uri?>(null) }
@@ -82,18 +80,34 @@ fun AddCar(user: UserModel, navController: NavController){
             imageUri = uri
         }
 
-        Button(
-            modifier = Modifier
-                .height(120.dp)
-                .width(160.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MyLightGray),
-            onClick = { launcher.launch("image/*") }
-        ) {
-            Text(text = "Добавить фото", style = darkGray18)
+        if(bitmap == null) {
+            Button(
+                modifier = Modifier
+                    .height(120.dp)
+                    .width(160.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MyLightGray),
+                onClick = { launcher.launch("image/*") }
+            ) {
+                Text(text = "Добавить фото", style = darkGray18)
+            }
+        }else{
+            Box(
+                modifier = Modifier.fillMaxWidth().padding(30.dp).size(200.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    bitmap = bitmap!!.asImageBitmap(),
+                    contentDescription = "image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .border(1.dp, MyDarkGray)
+                )
+            }
         }
 
         imageUri?.let {
-            val bitmap = if (Build.VERSION.SDK_INT < 28) {
+            bitmap = if (Build.VERSION.SDK_INT < 28) {
                 MediaStore.Images.Media.getBitmap(context.contentResolver, it)
             } else {
                 val source = ImageDecoder.createSource(context.contentResolver, it)
@@ -101,26 +115,7 @@ fun AddCar(user: UserModel, navController: NavController){
             }
 
             bitmap?.let {
-                ImageUtils.saveCarImage(bitmap)
-            }
-        }
-
-        imageUrl?.let {
-            val painter: Painter = rememberImagePainter(imageUrl!!)
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-            ) {
-                Image(
-                    painter = painter,
-                    contentDescription = "Image from URL",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(CircleShape)
-                        .border(1.dp, MyDarkGray, CircleShape)
-                )
+                ImageUtils.saveCarImage(bitmap!!)
             }
         }
 
@@ -203,7 +198,9 @@ fun AddCar(user: UserModel, navController: NavController){
                 label = { Text("Год выпуска") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 isError = manufactureYearError,
-                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
                 textStyle = darkGray18,
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = MyLightGray,

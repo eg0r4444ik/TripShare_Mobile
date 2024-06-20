@@ -9,6 +9,7 @@ import ru.vsu.tripshare_mobile.api.dto.chats.MessageDTO
 import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.ChatModel
 import ru.vsu.tripshare_mobile.models.MessageModel
+import java.time.Instant
 import java.util.Date
 
 object ChatService {
@@ -64,7 +65,7 @@ object ChatService {
 
     suspend fun addMessage(receiverId: Int, message: MessageModel){
         try {
-            AppConfig.retrofitAPI.addMessage(receiverId, fromMessageModelToDTO(message))
+            AppConfig.retrofitAPI.addMessage(fromMessageModelToDTO(receiverId, message))
         } catch (e: Exception) {
             e.stackTrace
         }
@@ -85,19 +86,23 @@ object ChatService {
         }
     }
 
-    private fun fromMessageModelToDTO(message: MessageModel): MessageDTO {
+    private fun fromMessageModelToDTO(receiverId: Int, message: MessageModel): MessageDTO {
         val messageDTO = MessageDTO(
             message.text,
-            null
+            null,
+            receiverId
         )
         return messageDTO
     }
 
     private fun fromMessageDTOtoModel(messageDTO: MessageDTO): MessageModel {
+        val isoString = messageDTO.created_at!! + "Z"
+        val instant = Instant.parse(isoString)
+        val date =  Date.from(instant)
         val message = MessageModel(
             messageDTO.sender_id!!,
             if(messageDTO.text == null) "" else messageDTO.text,
-            Date()
+            date
         )
         return message
     }

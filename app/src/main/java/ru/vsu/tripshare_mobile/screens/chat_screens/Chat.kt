@@ -19,10 +19,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -72,37 +72,30 @@ fun Chat(chat: ChatModel, user: UserModel, navController: NavController){
                 .clickable { navController.navigate("user_profile/${companion.id}") },
             verticalAlignment = Alignment.Top,
         ){
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                contentAlignment = Alignment.TopEnd
-            ) {
-                if (user.avatarUrl == null) {
+            if (user.avatarUrl == null) {
+                Image(
+                    painterResource(id = R.drawable.baseline_person),
+                    contentDescription = "companion",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                )
+            } else {
+                val painter: Painter = rememberImagePainter(user.avatarUrl!!)
+                Box(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                ) {
                     Image(
-                        painterResource(id = R.drawable.baseline_person),
-                        contentDescription = "companion",
+                        painter = painter,
+                        contentDescription = "Image from URL",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .size(50.dp)
+                            .fillMaxSize()
                             .clip(CircleShape)
+                            .border(1.dp, MyDarkGray, CircleShape)
                     )
-                } else {
-                    val painter: Painter = rememberImagePainter(user.avatarUrl!!)
-                    Box(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape)
-                    ) {
-                        Image(
-                            painter = painter,
-                            contentDescription = "Image from URL",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(CircleShape)
-                                .border(1.dp, MyDarkGray, CircleShape)
-                        )
-                    }
                 }
             }
 

@@ -97,7 +97,7 @@ fun Reviews(userId: Int, navController: NavController){
                         }
                     }
 
-                    if (user!!.id != AppConfig.currentUser!!.id) {
+                    if (user!!.id != AppConfig.currentUser!!.id && !existReview(reviews, AppConfig.currentUser!!.id)) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -123,4 +123,14 @@ fun Reviews(userId: Int, navController: NavController){
             }
         }
     )
+}
+
+private fun existReview(reviews: List<ReviewModel>, userId: Int): Boolean{
+    reviews.forEach {
+        if(it.author.id == userId){
+            return true
+        }
+    }
+
+    return false
 }

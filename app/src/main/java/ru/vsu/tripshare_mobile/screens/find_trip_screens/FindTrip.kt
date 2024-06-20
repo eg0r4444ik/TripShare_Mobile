@@ -80,6 +80,9 @@ fun FindTrip(navController: NavController){
 
     val state = rememberScrollState()
 
+    var flag1 by remember { mutableStateOf(false) }
+    var flag2 by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -127,7 +130,9 @@ fun FindTrip(navController: NavController){
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxHeight().padding(10.dp, 0.dp, 0.dp, 0.dp),
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(10.dp, 0.dp, 0.dp, 0.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
@@ -143,9 +148,21 @@ fun FindTrip(navController: NavController){
 
                     LaunchedEffect(Unit) {
                         snapshotFlow { addressFrom }
-                            .debounce(1200)
+                            .debounce(1500)
                             .collectLatest { value ->
-                                expanded = true
+                                if(flag1) {
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        val places = PlaceService.suggestPlace(addressFrom)
+                                        if (places.isSuccess) {
+                                            var addresses = mutableListOf<String>()
+                                            places.getOrNull()?.forEach {
+                                                addresses.add(it.address)
+                                            }
+                                            suggestions = addresses
+                                        }
+                                    }
+                                    expanded = true
+                                }
                             }
                     }
 
@@ -159,22 +176,16 @@ fun FindTrip(navController: NavController){
                                 onValueChange = {
                                     addressFrom = it
                                     expanded = false
-                                    CoroutineScope(Dispatchers.Main).launch {
-                                        val places = PlaceService.suggestPlace(addressFrom)
-                                        if (places.isSuccess) {
-                                            var addresses = mutableListOf<String>()
-                                            places.getOrNull()?.forEach {
-                                                addresses.add(it.address)
-                                            }
-                                            suggestions = addresses
-                                        }
-                                    }
+                                    flag1 = true
+                                    flag2 = false
                                 },
                                 label = { Text("Откуда") },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(10.dp)
-                                    .menuAnchor(),
+                                    .menuAnchor()
+                                    .clickable { flag1 = true
+                                        flag2 = false },
                                 colors = TextFieldDefaults.textFieldColors(
                                     backgroundColor = MyLightGray,
                                     focusedIndicatorColor = MyDarkGray,
@@ -212,7 +223,9 @@ fun FindTrip(navController: NavController){
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxHeight().padding(10.dp, 0.dp, 0.dp, 0.dp),
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(10.dp, 0.dp, 0.dp, 0.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
@@ -228,9 +241,21 @@ fun FindTrip(navController: NavController){
 
                     LaunchedEffect(Unit) {
                         snapshotFlow { addressTo }
-                            .debounce(1200)
+                            .debounce(1500)
                             .collectLatest { value ->
-                                expanded = true
+                                if(flag2) {
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        val places = PlaceService.suggestPlace(addressTo)
+                                        if (places.isSuccess) {
+                                            var addresses = mutableListOf<String>()
+                                            places.getOrNull()?.forEach {
+                                                addresses.add(it.address)
+                                            }
+                                            suggestions = addresses
+                                        }
+                                    }
+                                    expanded = true
+                                }
                             }
                     }
 
@@ -244,22 +269,16 @@ fun FindTrip(navController: NavController){
                                 onValueChange = {
                                     addressTo = it
                                     expanded = false
-                                    CoroutineScope(Dispatchers.Main).launch {
-                                        val places = PlaceService.suggestPlace(addressTo)
-                                        if (places.isSuccess) {
-                                            var addresses = mutableListOf<String>()
-                                            places.getOrNull()?.forEach {
-                                                addresses.add(it.address)
-                                            }
-                                            suggestions = addresses
-                                        }
-                                    }
+                                    flag1 = false
+                                    flag2 = true
                                 },
                                 label = { Text("Куда") },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(10.dp)
-                                    .menuAnchor(),
+                                    .menuAnchor()
+                                    .clickable { flag1 = false
+                                        flag2 = true },
                                 colors = TextFieldDefaults.textFieldColors(
                                     backgroundColor = MyLightGray,
                                     focusedIndicatorColor = MyDarkGray,
@@ -319,7 +338,11 @@ fun FindTrip(navController: NavController){
                         modifier = Modifier
                             .fillMaxHeight()
                             .padding(10.dp)
-                            .clickable { datePickerDialog.show() },
+                            .clickable {
+                                flag1 = false
+                                flag2 = false
+                                datePickerDialog.show()
+                                       },
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
@@ -330,7 +353,9 @@ fun FindTrip(navController: NavController){
                     }
 
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(10.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -366,7 +391,11 @@ fun FindTrip(navController: NavController){
                         modifier = Modifier
                             .fillMaxHeight()
                             .padding(10.dp)
-                            .clickable { timePickerDialog.show() },
+                            .clickable {
+                                flag1 = false
+                                flag2 = false
+                                timePickerDialog.show()
+                                       },
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
@@ -414,8 +443,10 @@ fun FindTrip(navController: NavController){
                         TextField(
                             value = participantsCount,
                             onValueChange = { newText ->
+                                flag1 = false
+                                flag2 = false
                                 val number = newText.toIntOrNull()
-                                if (number != null && number in 0..10) {
+                                if (number != null && number in 1..10) {
                                     participantsCount = newText
                                     participantsCountError = false
                                 } else {
@@ -425,10 +456,12 @@ fun FindTrip(navController: NavController){
                                     participantsCountError = true
                                 }
                             },
-                            label = { Text("Количество пассажиров (0-10)") },
+                            label = { Text("Количество пассажиров (1-10)") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             isError = participantsCountError,
-                            modifier = Modifier.fillMaxWidth().padding(10.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
                             textStyle = darkGray18,
                             colors = TextFieldDefaults.textFieldColors(
                                 backgroundColor = MyLightGray,
@@ -440,7 +473,7 @@ fun FindTrip(navController: NavController){
 
                         if (participantsCountError) {
                             Text(
-                                text = "Введите число от 0 до 10",
+                                text = "Введите число от 1 до 10",
                                 color = MaterialTheme.colorScheme.error,
                                 modifier = Modifier.padding(10.dp, 5.dp)
                             )

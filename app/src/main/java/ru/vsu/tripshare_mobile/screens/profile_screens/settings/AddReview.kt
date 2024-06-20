@@ -10,12 +10,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import io.appmetrica.analytics.AppMetrica
@@ -59,7 +62,6 @@ fun AddReview(userId: Int, navController: NavController){
     Scaffold(
         content = {
             if (user != null) {
-                //todo добавить валидацию текстовых полей
                 val state = rememberScrollState()
 
                 Column(
@@ -76,23 +78,44 @@ fun AddReview(userId: Int, navController: NavController){
                     var rating by remember { mutableStateOf("") }
                     var text by remember { mutableStateOf("") }
 
-                    TextField(
-                        value = rating,
-                        onValueChange = { newText ->
-                            rating = newText
-                        },
-                        label = { Text("Оценка от 0 до 5") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        textStyle = darkGray18,
-                        colors = TextFieldDefaults.textFieldColors(
-                            backgroundColor = MyLightGray,
-                            focusedIndicatorColor = MyDarkGray,
-                            unfocusedIndicatorColor = MyDarkGray
-                        ),
-                        shape = RoundedCornerShape(15.dp)
-                    )
+                    var ratingError by remember { mutableStateOf(false) }
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        TextField(
+                            value = rating,
+                            onValueChange = { newText ->
+                                val number = newText.toIntOrNull()
+                                if (number != null && number in 0..5) {
+                                    rating = newText
+                                    ratingError = false
+                                } else {
+                                    if (newText.isEmpty()) {
+                                        rating = newText
+                                    }
+                                    ratingError = true
+                                }
+                            },
+                            label = { Text("Оценка (0-5)") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            isError = ratingError,
+                            modifier = Modifier.fillMaxWidth().padding(10.dp),
+                            textStyle = darkGray18,
+                            colors = TextFieldDefaults.textFieldColors(
+                                backgroundColor = MyLightGray,
+                                focusedIndicatorColor = MyDarkGray,
+                                unfocusedIndicatorColor = MyDarkGray
+                            ),
+                            shape = RoundedCornerShape(15.dp)
+                        )
+
+                        if (ratingError) {
+                            Text(
+                                text = "Введите число от 0 до 5",
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(10.dp, 5.dp)
+                            )
+                        }
+                    }
 
                     TextField(
                         value = text,

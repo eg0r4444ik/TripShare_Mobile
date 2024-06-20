@@ -71,7 +71,7 @@ fun ChatCard(chat: ChatModel, unread: List<ChatModel>, user: UserModel, navContr
                 val painter: Painter = rememberImagePainter(user.avatarUrl!!)
                 Box(
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(70.dp)
                         .clip(CircleShape)
                 ) {
                     Image(

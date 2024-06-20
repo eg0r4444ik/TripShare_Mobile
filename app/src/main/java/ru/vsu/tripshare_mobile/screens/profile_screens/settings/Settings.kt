@@ -128,12 +128,7 @@ fun Settings(user: UserModel, navController: NavController){
 
         Button(
             onClick = {
-                val telegramUri = "https://t.me/TonyBambony07"
-
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(telegramUri)
-
-                AppConfig.appContext.startActivity(intent)
+                navController.navigate("payments")
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
             elevation = ButtonDefaults.buttonElevation(5.dp),
@@ -148,7 +143,33 @@ fun Settings(user: UserModel, navController: NavController){
                     .padding(10.dp, 0.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
-                Text(text = "Написать в техподдержку", style = darkGray24)
+                Text(text = "История платежей", style = darkGray24)
+            }
+        }
+
+        Button(
+            onClick = {
+                val telegramUri = "https://t.me/TonyBambony07"
+
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse(telegramUri)
+
+                AppConfig.appContext.startActivity(intent)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = MyMint),
+            elevation = ButtonDefaults.buttonElevation(5.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .padding(10.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(10.dp, 0.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(text = "Написать в техподдержку", style = white24)
             }
         }
 

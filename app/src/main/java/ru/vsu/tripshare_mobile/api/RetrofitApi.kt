@@ -8,10 +8,10 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
-import retrofit2.http.Query
 import ru.vsu.tripshare_mobile.api.dto.cars.CarDTO
 import ru.vsu.tripshare_mobile.api.dto.chats.ChatDTO
 import ru.vsu.tripshare_mobile.api.dto.chats.MessageDTO
+import ru.vsu.tripshare_mobile.api.dto.payments.PaymentDTO
 import ru.vsu.tripshare_mobile.api.dto.places.PlaceDTO
 import ru.vsu.tripshare_mobile.api.dto.requests.RequestDTO
 import ru.vsu.tripshare_mobile.api.dto.reviews.ReviewDTO
@@ -76,7 +76,7 @@ interface RetrofitApi {
     suspend fun getMyChats(): List<ChatDTO>
 
     @POST("chat/messages")
-    suspend fun addMessage(@Query("receiver_id") receiverId: Int, @Body messageDTO: MessageDTO): MessageDTO
+    suspend fun addMessage(@Body messageDTO: MessageDTO): MessageDTO
 
     @GET("chat/{chat_id}/messages")
     suspend fun getChatMessages(@Path("chat_id") id: Int): List<MessageDTO>
@@ -116,5 +116,10 @@ interface RetrofitApi {
 
     @GET("places/{id}")
     suspend fun getPlace(@Path("id") id: Int): PlaceDTO
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------
+
+    @GET("pays/me")
+    suspend fun getPayments(): List<PaymentDTO>
 
 }

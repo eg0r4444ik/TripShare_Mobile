@@ -123,7 +123,7 @@ object TripService {
                         tripDTO.pets_allowed,
                         tripDTO.free_trunk,
                         tripDTO.car_id,
-                        if(tripDTO.driver_id == AppConfig.currentUser!!.id) TripStatus.DRIVER else statusFromDTOtoModel(tripDTO.status!!),
+                        if(AppConfig.currentUser == null || tripDTO.driver_id != AppConfig.currentUser!!.id) statusFromDTOtoModel(tripDTO.status!!) else TripStatus.DRIVER,
                         tripDTO.cost_sum,
                         tripDTO.max_passengers
                     )

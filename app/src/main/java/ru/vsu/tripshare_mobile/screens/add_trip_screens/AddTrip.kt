@@ -147,8 +147,18 @@ fun AddTrip(person: UserModel, cars: List<CarModel>, navController: NavControlle
 
                 LaunchedEffect(Unit) {
                     snapshotFlow { addressFrom }
-                        .debounce(1200)
+                        .debounce(1500)
                         .collectLatest { value ->
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val places = PlaceService.suggestPlace(addressFrom)
+                                if (places.isSuccess) {
+                                    var addresses = mutableListOf<String>()
+                                    places.getOrNull()?.forEach {
+                                        addresses.add(it.address)
+                                    }
+                                    suggestions = addresses
+                                }
+                            }
                             expanded = true
                         }
                 }
@@ -163,16 +173,6 @@ fun AddTrip(person: UserModel, cars: List<CarModel>, navController: NavControlle
                             onValueChange = {
                                 addressFrom = it
                                 expanded = false
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    val places = PlaceService.suggestPlace(addressFrom)
-                                    if (places.isSuccess) {
-                                        var addresses = mutableListOf<String>()
-                                        places.getOrNull()?.forEach {
-                                            addresses.add(it.address)
-                                        }
-                                        suggestions = addresses
-                                    }
-                                }
                             },
                             label = { Text("Откуда") },
                             modifier = Modifier
@@ -233,8 +233,18 @@ fun AddTrip(person: UserModel, cars: List<CarModel>, navController: NavControlle
 
                     LaunchedEffect(Unit) {
                         snapshotFlow { place.value }
-                            .debounce(1200)
+                            .debounce(1500)
                             .collectLatest { value ->
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    val places = PlaceService.suggestPlace(place.value)
+                                    if (places.isSuccess) {
+                                        var addresses = mutableListOf<String>()
+                                        places.getOrNull()?.forEach {
+                                            addresses.add(it.address)
+                                        }
+                                        suggestions = addresses
+                                    }
+                                }
                                 expanded = true
                             }
                     }
@@ -249,16 +259,6 @@ fun AddTrip(person: UserModel, cars: List<CarModel>, navController: NavControlle
                                 onValueChange = {
                                     place.value = it
                                     expanded = false
-                                    CoroutineScope(Dispatchers.Main).launch {
-                                        val places = PlaceService.suggestPlace(place.value)
-                                        if (places.isSuccess) {
-                                            var addresses = mutableListOf<String>()
-                                            places.getOrNull()?.forEach {
-                                                addresses.add(it.address)
-                                            }
-                                            suggestions = addresses
-                                        }
-                                    }
                                 },
                                 label = { Text("Остановка") },
                                 modifier = Modifier
@@ -319,8 +319,18 @@ fun AddTrip(person: UserModel, cars: List<CarModel>, navController: NavControlle
 
                 LaunchedEffect(Unit) {
                     snapshotFlow { addressTo }
-                        .debounce(1200)
+                        .debounce(1500)
                         .collectLatest { value ->
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val places = PlaceService.suggestPlace(addressTo)
+                                if (places.isSuccess) {
+                                    var addresses = mutableListOf<String>()
+                                    places.getOrNull()?.forEach {
+                                        addresses.add(it.address)
+                                    }
+                                    suggestions = addresses
+                                }
+                            }
                             expanded = true
                         }
                 }
@@ -335,16 +345,6 @@ fun AddTrip(person: UserModel, cars: List<CarModel>, navController: NavControlle
                             onValueChange = {
                                 addressTo = it
                                 expanded = false
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    val places = PlaceService.suggestPlace(addressTo)
-                                    if (places.isSuccess) {
-                                        var addresses = mutableListOf<String>()
-                                        places.getOrNull()?.forEach {
-                                            addresses.add(it.address)
-                                        }
-                                        suggestions = addresses
-                                    }
-                                }
                             },
                             label = { Text("Куда") },
                             modifier = Modifier
@@ -701,7 +701,7 @@ fun AddTrip(person: UserModel, cars: List<CarModel>, navController: NavControlle
                             value = participantsCount,
                             onValueChange = { newText ->
                                 val number = newText.toIntOrNull()
-                                if (number != null && number in 0..10) {
+                                if (number != null && number in 1..10) {
                                     participantsCount = newText
                                     participantsCountError = false
                                 } else {
@@ -711,7 +711,7 @@ fun AddTrip(person: UserModel, cars: List<CarModel>, navController: NavControlle
                                     participantsCountError = true
                                 }
                             },
-                            label = { Text("Количество пассажиров (0-10)") },
+                            label = { Text("Количество пассажиров (1-10)") },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             isError = participantsCountError,
                             modifier = Modifier.fillMaxWidth().padding(10.dp),
@@ -726,7 +726,7 @@ fun AddTrip(person: UserModel, cars: List<CarModel>, navController: NavControlle
 
                         if (participantsCountError) {
                             Text(
-                                text = "Введите число от 0 до 10",
+                                text = "Введите число от 1 до 10",
                                 color = MaterialTheme.colorScheme.error,
                                 modifier = Modifier.padding(10.dp, 5.dp)
                             )

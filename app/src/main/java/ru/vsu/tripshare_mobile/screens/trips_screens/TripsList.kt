@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,49 +32,55 @@ import ru.vsu.tripshare_mobile.ui.theme.mint36
 fun MyTrips(navController: NavController) {
 
     var trips by remember { mutableStateOf(emptyList<TripModel>()) }
+    var update by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         val tripsResult = TripService.getTripsAsDriver()
         if(tripsResult.isSuccess) {
             trips = tripsResult.getOrNull()!!
+            update = true
         }
     }
 
     Scaffold(
         content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.9f)
-                    .background(Color.White),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Ваши поездки",
-                    style = mint36
-                )
+            if(update) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.9f)
+                        .background(Color.White),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Ваши поездки",
+                        style = mint36
+                    )
 
-                if(trips.isEmpty()){
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "У вас нет поездок",
-                            style = darkGray36
-                        )
-                    }
-                }else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.White),
-                    ) {
-                        itemsIndexed(trips) { _, item ->
-                            TripCard(item, navController = navController)
+                    if (trips.isEmpty()) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "У вас нет поездок",
+                                style = darkGray36
+                            )
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.White),
+                        ) {
+                            itemsIndexed(trips) { _, item ->
+                                TripCard(item, navController = navController)
+                            }
                         }
                     }
                 }
+            }else{
+                CircularProgressIndicator()
             }
         }
     )
