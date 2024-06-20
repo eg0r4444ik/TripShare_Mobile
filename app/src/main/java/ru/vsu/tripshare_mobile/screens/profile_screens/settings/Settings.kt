@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,12 +26,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.UserModel
+import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
 import ru.vsu.tripshare_mobile.ui.theme.MyRed
 import ru.vsu.tripshare_mobile.ui.theme.darkGray24
@@ -73,13 +78,32 @@ fun Settings(user: UserModel, navController: NavController){
 
                 Text(text = user.name, style = darkGray48)
 
-                Image(
-                    painterResource(id = if(user.avatarId == null) R.drawable.baseline_person else user.avatarId!!),
-                    contentDescription = "author",
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
-                )
+                if(user.avatarUrl == null) {
+                    Image(
+                        painterResource(id = R.drawable.baseline_person),
+                        contentDescription = "author",
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
+                    )
+                }else{
+                    val painter: Painter = rememberImagePainter(user.avatarUrl!!)
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                    ) {
+                        Image(
+                            painter = painter,
+                            contentDescription = "Image from URL",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                                .border(1.dp, MyDarkGray, CircleShape)
+                        )
+                    }
+                }
             }
         }
 

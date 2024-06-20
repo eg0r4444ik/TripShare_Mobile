@@ -1,7 +1,9 @@
 package ru.vsu.tripshare_mobile.screens.trips_screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,18 +20,39 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import ru.vsu.tripshare_mobile.R
+import ru.vsu.tripshare_mobile.api.dto.requests.RequestDTO
+import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.TripModel
-import ru.vsu.tripshare_mobile.models.TripParticipantModel
+import ru.vsu.tripshare_mobile.services.PlaceService
+import ru.vsu.tripshare_mobile.services.RequestService
+import ru.vsu.tripshare_mobile.services.TripService
+import ru.vsu.tripshare_mobile.ui.theme.MyBlue
+import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.black18
 import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
@@ -37,31 +60,82 @@ import ru.vsu.tripshare_mobile.ui.theme.darkGray24
 import ru.vsu.tripshare_mobile.ui.theme.darkGray36
 import ru.vsu.tripshare_mobile.ui.theme.mint18
 import ru.vsu.tripshare_mobile.ui.theme.mint36
+import ru.vsu.tripshare_mobile.ui.theme.white14
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
-fun TripDetails(tripModel: TripModel, navController: NavController) {
+fun TripDetails(tripId: Int, navController: NavController) {
 
-    val state = rememberScrollState()
+    var tripModel by remember { mutableStateOf<TripModel?>(null) }
+    var existRequest = false
+    var regions by remember { mutableStateOf(emptyList<String>()) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(Color.White)
-            .verticalScroll(state),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Детали поездки",
-            style = mint36
-        )
-
-        DriverCard(tripModel, navController = navController)
-        StopsCard(tripModel, navController = navController)
-        FacilitiesCard(tripModel, navController = navController)
-        PassengersCard(tripModel, navController = navController)
-
+    LaunchedEffect(Unit) {
+        val tripModelResult = TripService.getTrip(tripId)
+        if(tripModelResult.isSuccess) {
+            tripModel = tripModelResult.getOrNull()
+            existRequest = RequestService.existRequest(tripModel!!.id)
+        }
+        var list = mutableListOf<String>()
+        tripModel!!.stops.forEach{
+            list.add(PlaceService.getPlace(it.placeName).getOrNull()!!.address)
+        }
+        regions = list
     }
+
+    Scaffold(
+        content = {
+            if(tripModel != null) {
+                val state = rememberScrollState()
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .background(Color.White)
+                        .verticalScroll(state),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Детали поездки",
+                        style = mint36
+                    )
+
+                    DriverCard(tripModel!!, navController = navController)
+                    StopsCard(tripModel!!, regions, navController = navController)
+                    FacilitiesCard(tripModel!!, navController = navController)
+                    PassengersCard(tripModel!!, navController = navController)
+
+                    if(tripModel!!.status != ru.vsu.tripshare_mobile.models.TripStatus.DRIVER){
+                        if(!existRequest){
+                            Button(
+                                onClick = {
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        RequestService.addRequest(RequestDTO(AppConfig.currentFindRequest!!.needed_seats,
+                                            AppConfig.currentFindRequest!!.start.place.toInt(),
+                                            AppConfig.currentFindRequest!!.end.place.toInt(), tripModel!!.id))
+                                    }
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = MyBlue),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp)
+                                    .padding(20.dp, 0.dp)
+                            ) {
+                                Box(
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    androidx.compose.material3.Text(text = "Оправить запрос на поездку", style = white14)
+                                }
+                            }
+                        }
+                    }else{
+                        //todo отрисовывать запросы
+                    }
+                }
+            }
+        }
+    )
 }
 
 @Composable
@@ -69,7 +143,7 @@ fun DriverCard(tripModel: TripModel, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp)
+            .height(200.dp)
             .padding(10.dp)
             .clickable { navController.navigate("user_profile/${tripModel.driver.id}") },
         shape = RoundedCornerShape(15.dp),
@@ -102,21 +176,40 @@ fun DriverCard(tripModel: TripModel, navController: NavController){
 
                 Text(text = tripModel.driver.name, style = darkGray36)
 
-                Image(
-                    //todo заменить !! на проверку на null
-                    painter = painterResource(id = tripModel.driver.avatarId!!),
-                    contentDescription = "driver",
-                    modifier = Modifier
-                        .size(70.dp)
-                        .clip(CircleShape)
-                )
+                if(tripModel.driver.avatarUrl == null) {
+                    Image(
+                        painterResource(id = R.drawable.baseline_person),
+                        contentDescription = "driver",
+                        modifier = Modifier
+                            .size(70.dp)
+                            .clip(CircleShape)
+                    )
+                }else{
+                    val painter: Painter = rememberImagePainter(tripModel.driver.avatarUrl!!)
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                    ) {
+                        Image(
+                            painter = painter,
+                            contentDescription = "Image from URL",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                                .border(1.dp, MyDarkGray, CircleShape)
+                        )
+                    }
+                }
             }
         }
     }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
-fun StopsCard(tripModel: TripModel, navController: NavController){
+fun StopsCard(tripModel: TripModel, regions: List<String>, navController: NavController){
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -128,7 +221,7 @@ fun StopsCard(tripModel: TripModel, navController: NavController){
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         )
-    ){
+    ) {
         Column(
             modifier = Modifier.padding(10.dp, 5.dp),
         ) {
@@ -142,14 +235,17 @@ fun StopsCard(tripModel: TripModel, navController: NavController){
             }
 
             val stops = tripModel.stops
-            tripModel.stops.forEach{
-                if(it.placeName.equals(tripModel.cityFrom) ||
-                    it.placeName.equals(tripModel.cityTo)) {
+            regions.forEach {
+                val region = ""
+                if (it.equals(tripModel.cityFrom) ||
+                    it.equals(tripModel.cityTo)
+                ) {
                     Text(text = "*" + it, style = blue18)
-                }else if(it.equals(stops.get(0).placeName)
-                    || it.equals(stops.get(stops.size-1).placeName)) {
+                } else if (it.equals(stops.get(0).placeName)
+                    || it.equals(stops.get(stops.size - 1).placeName)
+                ) {
                     Text(text = "*" + it, style = mint18)
-                }else{
+                } else {
                     Text(text = "*" + it, style = darkGray18)
                 }
             }
@@ -245,14 +341,32 @@ fun PassengersCard(tripModel: TripModel, navController: NavController){
                         .clickable { navController.navigate("user_profile/${it.id}") },
                     verticalAlignment = Alignment.Top,
                 ) {
-                    Image(
-                        //todo заменить !! на проверку на null
-                        painter = painterResource(id = it.avatarId!!),
-                        contentDescription = "companion",
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clip(CircleShape)
-                    )
+                    if(it.avatarUrl == null) {
+                        Image(
+                            painterResource(id = R.drawable.baseline_person),
+                            contentDescription = "companion",
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clip(CircleShape)
+                        )
+                    }else{
+                        val painter: Painter = rememberImagePainter(it.avatarUrl!!)
+                        Box(
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(CircleShape)
+                        ) {
+                            Image(
+                                painter = painter,
+                                contentDescription = "Image from URL",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape)
+                                    .border(1.dp, MyDarkGray, CircleShape)
+                            )
+                        }
+                    }
 
                     Box(
                         modifier = Modifier

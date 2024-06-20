@@ -26,8 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.UserModel
+import ru.vsu.tripshare_mobile.services.UserService
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.MyLightGray
 import ru.vsu.tripshare_mobile.ui.theme.MyMint
@@ -216,12 +220,9 @@ fun EditPreferences(user: UserModel, navController: NavController){
                 }
                 user.info = info
                 AppConfig.currentUser = user
-//                CoroutineScope(Dispatchers.Main).launch {
-//                    UserService.updateMe()
-//                }
-//                CoroutineScope(Dispatchers.Main).launch {
-//                    UserService.updateMe()
-//                }
+                CoroutineScope(Dispatchers.Main).launch {
+                    UserService.updateMe()
+                }
                 navController.navigate("profile_screen")
             },
             colors = ButtonDefaults.buttonColors(containerColor = MyMint),

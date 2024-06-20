@@ -81,7 +81,7 @@ fun FirstAuthScreen(navController: NavController){
                         Toast.makeText(
                             AppConfig.appContext,
                             "Введите корректный номер телефона",
-                            Toast.LENGTH_SHORT
+                            Toast.LENGTH_LONG
                         ).show()
                     }
                 },

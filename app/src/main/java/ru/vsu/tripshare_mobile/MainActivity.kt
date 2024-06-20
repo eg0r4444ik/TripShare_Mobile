@@ -36,11 +36,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppConfig.init(this)
             FirebaseApp.initializeApp(this)
-//            ImageUtils.saveImage()
             MainScreen()
-//            val painter: Painter = rememberImagePainter("https://firebasestorage.googleapis.com/v0/b/tripshare-426319.appspot.com/o/images%2Fimages?alt=media&token=99da661f-55dc-4df8-addc-7c87abd225df")
-//
-//            Image(painter = painter, contentDescription = "Image from URL")
         }
     }
 }

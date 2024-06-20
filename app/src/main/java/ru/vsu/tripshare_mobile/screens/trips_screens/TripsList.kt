@@ -2,8 +2,10 @@ package ru.vsu.tripshare_mobile.screens.trips_screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -21,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import ru.vsu.tripshare_mobile.models.TripModel
 import ru.vsu.tripshare_mobile.services.TripService
+import ru.vsu.tripshare_mobile.ui.theme.darkGray36
 import ru.vsu.tripshare_mobile.ui.theme.mint36
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -50,15 +53,25 @@ fun MyTrips(navController: NavController) {
                     style = mint36
                 )
 
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White),
-                ) {
-                    itemsIndexed(trips) { _, item ->
-//                        if (item.status != ru.vsu.tripshare_mobile.models.TripStatus.WITHOUT_STATUS) {
+                if(trips.isEmpty()){
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "У вас нет поездок",
+                            style = darkGray36
+                        )
+                    }
+                }else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White),
+                    ) {
+                        itemsIndexed(trips) { _, item ->
                             TripCard(item, navController = navController)
-//                        }
+                        }
                     }
                 }
             }

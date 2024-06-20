@@ -85,7 +85,7 @@ fun SecondAuthScreen(phone: String, navController: NavController){
                     CoroutineScope(Dispatchers.Main).launch {
                         val user = AuthService.auth(phone, password)
                         if (user.isFailure) {
-                            Toast.makeText(AppConfig.appContext, "Вы ввели неверный пароль", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(AppConfig.appContext, "Вы ввели неверный пароль", Toast.LENGTH_LONG).show()
                             password = ""
                         } else {
                             AppConfig.currentUser = user.getOrNull()

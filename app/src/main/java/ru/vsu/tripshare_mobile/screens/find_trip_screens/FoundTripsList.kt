@@ -11,37 +11,31 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.TripModel
-import ru.vsu.tripshare_mobile.models.TripParticipantModel
 import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.screens.trips_screens.TripCard
 import ru.vsu.tripshare_mobile.services.TripService
-import ru.vsu.tripshare_mobile.ui.theme.mint36
+import ru.vsu.tripshare_mobile.ui.theme.mint26
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
-fun FoundTripsList(placeStart: String, placeEnd: String, navController: NavController){
+fun FoundTripsList(navController: NavController){
 
-    var trips = remember { mutableStateListOf<MutableState<TripModel>>() }
-    CoroutineScope(Dispatchers.Main).launch {
-        val myTrips = TripService.findTrips(placeStart, placeEnd)
-        myTrips.onSuccess {
-            myTrips.getOrNull()?.forEach {
-                trips.add(mutableStateOf(it))
+    var trips = remember { mutableStateListOf<TripModel?>() }
+    LaunchedEffect(Unit) {
+        AppConfig.currentListOfTrips?.let {
+            val response = AppConfig.currentListOfTrips
+            response?.forEach {
+                trips.add(TripService.tripFromDTOtoModel(it.trip).getOrNull())
             }
-        }.onFailure {
-
         }
     }
 
@@ -53,11 +47,11 @@ fun FoundTripsList(placeStart: String, placeEnd: String, navController: NavContr
                         .fillMaxWidth()
                         .fillMaxHeight()
                         .background(Color.White),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
                         text = "Найденные поездки",
-                        style = mint36
+                        style = mint26
                     )
 
                     LazyColumn(
@@ -66,8 +60,8 @@ fun FoundTripsList(placeStart: String, placeEnd: String, navController: NavContr
                             .background(Color.White),
                     ) {
                         itemsIndexed(trips) { _, item ->
-                            if(item.value.status == TripStatus.WITHOUT_STATUS) {
-                                TripCard(item.value, navController = navController)
+                            if(item != null && item.status == TripStatus.WITHOUT_STATUS) {
+                                TripCard(item, navController = navController)
                             }
                         }
                     }

@@ -43,6 +43,7 @@ import ru.vsu.tripshare_mobile.services.CarService
 import ru.vsu.tripshare_mobile.services.UserService
 import ru.vsu.tripshare_mobile.ui.theme.darkGray24
 import ru.vsu.tripshare_mobile.ui.theme.darkGray48
+import ru.vsu.tripshare_mobile.ui.theme.mint16
 import ru.vsu.tripshare_mobile.ui.theme.mint18
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
@@ -110,15 +111,24 @@ fun UserProfile(userId: Int, person: UserModel, navController: NavController){
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(5.dp),
+                                    .padding(5.dp)
+                                    .clickable {
+                                        navController.navigate("reviews/${user!!.id}")
+                                    },
                                 contentAlignment = Alignment.BottomEnd
                             ) {
-                                Text(
-                                    text = "Посмотреть отзывы",
-                                    style = mint18,
-                                    modifier = Modifier.clickable {
-                                        navController.navigate("reviews/${user!!.id}")
-                                    })
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "Посмотреть",
+                                        style = if (user!!.rating != null) mint18 else mint16,
+                                    )
+                                    Text(
+                                        text = "отзывы",
+                                        style = if (user!!.rating != null) mint18 else mint16,
+                                    )
+                                }
                             }
                         }
                     }

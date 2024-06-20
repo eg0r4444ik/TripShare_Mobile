@@ -2,6 +2,7 @@ package ru.vsu.tripshare_mobile.screens.trips_screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,12 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.models.TripModel
-import ru.vsu.tripshare_mobile.models.TripParticipantModel
 import ru.vsu.tripshare_mobile.models.TripStatus
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
 import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
@@ -37,6 +40,7 @@ import ru.vsu.tripshare_mobile.ui.theme.black36
 import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray14
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
+import ru.vsu.tripshare_mobile.ui.theme.mint20
 import ru.vsu.tripshare_mobile.ui.theme.mint24
 import ru.vsu.tripshare_mobile.ui.theme.white14
 
@@ -103,9 +107,9 @@ private fun TripInfoRight(tripModel: TripModel){
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = tripModel.cityFrom, style = mint24)
+            Text(text = tripModel.cityFrom, style = mint20)
             Text(text = "-", style = mint24)
-            Text(text = tripModel.cityTo, style = mint24)
+            Text(text = tripModel.cityTo, style = mint20)
         }
         Text(text = "Отправление:", style = blue18)
         Text(text = tripModel.departureDate + " " + tripModel.departureTime, style = darkGray18)
@@ -156,13 +160,32 @@ private fun TripStatus(text: String, color: Color){
 @Composable
 private fun DriverInfo(tripModel: TripModel){
     Text(text = "Водитель:", style = darkGray18)
-    Image(
-        painter = painterResource(id = if(tripModel.driver.avatarId == null) R.drawable.baseline_person else tripModel.driver.avatarId!!),
-        contentDescription = "image",
-        modifier = Modifier
-            .size(70.dp)
-            .clip(CircleShape)
-    )
+    if(tripModel.driver.avatarUrl == null) {
+        Image(
+            painterResource(id = R.drawable.baseline_person),
+            contentDescription = "driver",
+            modifier = Modifier
+                .size(70.dp)
+                .clip(CircleShape)
+        )
+    }else{
+        val painter: Painter = rememberImagePainter(tripModel.driver.avatarUrl!!)
+        Box(
+            modifier = Modifier
+                .size(100.dp)
+                .clip(CircleShape)
+        ) {
+            Image(
+                painter = painter,
+                contentDescription = "Image from URL",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape)
+                    .border(1.dp, MyDarkGray, CircleShape)
+            )
+        }
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -174,23 +197,46 @@ private fun DriverInfo(tripModel: TripModel){
 @Composable
 private fun PassengersInfo(tripModel: TripModel){
     Text(text = "Пассажиры:", style = darkGray18)
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        tripModel.participants.forEach { participant ->
-            Image(
-                painter = painterResource(id = if(tripModel.driver.avatarId == null) R.drawable.baseline_person else participant.avatarId!!),
-                contentDescription = "image",
-                modifier = Modifier
-                    .size(if (tripModel.participants.size <= 2) 70.dp else if (tripModel.participants.size == 3) 50.dp else 40.dp)
-                    .clip(CircleShape)
-            )
+    if(tripModel.participants.size == 0){
+        Text(text = "Нет пассажиров", style = darkGray14)
+    }else{
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            tripModel.participants.forEach { participant ->
+                if(participant.avatarUrl == null) {
+                    Image(
+                        painterResource(id = R.drawable.baseline_person),
+                        contentDescription = "participant",
+                        modifier = Modifier
+                            .size(if (tripModel.participants.size <= 2) 70.dp else if (tripModel.participants.size == 3) 50.dp else 40.dp)
+                            .clip(CircleShape)
+                    )
+                }else{
+                    val painter: Painter = rememberImagePainter(participant.avatarUrl!!)
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                    ) {
+                        Image(
+                            painter = painter,
+                            contentDescription = "Image from URL",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                                .border(1.dp, MyDarkGray, CircleShape)
+                        )
+                    }
+                }
+            }
         }
+        Text(
+            text = if (tripModel.participants.size == 1) "1 пассажир" else (tripModel.participants.size.toString() + " пассажира"),
+            style = darkGray14
+        )
     }
-    Text(
-        text = if (tripModel.participants.size == 1) "1 пассажир" else (tripModel.participants.size.toString() + " пассажира"),
-        style = darkGray14
-    )
 }
 
 @Composable

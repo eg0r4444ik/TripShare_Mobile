@@ -2,6 +2,7 @@ package ru.vsu.tripshare_mobile.screens.chat_screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,10 +33,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import io.appmetrica.analytics.AppMetrica
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -68,13 +72,39 @@ fun Chat(chat: ChatModel, user: UserModel, navController: NavController){
                 .clickable { navController.navigate("user_profile/${companion.id}") },
             verticalAlignment = Alignment.Top,
         ){
-            Image(
-                painter = painterResource(id = if(companion.avatarId == null) R.drawable.baseline_person else companion.avatarId!!),
-                contentDescription = "companion",
+            Box(
                 modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-            )
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                contentAlignment = Alignment.TopEnd
+            ) {
+                if (user.avatarUrl == null) {
+                    Image(
+                        painterResource(id = R.drawable.baseline_person),
+                        contentDescription = "companion",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape)
+                    )
+                } else {
+                    val painter: Painter = rememberImagePainter(user.avatarUrl!!)
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                    ) {
+                        Image(
+                            painter = painter,
+                            contentDescription = "Image from URL",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                                .border(1.dp, MyDarkGray, CircleShape)
+                        )
+                    }
+                }
+            }
 
             Box(
                 modifier = Modifier

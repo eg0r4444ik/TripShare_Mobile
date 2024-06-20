@@ -19,13 +19,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,10 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.vsu.tripshare_mobile.R
@@ -46,6 +41,7 @@ import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.services.CarService
 import ru.vsu.tripshare_mobile.ui.theme.darkGray24
 import ru.vsu.tripshare_mobile.ui.theme.darkGray48
+import ru.vsu.tripshare_mobile.ui.theme.mint16
 import ru.vsu.tripshare_mobile.ui.theme.mint18
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
@@ -102,15 +98,24 @@ fun Profile(user: UserModel, navController: NavController) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(5.dp),
+                        .padding(5.dp)
+                        .clickable {
+                            navController.navigate("reviews/${user.id}")
+                        },
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    Text(
-                        text = "Посмотреть отзывы",
-                        style = mint18,
-                        modifier = Modifier.clickable {
-                            navController.navigate("reviews/${user.id}")
-                        })
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Посмотреть",
+                            style = if (user.rating != null) mint18 else mint16,
+                        )
+                        Text(
+                            text = "отзывы",
+                            style = if (user.rating != null) mint18 else mint16,
+                        )
+                    }
                 }
             }
         }

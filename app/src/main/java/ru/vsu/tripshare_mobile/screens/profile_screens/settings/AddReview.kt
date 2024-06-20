@@ -81,7 +81,7 @@ fun AddReview(userId: Int, navController: NavController){
                         onValueChange = { newText ->
                             rating = newText
                         },
-                        label = { Text("Оценка от 0 до 10") },
+                        label = { Text("Оценка от 0 до 5") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(10.dp),
@@ -122,18 +122,18 @@ fun AddReview(userId: Int, navController: NavController){
                             var rate = 0
                             try {
                                 rate = rating.toInt()
-                                if (rate < 0 || rate > 10) {
+                                if (rate < 0 || rate > 5) {
                                     Toast.makeText(
                                         AppConfig.appContext,
-                                        "Данные некорректны рейтинг должен быть числом от 0 до 10",
-                                        Toast.LENGTH_SHORT
+                                        "Данные некорректны рейтинг должен быть числом от 0 до 5",
+                                        Toast.LENGTH_LONG
                                     ).show()
                                 }
                             } catch (e: Exception) {
                                 Toast.makeText(
                                     AppConfig.appContext,
-                                    "Данные некорректны рейтинг должен быть числом от 0 до 10",
-                                    Toast.LENGTH_SHORT
+                                    "Данные некорректны рейтинг должен быть числом от 0 до 5",
+                                    Toast.LENGTH_LONG
                                 ).show()
                             }
                             val review = ReviewModel(user!!, rate, text)

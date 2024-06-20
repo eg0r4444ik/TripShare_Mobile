@@ -7,6 +7,7 @@ import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,13 +34,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import ru.vsu.tripshare_mobile.R
 import ru.vsu.tripshare_mobile.config.AppConfig
 import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.ui.theme.MyBlue
+import ru.vsu.tripshare_mobile.ui.theme.MyDarkGray
 import ru.vsu.tripshare_mobile.ui.theme.blue18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray18
 import ru.vsu.tripshare_mobile.ui.theme.darkGray36
@@ -50,6 +55,9 @@ import ru.vsu.tripshare_mobile.utils.ImageUtils
 
 @Composable
 fun BasicInformation(user: UserModel, person: UserModel, navController: NavController){
+
+    var avatarUrl by remember { mutableStateOf<String?>(user.avatarUrl) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,13 +90,39 @@ fun BasicInformation(user: UserModel, person: UserModel, navController: NavContr
                     .padding(10.dp),
                 contentAlignment = Alignment.TopEnd
             ) {
-                Image(
-                    painterResource(id = if(user.avatarId == null) R.drawable.baseline_person else user.avatarId!!),
-                    contentDescription = "image",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape)
-                )
+                if(avatarUrl == null) {
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                    ) {
+                        Image(
+                            painterResource(id = R.drawable.baseline_person),
+                            contentDescription = "image",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                                .border(1.dp, MyDarkGray, CircleShape)
+                        )
+                    }
+                }else{
+                    val painter: Painter = rememberImagePainter(avatarUrl!!)
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                    ) {
+                        Image(
+                            painter = painter,
+                            contentDescription = "Image from URL",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                                .border(1.dp, MyDarkGray, CircleShape)
+                        )
+                    }
+                }
             }
         }
 
@@ -101,7 +135,36 @@ fun BasicInformation(user: UserModel, person: UserModel, navController: NavContr
                 contentAlignment = Alignment.BottomStart,
             ) {
                 Column {
-                    SelectPhoto()
+                    val context = AppConfig.appContext
+                    var imageUri by remember { mutableStateOf<Uri?>(null) }
+                    val launcher = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.GetContent()
+                    ) { uri: Uri? ->
+                        imageUri = uri
+                    }
+
+                    Column{
+                        Text(
+                            text = "Изменить фото профиля",
+                            style = mint18,
+                            modifier = Modifier.clickable {
+                                launcher.launch("image/*")
+                            }
+                        )
+                        imageUri?.let {
+                            val bitmap = if (Build.VERSION.SDK_INT < 28) {
+                                MediaStore.Images.Media.getBitmap(context.contentResolver, it)
+                            } else {
+                                val source = ImageDecoder.createSource(context.contentResolver, it)
+                                ImageDecoder.decodeBitmap(source)
+                            }
+
+                            bitmap?.let {
+                                ImageUtils.saveUserImage(bitmap)
+                                avatarUrl = AppConfig.currentUser!!.avatarUrl
+                            }
+                        }
+                    }
                     Text(
                         text = "Редактировать информацию о себе",
                         style = mint18,
@@ -136,40 +199,6 @@ fun BasicInformation(user: UserModel, person: UserModel, navController: NavContr
                         Text(text = "Написать", style = white18)
                     }
                 }
-            }
-        }
-    }
-}
-
-@Composable
-fun SelectPhoto(){
-    val context = AppConfig.appContext
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        imageUri = uri
-    }
-
-    Column{
-        Text(
-            text = "Изменить фото профиля",
-            style = mint18,
-            modifier = Modifier.clickable {
-                launcher.launch("image/*")
-            }
-        )
-        imageUri?.let {
-            val bitmap = if (Build.VERSION.SDK_INT < 28) {
-                MediaStore.Images.Media.getBitmap(context.contentResolver, it)
-            } else {
-                val source = ImageDecoder.createSource(context.contentResolver, it)
-                ImageDecoder.decodeBitmap(source)
-            }
-
-            bitmap?.let {
-                ImageUtils.saveImage(bitmap)
-//                Image(bitmap = it.asImageBitmap(), contentDescription = null, modifier = Modifier.size(200.dp))
             }
         }
     }

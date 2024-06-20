@@ -156,7 +156,7 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
         val datePickerDialog = DatePickerDialog(
             context,
             { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-                date.value = String.format("%02d.%02d.%s", dayOfMonth, month, year)
+                date.value = String.format("%02d.%02d.%s", dayOfMonth, month+1, year)
             }, year, month, day
         )
 
@@ -225,31 +225,31 @@ fun RegistrationScreen(phoneNumber: String, navController: NavController){
                     Toast.makeText(
                         AppConfig.appContext,
                         "Пароли должны совпадать",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }else if(pass1.equals("")){
                     Toast.makeText(
                         AppConfig.appContext,
                         "Заполните пароль",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }else if(name.equals("") || surname.equals("")){
                     Toast.makeText(
                         AppConfig.appContext,
                         "Заполните имя и фамилию",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }else if(!isPhoneNumber(phone)){
                     Toast.makeText(
                         AppConfig.appContext,
                         "Введите корректный номер телефона",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }else if(!isEmail(email)){
                     Toast.makeText(
                         AppConfig.appContext,
                         "Введите корректный email",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }else{
                     val user = RegistrationDTO(

@@ -140,7 +140,7 @@ fun EditInfo(user: UserModel, navController: NavController){
         val datePickerDialog = DatePickerDialog(
             context,
             { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-                date.value = String.format("%02d.%02d.%s", dayOfMonth, month, year)
+                date.value = String.format("%02d.%02d.%s", dayOfMonth, month+1, year)
             }, year, month, day
         )
 
@@ -172,19 +172,19 @@ fun EditInfo(user: UserModel, navController: NavController){
                     Toast.makeText(
                         AppConfig.appContext,
                         "Заполните имя и фамилию",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }else if(!isPhoneNumber(phone)){
                     Toast.makeText(
                         AppConfig.appContext,
                         "Введите корректный номер телефона",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }else if(!isEmail(email)){
                     Toast.makeText(
                         AppConfig.appContext,
                         "Введите корректный email",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }else{
                     user.name = name

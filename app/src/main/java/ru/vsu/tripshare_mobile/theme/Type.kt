@@ -181,6 +181,20 @@ val mint7 = TextStyle(
     fontFamily = montserrat
 )
 
+val mint14 = TextStyle(
+    color = MyMint,
+    fontWeight = FontWeight.Bold,
+    fontSize = 14.sp,
+    fontFamily = montserrat
+)
+
+val mint16 = TextStyle(
+    color = MyMint,
+    fontWeight = FontWeight.Bold,
+    fontSize = 16.sp,
+    fontFamily = montserrat
+)
+
 val mintNormal18 = TextStyle(
     color = MyMint,
     fontWeight = FontWeight.Normal,

@@ -1,19 +1,24 @@
 package ru.vsu.tripshare_mobile
 
 import android.annotation.SuppressLint
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.vsu.tripshare_mobile.config.AppConfig
+import ru.vsu.tripshare_mobile.models.CarModel
 import ru.vsu.tripshare_mobile.models.ChatModel
 import ru.vsu.tripshare_mobile.models.UserModel
 import ru.vsu.tripshare_mobile.screens.add_trip_screens.AddTrip
@@ -36,6 +41,8 @@ import ru.vsu.tripshare_mobile.screens.registration_screens.FirstAuthScreen
 import ru.vsu.tripshare_mobile.screens.registration_screens.RegistrationScreen
 import ru.vsu.tripshare_mobile.screens.registration_screens.SecondAuthScreen
 import ru.vsu.tripshare_mobile.screens.trips_screens.MyTrips
+import ru.vsu.tripshare_mobile.screens.trips_screens.TripDetails
+import ru.vsu.tripshare_mobile.services.CarService
 import ru.vsu.tripshare_mobile.services.UserService
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
@@ -69,25 +76,39 @@ fun NavGraph(navHostController: NavHostController, startDestination: String){
                 FindTrip(navHostController)
             }
         }
-        composable(route = "list_of_trips/{place_start}/{place_end}",
-            arguments = listOf(navArgument("place_start") { type = NavType.StringType },
-                navArgument("place_end") { type = NavType.StringType })
-        ) { navBackStack ->
-            val placeStart = navBackStack.arguments?.getString("place_start")
-            val placeEnd = navBackStack.arguments?.getString("place_end")
-
-            FoundTripsList(placeStart!!, placeEnd!!, navHostController)
+        composable(route = "list_of_trips") {
+            FoundTripsList(navHostController)
         }
         composable("add_trip_screen"){
             if(AppConfig.currentUser == null){
                 AuthorizationRequestScreen(navHostController)
             }else {
-                Scaffold(
-                    bottomBar = {
-                        BottomNavigation(navController = navHostController)
+                val scope = rememberCoroutineScope()
+                var cars by remember { mutableStateOf(listOf<CarModel>()) }
+                var isLoading by remember { mutableStateOf(true) }
+
+                LaunchedEffect(AppConfig.currentUser!!.id) {
+                    scope.launch(Dispatchers.Main) {
+                        val myCarsResult = CarService.getUsersCars(AppConfig.currentUser!!.id)
+                        myCarsResult.onSuccess { carList ->
+                            cars = carList ?: listOf()
+                            isLoading = false
+                        }.onFailure {
+                            isLoading = false
+                        }
                     }
-                ) {
-                    AddTrip(AppConfig.currentUser!!, navHostController)
+                }
+
+                if (isLoading) {
+                    CircularProgressIndicator()
+                } else {
+                    Scaffold(
+                        bottomBar = {
+                            BottomNavigation(navController = navHostController)
+                        }
+                    ) {
+                        AddTrip(AppConfig.currentUser!!, cars!!, navHostController)
+                    }
                 }
             }
         }
@@ -142,15 +163,15 @@ fun NavGraph(navHostController: NavHostController, startDestination: String){
             }
 
         }
-//        composable(
-//            route = "trip_details/{tripParticipantId}",
-//            arguments = listOf(navArgument("tripParticipantId") { type = NavType.IntType }),
-//            ){ navBackStack ->
-//
-//            val tripParticipantId = navBackStack.arguments?.getInt("tripParticipantId")
-//
-//            TripDetails(tripsParticipants[tripParticipantId!!], navHostController)
-//        }
+        composable(
+            route = "trip_details/{tripId}",
+            arguments = listOf(navArgument("tripId") { type = NavType.IntType }),
+            ){ navBackStack ->
+
+            val tripId = navBackStack.arguments?.getInt("tripId")
+
+            TripDetails(tripId!!, navHostController)
+        }
         composable(
             route ="reviews/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.IntType })

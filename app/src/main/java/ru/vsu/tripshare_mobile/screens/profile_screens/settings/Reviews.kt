@@ -68,11 +68,22 @@ fun Reviews(userId: Int, navController: NavController){
                     )
 
                     if (reviews.isEmpty()) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.85f).padding(10.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(text = "У пользователя пока нет оценок", style = darkGray18)
+                        if(userId == AppConfig.currentUser!!.id){
+                            Box(
+                                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.85f)
+                                    .padding(10.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(text = "У вас пока нет оценок", style = darkGray18)
+                            }
+                        }else {
+                            Box(
+                                modifier = Modifier.fillMaxWidth().fillMaxHeight(0.85f)
+                                    .padding(10.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(text = "У пользователя пока нет оценок", style = darkGray18)
+                            }
                         }
                     } else {
                         LazyColumn(
