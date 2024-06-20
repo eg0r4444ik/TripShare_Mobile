@@ -1,16 +1,16 @@
 package ru.vsu.tripshare_mobile.api.dto.trips
 
-import java.util.Date
-
 class StopDTO {
     val place: String
     val place_name: String
-    val datetime: String
-    val num: Int
+    val datetime: String?
+    val num: Int?
     val is_start: Boolean?
     val is_stop: Boolean?
     val trip_id: Int?
     val id: Int?
+
+
 
     constructor(
         place: String,
@@ -42,6 +42,20 @@ class StopDTO {
         this.place_name = place_name
         this.datetime = datetime
         this.num = num
+        this.is_start = null
+        this.is_stop = null
+        this.trip_id = null
+        this.id = null
+    }
+
+    constructor(
+        place: String,
+        place_name: String,
+    ) {
+        this.place = place
+        this.place_name = place_name
+        this.datetime = null
+        this.num = null
         this.is_start = null
         this.is_stop = null
         this.trip_id = null

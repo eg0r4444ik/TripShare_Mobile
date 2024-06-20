@@ -13,7 +13,7 @@ class UserDTO {
     val attitude_towards_animals_during_the_trip: Int?
     val id: Int?
     val rating: Int?
-    val avatar_id: Int?
+    val avatar_url: String?
 
     constructor(
         phone: String,
@@ -28,7 +28,7 @@ class UserDTO {
         attitude_towards_animals_during_the_trip: Int?,
         id: Int,
         rating: Int,
-        avatar_id: Int?
+        avatar_url: String?
     ) {
         this.phone = phone
         this.name = name
@@ -41,7 +41,7 @@ class UserDTO {
         this.attitude_towards_smoking = attitude_towards_smoking
         this.attitude_towards_animals_during_the_trip = attitude_towards_animals_during_the_trip
         this.rating = rating
-        this.avatar_id = avatar_id
+        this.avatar_url = avatar_url
         this.id = id
     }
 
@@ -56,7 +56,7 @@ class UserDTO {
         talkativeness: Int?,
         attitude_towards_smoking: Int?,
         attitude_towards_animals_during_the_trip: Int?,
-        avatar_id: Int?
+        avatar_url: String?
     ) {
         this.phone = phone
         this.name = name
@@ -69,7 +69,7 @@ class UserDTO {
         this.attitude_towards_smoking = attitude_towards_smoking
         this.attitude_towards_animals_during_the_trip = attitude_towards_animals_during_the_trip
         this.rating = null
-        this.avatar_id = avatar_id
+        this.avatar_url = avatar_url
         this.id = null
     }
 }

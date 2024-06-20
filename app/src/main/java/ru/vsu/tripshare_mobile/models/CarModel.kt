@@ -6,5 +6,5 @@ data class CarModel(
     val model: String,
     val color: String,
     val manufactureYear: Int,
-    var imageIds: MutableList<Int?>
+    var imageUrl: String?
 )

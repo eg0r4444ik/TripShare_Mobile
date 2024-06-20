@@ -8,7 +8,7 @@ class UserModel {
     var email: String?
     var birthday: String
     var rating: Int?
-    var avatarId: Int?
+    var avatarUrl: String?
     var musicPreferences: String?
     var talkativeness: Int?
     var attitudeTowardsSmoking: Int?
@@ -23,7 +23,7 @@ class UserModel {
         email: String?,
         birthday: String,
         rating: Int?,
-        imageId: Int?,
+        avatarUrl: String?,
         musicPreferences: String?,
         talkativeness: Int?,
         attitudeTowardsSmoking: Int?,
@@ -37,7 +37,7 @@ class UserModel {
         this.email = email
         this.birthday = birthday
         this.rating = rating
-        this.avatarId = imageId
+        this.avatarUrl = avatarUrl
         this.musicPreferences = musicPreferences
         this.talkativeness = talkativeness
         this.attitudeTowardsSmoking = attitudeTowardsSmoking
